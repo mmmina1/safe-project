@@ -5,10 +5,17 @@ function App() {
   const [message, setMessage] = useState("연결 확인 중...")
 
   useEffect(() => {
-    // 백엔드 서버(8080포트)에 요청을 보냅니다.
-    axios.get('http://localhost:8080/api/test')
-      .then(res => setMessage(res.data))
-      .catch(err => setMessage("연결 실패 ㅠㅠ : " + err.message))
+    // 중요: /api 앞에 백엔드 주소를 붙이지 마세요! 
+    // Vite Proxy가 대신 전달해 줍니다.
+    axios.get('/api/test') 
+      .then(res => {
+        console.log("데이터 수신 완료:", res.data);
+        setMessage(res.data);
+      })
+      .catch(err => {
+        console.error("에러 발생:", err);
+        setMessage("연결 실패 ㅠㅠ : " + err.message);
+      })
   }, [])
 
   return (
