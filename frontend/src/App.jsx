@@ -1,3 +1,4 @@
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './components/Footer.jsx';
 import './App.css';
@@ -17,4 +18,3 @@ function App() {
 }
 
 export default App;
-
