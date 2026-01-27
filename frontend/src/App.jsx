@@ -1,4 +1,5 @@
-import Footer from './components/Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Footer from './components/Footer.jsx';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
