@@ -1,22 +1,17 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  
   return (
-      <div id="root">
-      <Header />
-      <div className="content-wrapper">        
-        {/* 여기에 나중에 메인 내용을 넣으시면 됩니다 */}
-        <h1 className="mt-5 text-center">초기 세팅 확인</h1>
-        <p className="text-center text-primary">스프링이랑 연결 성공했다!</p>
-      </div>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<h2 style={{padding: '50px'}}>메인 페이지 내용</h2>} />
+          <Route path="/shop" element={<h2 style={{padding: '50px'}}>쇼핑 페이지 내용</h2>} />
+        </Route>
+      </Routes>    
+    </BrowserRouter>
   )
 }
 
-export default App;
+export default App
