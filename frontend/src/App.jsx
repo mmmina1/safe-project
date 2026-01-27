@@ -1,29 +1,17 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [message, setMessage] = useState("연결 확인 중...")
-
-  useEffect(() => {
-    // 중요: /api 앞에 백엔드 주소를 붙이지 마세요! 
-    // Vite Proxy가 대신 전달해 줍니다.
-    axios.get('/api/test') 
-      .then(res => {
-        console.log("데이터 수신 완료:", res.data);
-        setMessage(res.data);
-      })
-      .catch(err => {
-        console.error("에러 발생:", err);
-        setMessage("연결 실패 ㅠㅠ : " + err.message);
-      })
-  }, [])
-
   return (
-    <div style={{textAlign: 'center', marginTop: '50px'}}>
-      <h1>초기 세팅 확인</h1>
-      <p style={{fontSize: '20px', color: 'blue'}}>{message}</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<h2 style={{padding: '50px'}}>메인 페이지 내용</h2>} />
+          <Route path="/shop" element={<h2 style={{padding: '50px'}}>쇼핑 페이지 내용</h2>} />
+        </Route>
+      </Routes>    
+    </BrowserRouter>
   )
 }
 
-export default App;
+export default App
