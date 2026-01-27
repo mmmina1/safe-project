@@ -1,4 +1,4 @@
-package com.safe.backend.controller;
+package com.safe.backend.domain.auth.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
