@@ -1,3 +1,4 @@
+import Footer from './components/Footer';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -22,6 +23,7 @@ function App() {
     <div style={{textAlign: 'center', marginTop: '50px'}}>
       <h1>초기 세팅 확인</h1>
       <p style={{fontSize: '20px', color: 'blue'}}>{message}</p>
+      <Footer />
     </div>
   )
 }
