@@ -1,20 +1,26 @@
-/* App.css */
+/* 높이 전파 (중요) */
+html, body, #root {
+  height: 100%;
+}
+
+/* 기존 #root 유지 */
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 화면 전체 높이 확보 */
-  width: 100vw;      /* 화면 너비 전체 확보 */
-}
-
-/* 푸터 위에 들어갈 메인 콘텐츠 영역 */
-.content-wrapper {
-  flex: 1;          /* 남은 공간을 다 채워서 푸터를 아래로 밀어냄 */
+  min-height: 100vh;
   width: 100%;
 }
 
-/* 브라우저 기본 여백 제거 */
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+/* 메인 영역이 남는 공간 먹기 */
+.content-wrapper {
+  flex: 1 0 auto;
+  width: 100%;
+  min-height: 0; /* 일부 상황에서 레이아웃 깨짐 방지 */
+}
+
+/* footer는 아래에 붙게 */
+footer {
+  margin-top: auto;   /* 가장 중요 */
+  flex-shrink: 0;     /* footer 찌그러짐 방지 */
+  width: 100%;
 }
