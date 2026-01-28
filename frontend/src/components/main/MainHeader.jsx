@@ -10,7 +10,8 @@ export default function MainHeader({phone, setPhone, onSearch, loading}) {
             <div className='search-box'>
                 <input className='search-input' value={phone} onChange={(e) =>setPhone(e.target.value)} placeholder='010-1234-1234'>
                 </input>
-                
+
+                <button className='search-btn' onClick={onSearch} disabled={loading}>🔍</button>
             </div>
         </div>
       
