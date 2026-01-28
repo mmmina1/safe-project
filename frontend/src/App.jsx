@@ -57,6 +57,7 @@ function App() {
       {/* 푸터는 메인 페이지에서만 표시 */}
       {showHeaderFooter && <Footer />}
     </div>
+    
   );
 }
 
