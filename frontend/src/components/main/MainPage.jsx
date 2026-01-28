@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import "../../assets/css/Main.css"
 import { searchPhishing } from '../../api/mainApi'
+import MainHeader from './MainHeader'
+import MainContent from './MainContent'
 
 export default function MainPage() {
 
@@ -33,8 +35,9 @@ export default function MainPage() {
 
   return (
     <div className='main-wrap'>
-            
-        </div>
+        <MainHeader phone={phone} setPhone={setPhone} onSearch={onSearch} loading={loading}/>
+        <MainContent result={result} errorMsg={errorMsg}/>        
+    </div>
   )
 }
 
