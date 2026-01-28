@@ -1,0 +1,104 @@
+.main-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.main-subtitle {
+  color: #555;
+  margin-bottom: 32px;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  margin: 0 auto 24px;
+  max-width: 520px;
+  border: 2px solid #3b82f6;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  padding: 10px;
+}
+
+.search-btn {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #e11d48;
+  margin-top: 8px;
+}
+
+.result-wrap {
+  margin-top: 24px;
+}
+
+.count-text {
+  font-size: 22px;
+  margin: 18px 0 14px;
+}
+
+.count-number {
+  color: #2563eb;
+  font-weight: 800;
+  margin-right: 6px;
+}
+
+.period-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.stat-grid {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.stat-card {
+  width: 180px;
+  border-radius: 16px;
+  padding: 18px 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.report-btn {
+  border: none;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
