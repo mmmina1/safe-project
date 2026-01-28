@@ -1,44 +1,64 @@
-// src/App.jsx
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-
-// 페이지 컴포넌트들
 import MainPage from './components/main/MainPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import SignupPage from './pages/SignupPage.jsx';
-
-// 라우트 전용
-import { Routes, Route } from 'react-router-dom';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
+import './App.css';
 
 function App() {
+  const location = useLocation();
+  
+  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
+  const isPopup = window.opener !== null;
+  
+  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
+  const showHeaderFooter = !isPopup && location.pathname === '/';
+
   return (
-    <div id="root">
-      <Header />
+    <div 
+      className="app-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        overflow: isPopup ? 'auto' : 'visible'
+      }}
+    >
+      {/* 헤더는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Header />}
+      
+      {/* 메인 컨텐츠 영역 */}
+      <div 
+        className="content-wrapper"
+        style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: isPopup ? 'auto' : 'visible' 
+        }}
+      >
+        <Routes>
+          {/* 메인 페이지 */}
+          <Route path="/" element={<MainPage />} />
+          
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={<Terms />} />
+          
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={<Privacy />} />
+        </Routes>
+      </div>
 
-      <Routes>
-        {/* 메인 */}
-        <Route path="/" element={<MainPage />} />
-
-        {/* 로그인 */}
-        <Route path="/login" element={<LoginPage />} />
-
-        {/* 회원가입 */}
-        <Route path="/signup" element={<SignupPage />} />
-
-        {/* 나중에 구현 예정인 메뉴들 */}
-        <Route path="/monitoring" element={<MainPage />} />
-        <Route path="/ai" element={<MainPage />} />
-        <Route path="/community" element={<MainPage />} />
-        <Route path="/service" element={<MainPage />} />
-      </Routes>
-
-      <Footer />
+      {/* 푸터는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Footer />}
     </div>
   );
 }
 
 export default App;
-
