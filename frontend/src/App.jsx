@@ -1,32 +1,62 @@
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import MainPage from './components/main/MainPage.jsx';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
+import './App.css';
 
 function App() {
-  const [message, setMessage] = useState("연결 확인 중...")
-
-  useEffect(() => {
-    // 중요: /api 앞에 백엔드 주소를 붙이지 마세요! 
-    // Vite Proxy가 대신 전달해 줍니다.
-    axios.get('/api/test') 
-      .then(res => {
-        console.log("데이터 수신 완료:", res.data);
-        setMessage(res.data);
-      })
-      .catch(err => {
-        console.error("에러 발생:", err);
-        setMessage("연결 실패 ㅠㅠ : " + err.message);
-      })
-  }, [])
+  const location = useLocation();
+  
+  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
+  const isPopup = window.opener !== null;
+  
+  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
+  const showHeaderFooter = !isPopup && location.pathname === '/';
 
   return (
-    <div style={{textAlign: 'center', marginTop: '50px'}}>
-      <h1>초기 세팅 확인</h1>
-      <p style={{fontSize: '20px', color: 'blue'}}>{message}</p>
-      <Footer />
+    <div 
+      className="app-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        overflow: isPopup ? 'auto' : 'visible'
+      }}
+    >
+      {/* 헤더는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Header />}
+      
+      {/* 메인 컨텐츠 영역 */}
+      <div 
+        className="content-wrapper"
+        style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: isPopup ? 'auto' : 'visible' 
+        }}
+      >
+        <Routes>
+          {/* 메인 페이지 */}
+          <Route path="/" element={<MainPage />} />
+          
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={<Terms />} />
+          
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={<Privacy />} />
+        </Routes>
+      </div>
+
+      {/* 푸터는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Footer />}
     </div>
-  )
+  );
 }
 
 export default App;
