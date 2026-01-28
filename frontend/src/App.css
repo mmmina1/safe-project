@@ -16,15 +16,30 @@ body, html {
   width: 100%;
 }
 
-/* 메인 콘텐츠 영역이 남은 공간을 채움 */
-.content-wrapper {
-  flex: 1;
-  width: 100%;
-}
-
 /* 앱 컨테이너 */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #ffffff;
+  overflow: visible;
+}
+
+/* 팝업창일 때 */
+.app-container.is-popup {
+  overflow: auto;
+}
+
+/* 메인 콘텐츠 영역이 남은 공간을 채움 */
+.content-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+/* 팝업창일 때 콘텐츠 영역 */
+.content-wrapper.is-popup {
+  overflow: auto;
 }
