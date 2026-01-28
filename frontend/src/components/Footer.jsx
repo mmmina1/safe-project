@@ -42,7 +42,7 @@ function Footer() {
               &copy; 2026 <strong>SAFE SHOP</strong>. All rights reserved.
             </p>
           </Col>
-        </Row>
+        </Row> 
       </Container>
     </footer>
   );
