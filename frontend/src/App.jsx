@@ -7,8 +7,8 @@ import MainPage from "./components/main/MainPage.jsx";
 import CommunityList from "./components/community/CommunityList.jsx";
 import CommunityDetail from "./components/community/CommunityDetail.jsx";
 
-import LoginPage from "./pages/LoginPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+// 라우트 전용
+import { Routes, Route} from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -17,14 +17,23 @@ export default function App() {
   return (
     <BrowserRouter>
       <Header />
+    
+        <Routes>
+          {/* 메인 */}
+          <Route path="/" element={<MainPage />} />
 
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/community" element={<CommunityList />} />
-        <Route path="/community/:id" element={<CommunityDetail />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-      </Routes>
+          {/* 로그인 */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* 회원가입 */}
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* 나중에 구현 예정인 메뉴들 */}
+          <Route path="/monitoring" element={<MainPage />} />
+          <Route path="/ai" element={<MainPage />} />
+          <Route path="/community" element={<MainPage />} />
+          <Route path="/service" element={<MainPage />} />
+        </Routes>
 
       <Footer />
     </BrowserRouter>
