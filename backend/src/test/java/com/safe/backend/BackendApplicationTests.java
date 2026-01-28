@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 
 @SpringBootTest
-class BackendApplicationTests {
+class BackendApplicationTests {//db 연결 안될 경우 TEST용
 
     @Autowired
     private DataSource dataSource;
