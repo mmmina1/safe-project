@@ -20,6 +20,7 @@ export default function MainPage() {
                 setErrorMsg(res.message || "조회에 실패했습니다.")
                 return
             }
+            
             setResult(res.data)
         } catch (e) {
             setResult(null)
