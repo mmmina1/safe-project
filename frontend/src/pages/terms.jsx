@@ -9,7 +9,8 @@ const Terms = () => {
       maxWidth: '1000px', 
       margin: '0 auto',
       width: '100%',
-      minHeight: '100vh',
+      height: '100%',
+      overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '20px', borderBottom: '3px solid #0d6efd', paddingBottom: '10px' }}>
