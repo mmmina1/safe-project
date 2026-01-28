@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
-import MainPage from "./components/main/MainPage.jsx";
+//라우터 전용
+import { Routes, Route, Link, useLocation} from 'react-router-dom';
+import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import './App.css';
 
 import CommunityList from "./components/community/CommunityList.jsx";
 import CommunityDetail from "./components/community/CommunityDetail.jsx";
@@ -13,13 +14,33 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import CommunityList from './components/community/CommunityList.jsx';
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
 
-export default function App() {
+function App() {
+
+  const location = useLocation();
+  
+  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
+  const isPopup = window.opener !== null;
+  
+  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
+  const showHeaderFooter = !isPopup;
+  
   return (
-    <BrowserRouter>
-      <Header />
+    //팝업창
+    <div className="app-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        overflow: isPopup ? 'auto' : 'visible'
+      }}
+    >
+    <div className="app-root">
+      {/* 헤더는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Header />}
     
       <main className="app-main">
         <div className="container">
@@ -38,8 +59,21 @@ export default function App() {
         <Route path="/community" element={<CommunityList />} />
         <Route path="/service" element={<MainPage />} />
 
-      <Footer />
-    </BrowserRouter>
+        {/* 이용약관 페이지 */}
+        <Route path="/terms" element={<Terms />} />
+        
+        {/* 개인정보처리방침 페이지 */}
+        <Route path="/privacy" element={<Privacy />} />
+      </Routes>
+
+      
+    </div>
+    {/* 푸터는 메인 페이지에서만 표시 */}
+    {showHeaderFooter && <Footer />}
+    </main>
+  </div>
+</div>
+    
   );
 }
 
