@@ -13,22 +13,20 @@ import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
+import CommunityList from './components/community/CommunityList.jsx';
 
 function App() {
   return (
     <div className="app-root">
       <Header />
     
-          {/* 메인 */}
-          <Route path="/" element={<MainPage />} />
-
-          <main className="app-main">
-            <div className="container">
-              {/* 네비/Routes는 container 안에 */}
-              <nav className="my-3 border-bottom pb-2">
-                <Link to="/" className="me-3">🏠 홈</Link>
-                <Link to="/chatbot">🤖 AI 챗봇</Link>
-              </nav>
+      <main className="app-main">
+        <div className="container">
+        {/* 네비/Routes는 container 안에 */}
+        <nav className="my-3 border-bottom pb-2">
+          <Link to="/" className="me-3">🏠 홈</Link>
+          <Link to="/chatbot">🤖 AI 챗봇</Link>
+        </nav>
 
       {/* 2. 화면 표시 영역 */}
       <Routes>
@@ -39,7 +37,7 @@ function App() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/monitoring" element={<MainPage />} />
         <Route path="/ai" element={<MainPage />} />
-        <Route path="/community" element={<MainPage />} />
+        <Route path="/community" element={<CommunityList />} />
         <Route path="/service" element={<MainPage />} />
 
       </Routes>
