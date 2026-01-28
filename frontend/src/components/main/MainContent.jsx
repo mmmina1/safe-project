@@ -16,10 +16,27 @@ export default function MainContent({result, errorMsg}) {
 
         <div className='period-text'>
            🔎 <b>검색기간</b> {result.periodLabel}{" "}
-            {FormData}
+            {formatDateTime(result.periodForm)} ~ {formatDateTime(result.periodTo)}
         </div>
-      
+
+        <div className='stat-grid'>
+            <div className='stat-card'>
+                <div className='stat-label'>음성</div>
+                <div className='stat-value'>{result.voiceCount}</div>
+            </div>
+
+            <div className="stat-card">
+          <div className="stat-label">문자</div>
+          <div className="stat-value">{result.smsCount}</div>
+        </div>
+      </div>
+
+      <button className='report-btn'>통합 제보하기</button>
     </div>
   )
 }
 
+function formatDateTime(v) {
+  if (!v) return "";
+  return v.replace("T", " ").slice(0, 16);
+}
