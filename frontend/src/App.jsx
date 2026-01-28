@@ -1,6 +1,7 @@
 // src/App.jsx
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from './components/Footer.jsx';
+
+//라우터 전용
 import { Routes, Route, Link } from 'react-router-dom';
 import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
@@ -13,32 +14,39 @@ import MainPage from './components/main/MainPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 
-// 라우트 전용
-import { Routes, Route } from 'react-router-dom';
-
 function App() {
   return (
-    <div className="container">
-      {/* 1. 메뉴판 (네비게이션) 추가 */}
-      <nav className="my-3 border-bottom pb-2">
-        <Link to="/" className="me-3">🏠 홈</Link>
-        <Link to="/chatbot">🤖 AI 챗봇</Link>
-      </nav>
+    <div className="app-root">
+      <Header />
+
+      <main className="app-main">
+        <div className="container">
+          {/* 네비/Routes는 container 안에 */}
+          <nav className="my-3 border-bottom pb-2">
+            <Link to="/" className="me-3">🏠 홈</Link>
+            <Link to="/chatbot">🤖 AI 챗봇</Link>
+          </nav>
+
       {/* 2. 화면 표시 영역 */}
       <Routes>
-        <Route path="/" element={
-          /* 기존 코드 보존 (홈 화면) */
-          <div className="text-center mt-5">
-            <h1>초기 세팅 확인</h1>
-            <p className="text-primary">스프링이랑 연결 성공했다!</p>
-          </div>
-        } />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/monitoring" element={<MainPage />} />
+        <Route path="/ai" element={<MainPage />} />
+        <Route path="/community" element={<MainPage />} />
+        <Route path="/service" element={<MainPage />} />
+
       </Routes>
 
-      <Footer />
+      
     </div>
+    <Footer />
+    </main>
+    </div>
+    
   );
 }
 
