@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import Terms from './pages/terms';
@@ -60,3 +59,4 @@ function App() {
 }
 
 export default App;
+
