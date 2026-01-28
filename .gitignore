@@ -38,3 +38,29 @@ out/
 
 # Logs
 *.log
+
+# =========================
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyCharm
+.idea/
+*.iml
+
+# Python packages
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
