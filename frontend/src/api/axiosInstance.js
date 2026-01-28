@@ -1,4 +1,5 @@
-import axios from "axios"
+// src/api/axiosInstance.js
+import axios from "axios";
 
 //백엔드로 가는 모든 요청의 기본 틀 (데이터 이동 경로)
 const axiosInstance = axios.create({
