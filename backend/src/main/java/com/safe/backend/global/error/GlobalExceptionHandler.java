@@ -1,5 +1,5 @@
 package com.safe.backend.global.error;// com.safe.backend.global.error.GlobalExceptionHandler.java
-import com.safe.backend.global.error.ErrorResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

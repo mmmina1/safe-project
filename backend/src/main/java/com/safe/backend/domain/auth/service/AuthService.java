@@ -5,7 +5,6 @@ import com.safe.backend.domain.auth.repository.AuthAccountRepository;
 import com.safe.backend.domain.user.entity.User;
 import com.safe.backend.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(UserRepository userRepository,
-                       AuthAccountRepository authAccountRepository,
-                       PasswordEncoder passwordEncoder) {
+            AuthAccountRepository authAccountRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authAccountRepository = authAccountRepository;
         this.passwordEncoder = passwordEncoder;
@@ -50,7 +49,7 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
         // 2. 비밀번호 일치 여부 확인 (BCrypt)
-        //    user.getPassword() / user.getPasswordHash() 중 네 엔티티에 맞게 바꿔야 함
+        // user.getPassword() / user.getPasswordHash() 중 네 엔티티에 맞게 바꿔야 함
         boolean matches = passwordEncoder.matches(rawPassword, user.getPasswordHash());
 
         if (!matches) {
