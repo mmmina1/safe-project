@@ -6,7 +6,7 @@ import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
 
 import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
+
 
 // 페이지 컴포넌트들
 import MainPage from './components/main/MainPage.jsx';
@@ -14,7 +14,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 
 // 라우트 전용
-import { Routes, Route } from 'react-router-dom';
+
 
 function App() {
   return (
