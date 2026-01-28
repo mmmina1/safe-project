@@ -1,18 +1,20 @@
-// src/pages/LoginPage.jsx
+// src/pages/SignupPage.jsx
 import { useState } from 'react';
 import axios from 'axios';
 
-function LoginPage() {
+function SignupPage() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState(null);   // 성공/실패 메시지
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      setMessage('이메일과 비밀번호를 입력해 주세요.');
+    // (간단한 프론트 유효성 검사)
+    if (!email || !name || !password) {
+      setMessage('모든 값을 입력해 주세요.');
       return;
     }
 
@@ -20,42 +22,50 @@ function LoginPage() {
       setLoading(true);
       setMessage(null);
 
-      const res = await axios.post('http://localhost:8081/api/auth/login', {
+      const res = await axios.post('http://localhost:8081/api/auth/signup', {
         email,
+        name,
         password,
       });
 
-      // 백엔드에서 "로그인에 성공했습니다" 라는 문자열을 내려주고 있음
-      setMessage(res.data || '로그인에 성공했습니다');
-      // TODO: 나중에 여기서 토큰 저장 / 페이지 이동 처리
+      setMessage(res.data || '회원가입이 완료되었습니다.');
+      // 필요하면 여기서 input 초기화
+      setEmail('');
+      setName('');
+      setPassword('');
+        } catch (err) {
+      console.error(err); // 콘솔에서 실제 응답 구조 확인용
 
-    } catch (err) {
-      console.error(err);
-
-      let errorMessage = '로그인 중 오류가 발생했습니다.';
+      let errorMessage = '회원가입 중 오류가 발생했습니다.';
 
       if (err.response && err.response.data) {
         const data = err.response.data;
+
+        // 1) 백엔드가 순수 문자열을 내려주는 경우
         if (typeof data === 'string') {
-          errorMessage = data;               // 예: "이메일 또는 비밀번호가 올바르지 않습니다."
-        } else if (typeof data === 'object') {
+          errorMessage = data;
+        }
+        // 2) 백엔드가 JSON 객체를 내려주는 경우 (예: { message: "이미 사용 중인 이메일입니다." })
+        else if (typeof data === 'object') {
           if (data.message) {
             errorMessage = data.message;
           } else {
+            // message 필드가 없으면 그냥 객체 전체를 문자열로
             errorMessage = JSON.stringify(data);
           }
         }
       }
 
-      setMessage(`로그인 실패: ${errorMessage}`);
+      setMessage(`회원가입 실패: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: '480px' }}>
-      <h2 className="mb-4 text-center">로그인</h2>
+      <h2 className="mb-4 text-center">회원가입</h2>
 
       {message && (
         <div className="alert alert-info py-2" role="alert">
@@ -63,7 +73,7 @@ function LoginPage() {
         </div>
       )}
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         {/* 이메일 */}
         <div className="mb-3">
           <label className="form-label">이메일</label>
@@ -73,6 +83,18 @@ function LoginPage() {
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        {/* 이름 */}
+        <div className="mb-3">
+          <label className="form-label">이름 / 닉네임</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="표시용 이름을 입력하세요"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
 
@@ -93,11 +115,11 @@ function LoginPage() {
           className="btn btn-primary w-100"
           disabled={loading}
         >
-          {loading ? '처리 중...' : '로그인'}
+          {loading ? '처리 중...' : '회원가입'}
         </button>
       </form>
     </div>
   );
 }
 
-export default LoginPage;
+export default SignupPage;

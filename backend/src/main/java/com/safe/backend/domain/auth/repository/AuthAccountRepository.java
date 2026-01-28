@@ -14,5 +14,5 @@ public interface AuthAccountRepository extends JpaRepository<AuthAccount, Long> 
     Optional<AuthAccount> findByProviderAndProviderUserId(AuthProvider provider, String providerUserId);
 
     // 이 유저가 특정 provider 계정 가지고 있는지
-    boolean existsByProviderAndUser(AuthProvider provider, User user);
+    boolean existsByUserAndProvider(User user, AuthProvider provider);
 }
