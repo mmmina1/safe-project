@@ -1,14 +1,17 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+//라우터 전용
+import { Routes, Route, Link } from 'react-router-dom';
+import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
 
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
-import Terms from './pages/terms';
-import Privacy from './pages/privacy';
-import './App.css';
+import LoginPage from './pages/LoginPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
 
 function App() {
   const location = useLocation();
@@ -20,46 +23,37 @@ function App() {
   const showHeaderFooter = !isPopup && location.pathname === '/';
 
   return (
-    <div 
-      className="app-container"
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: isPopup ? '100vh' : 'auto',
-        minHeight: '100vh',
-        backgroundColor: '#ffffff',
-        overflow: 'hidden'
-      }}
-    >
-      {/* 헤더는 메인 페이지에서만 표시 */}
-      {showHeaderFooter && <Header />}
-      
-      {/* 메인 컨텐츠 영역 */}
-      <div 
-        className="content-wrapper"
-        style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column',
-          height: isPopup ? '100vh' : 'auto',
-          overflow: isPopup ? 'auto' : 'visible' 
-        }}
-      >
-        <Routes>
-          {/* 메인 페이지 */}
-          <Route path="/" element={<MainPage />} />
-          
-          {/* 이용약관 페이지 */}
-          <Route path="/terms" element={<Terms />} />
-          
-          {/* 개인정보처리방침 페이지 */}
-          <Route path="/privacy" element={<Privacy />} />
-        </Routes>
-      </div>
+    <div className="app-root">
+      <Header />
 
-      {/* 푸터는 메인 페이지에서만 표시 */}
-      {showHeaderFooter && <Footer />}
+      <main className="app-main">
+        <div className="container">
+          {/* 네비/Routes는 container 안에 */}
+          <nav className="my-3 border-bottom pb-2">
+            <Link to="/" className="me-3">🏠 홈</Link>
+            <Link to="/chatbot">🤖 AI 챗봇</Link>
+          </nav>
+
+      {/* 2. 화면 표시 영역 */}
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+
+        <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/monitoring" element={<MainPage />} />
+        <Route path="/ai" element={<MainPage />} />
+        <Route path="/community" element={<MainPage />} />
+        <Route path="/service" element={<MainPage />} />
+
+      </Routes>
+
+      
     </div>
+    <Footer />
+    </main>
+    </div>
+    
   );
 }
 

@@ -1,11 +1,28 @@
-/* App.css */
-
-/* 브라우저 기본 여백 제거 */
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
+/* 높이 전파 (중요) */
+html, body, #root {
   height: 100%;
+}
+
+/* 기존 #root 유지 */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 메인 영역이 남는 공간 먹기 */
+.content-wrapper {
+  flex: 1 0 auto;
+  width: 100%;
+  min-height: 0; /* 일부 상황에서 레이아웃 깨짐 방지 */
+}
+
+/* footer는 아래에 붙게 */
+footer {
+  margin-top: auto;   /* 가장 중요 */
+  flex-shrink: 0;     /* footer 찌그러짐 방지 */
+  width: 100%;
 }
 
 /* root를 full height flexbox로 설정 */
