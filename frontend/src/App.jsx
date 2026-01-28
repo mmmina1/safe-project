@@ -44,37 +44,20 @@ import BannersPage from './pages/admin/operator/BannersPage.jsx';
 import BlacklistPage from './pages/admin/operator/BlacklistPage.jsx';
 
 function App() {
-
-  const location = useLocation();
-  
-  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
-  const isPopup = window.opener !== null;
-  
-  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
-  const showHeaderFooter = !isPopup;
-  
   return (
-    //팝업창
-    <div className="app-container"
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        minHeight: '100vh',
-        overflow: isPopup ? 'auto' : 'visible'
-      }}
-    >
     <div className="app-root">
-      <ScrollToTop/>
-      {/* 헤더는 메인 페이지에서만 표시 */}
-      {showHeaderFooter && <Header />}
+      <Header />
     
-      <main className="app-main">
-        <div className="container">
-        {/* 네비/Routes는 container 안에 */}
-        <nav className="my-3 border-bottom pb-2">
-          <Link to="/" className="me-3">🏠 홈</Link>
-          <Link to="/chatbot">🤖 AI 챗봇</Link>
-        </nav>
+          {/* 메인 */}
+          <Route path="/" element={<MainPage />} />
+
+          <main className="app-main">
+            <div className="container">
+              {/* 네비/Routes는 container 안에 */}
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
 
       {/* 2. 화면 표시 영역 */}
       <Routes>
