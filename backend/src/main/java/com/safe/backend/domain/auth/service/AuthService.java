@@ -4,10 +4,10 @@ import com.safe.backend.domain.auth.entity.AuthAccount;
 import com.safe.backend.domain.auth.repository.AuthAccountRepository;
 import com.safe.backend.domain.user.entity.User;
 import com.safe.backend.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.safe.backend.global.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -15,13 +15,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthAccountRepository authAccountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(UserRepository userRepository,
                        AuthAccountRepository authAccountRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.authAccountRepository = authAccountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Transactional
@@ -43,23 +46,19 @@ public class AuthService {
         authAccountRepository.save(localAccount);
     }
 
-    @Transactional
-    public void login(String email, String rawPassword) {
+    @Transactional(readOnly = true)
+    public String login(String email, String rawPassword) {
         // 1. 이메일로 유저 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
-        // 2. 비밀번호 일치 여부 확인 (BCrypt)
-        //    user.getPassword() / user.getPasswordHash() 중 네 엔티티에 맞게 바꿔야 함
+        // 2. 비밀번호 일치 여부 확인
         boolean matches = passwordEncoder.matches(rawPassword, user.getPasswordHash());
-
         if (!matches) {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // 3. (선택) last_login_at 업데이트 같은 것 여기서 해도 됨
-        // user.updateLastLoginAt(LocalDateTime.now());
-        // userRepository.save(user); // dirty checking 적용되면 생략 가능
+        // 3. JWT 토큰 발급
+        return jwtTokenProvider.createToken(user);
     }
-
 }
