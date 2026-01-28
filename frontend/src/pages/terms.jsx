@@ -2,7 +2,17 @@ import React from 'react';
 
 const Terms = () => {
   return (
-    <div style={{ padding: '50px', lineHeight: '1.8', color: '#333', maxWidth: '1000px', margin: '0 auto' }}>
+    <div style={{ 
+      padding: '50px', 
+      lineHeight: '1.8', 
+      color: '#333', 
+      maxWidth: '1000px', 
+      margin: '0 auto',
+      width: '100%',
+      height: '100%',
+      overflowY: 'auto',
+      boxSizing: 'border-box'
+    }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '20px', borderBottom: '3px solid #0d6efd', paddingBottom: '10px' }}>
         Risk Watch 이용약관
       </h1>

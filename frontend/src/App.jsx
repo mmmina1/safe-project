@@ -25,9 +25,10 @@ function App() {
       style={{ 
         display: 'flex', 
         flexDirection: 'column', 
+        height: isPopup ? '100vh' : 'auto',
         minHeight: '100vh',
         backgroundColor: '#ffffff',
-        overflow: isPopup ? 'auto' : 'visible'
+        overflow: 'hidden'
       }}
     >
       {/* 헤더는 메인 페이지에서만 표시 */}
@@ -39,7 +40,8 @@ function App() {
         style={{ 
           flex: 1, 
           display: 'flex', 
-          flexDirection: 'column', 
+          flexDirection: 'column',
+          height: isPopup ? '100vh' : 'auto',
           overflow: isPopup ? 'auto' : 'visible' 
         }}
       >
