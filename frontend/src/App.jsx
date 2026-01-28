@@ -37,6 +37,7 @@ function App() {
       style={{ 
         display: 'flex', 
         flexDirection: 'column', 
+        height: isPopup ? '100vh' : 'auto',
         minHeight: '100vh',
         overflow: isPopup ? 'auto' : 'visible'
       }}
