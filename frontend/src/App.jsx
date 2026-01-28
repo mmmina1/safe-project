@@ -2,13 +2,13 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Header from './components/Header.jsx';          // ✅ Header import 추가
+import Header from './components/Header.jsx';          //  Header import 추가
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
-import LoginPage from './pages/LoginPage.jsx';         // ✅ 로그인 페이지
-import SignupPage from './pages/SignupPage.jsx';       // ✅ 회원가입 페이지
+import LoginPage from './pages/LoginPage.jsx';         //  로그인 페이지
+import SignupPage from './pages/SignupPage.jsx';       //  회원가입 페이지
 
 import './App.css';
 
