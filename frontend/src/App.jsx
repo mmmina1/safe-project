@@ -46,14 +46,29 @@ function App() {
       <ScrollToTop/>
       {/* 헤더는 메인 페이지에서만 표시 */}
       {showHeaderFooter && <Header />}
-    
-      <main className="app-main">
-        <div className="container">
-        {/* 네비/Routes는 container 안에 */}
-        <nav className="my-3 border-bottom pb-2">
-          <Link to="/" className="me-3">🏠 홈</Link>
-          <Link to="/chatbot">🤖 AI 챗봇</Link>
-        </nav>
+      
+      {/* 메인 컨텐츠 영역 */}
+      <div 
+        className="content-wrapper"
+        style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column',
+          height: isPopup ? '100vh' : 'auto',
+          overflow: isPopup ? 'auto' : 'visible' 
+        }}
+      >
+        <Routes>
+          {/* 메인 페이지 */}
+          <Route path="/" element={<MainPage />} />
+          
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={<Terms />} />
+          
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={<Privacy />} />
+        </Routes>
+      </div>
 
           {/* 회원가입 */}
           <Route path="/signup" element={<SignupPage />} />
