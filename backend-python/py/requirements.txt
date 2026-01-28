@@ -6,4 +6,3 @@ langchain-community
 chromadb
 python-dotenv
 httpx
-mysql-connector-python

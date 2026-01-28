@@ -1,8 +1,4 @@
-# ============================================================
-# 1. 임포트 및 설정 구역 (라이브러리 및 환경 설정)
-# ============================================================
 import os
-import openai
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
@@ -14,11 +10,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "chroma_db")
 EMBEDDING_MODEL = "text-embedding-3-small"
 LLM_MODEL = "gpt-4o"
-
-
-# ============================================================
-# 2. 클래스 및 함수 정의 구역 (비즈니스 로직)
-# ============================================================
 
 class MockChatService:
     """
@@ -36,10 +27,9 @@ class MockChatService:
             ]
         }
 
-
 def initialize_rag_chain():
     """
-    API Key Check -> Mock Mode or Real Mode 시스템 초기화
+    API Key Check -> Mock Mode or Real Mode
     """
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
@@ -53,9 +43,24 @@ def initialize_rag_chain():
     print("🔑 API Key found. Initializing Real RAG System...")
     
     embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
-    llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0)
+    llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0) # <--- Moved Here (Global in function)
     
-    # 1. Basic LLM Chain (RAG 없이 대화하는 모드)
+    # --- 1. Basic LLM Chain (Pure GPT) ---
+
+    template = """
+    당신은 '보이스피싱/스미싱 예방 안내 AI'입니다.
+    아래의 [공식 가이드라인]을 근거로 사용자의 질문에 답변하세요.
+    
+    [Context]
+    {context}
+
+    [User Question]
+    {question}
+
+    [Answer]
+    """
+    # --- 1. Basic LLM Chain (Pure GPT) ---
+    # RAG 없이 그냥 대화하는 모드 (비교 테스트용)
     basic_template = """
     당신은 '보이스피싱/스미싱 예방 안내 AI'입니다.
     사용자의 질문에 대해 당신이 가진 지식을 바탕으로 친절하게 답변하세요.
@@ -72,7 +77,7 @@ def initialize_rag_chain():
         | StrOutputParser()
     )
 
-    # 2. RAG Chain (Chroma DB 연동)
+    # --- 2. RAG Chain (With Chroma) ---
     rag_chain = None
     retriever = None
 
@@ -121,10 +126,13 @@ def initialize_rag_chain():
         "retriever": retriever
     }
 
+import openai # 추가
+
+# ... (omitted)
 
 def get_answer(rag_system, message: str, use_rag: bool = True):
     """
-    RAG 응답 생성 (에러 핸들링 포함)
+    RAG 응답 생성 (에러 핸들링 추가)
     """
     # 1. Mock Mode Check
     if isinstance(rag_system, MockChatService):
@@ -140,7 +148,7 @@ def get_answer(rag_system, message: str, use_rag: bool = True):
 
     try:
         if use_rag and chain:
-            # RAG Mode 실행
+            # RAG Mode
             print(f"[Mode] RAG (Searching DB for: {message[:20]}...)")
             answer = chain.invoke(message)
             docs = retriever.invoke(message)
@@ -150,7 +158,7 @@ def get_answer(rag_system, message: str, use_rag: bool = True):
             ]
             return {"answer": answer, "context": sources, "mode": "RAG"}
         else:
-            # Pure LLM Mode 실행
+            # Pure LLM Mode
             print("[Mode] Pure LLM (No DB Search)")
             answer = rag_system["basic_chain"].invoke(message)
             return {"answer": answer, "context": [], "mode": "Pure-LLM"}
@@ -169,24 +177,3 @@ def get_answer(rag_system, message: str, use_rag: bool = True):
             "context": [],
             "mode": "Error"
         }
-
-
-# ============================================================
-# 3. 테스트 및 실행 구역 (직접 실행 시에만)
-# ============================================================
-
-if __name__ == "__main__":
-    # .env 로드 (테스트용)
-    from dotenv import load_dotenv
-    load_dotenv()
-    
-    # 시스템 초기화
-    rag_system = initialize_rag_chain()
-    
-    # 테스트 질문
-    test_q = "모르는 번호로 택배 문자가 왔는데 링크를 눌러도 돼?"
-    print(f"\nQ: {test_q}")
-    
-    res = get_answer(rag_system, test_q)
-    print(f"A: {res['answer']}")
-    print("-" * 50)
