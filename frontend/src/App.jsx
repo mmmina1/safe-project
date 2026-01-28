@@ -29,7 +29,7 @@ function App() {
   
   // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
   const showHeaderFooter = !isPopup;
-  
+
   return (
     //팝업창
     <div className="app-container"
