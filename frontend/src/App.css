@@ -1,9 +1,17 @@
-/* 높이 전파 (중요) */
-html, body, #root {
-  height: 100%;
+/* 전체 레이아웃 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* 기존 #root 유지 */
+/* 높이 전파 (중요) */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* root를 full height flexbox로 설정 */
 #root {
   display: flex;
   flex-direction: column;
@@ -11,16 +19,39 @@ html, body, #root {
   width: 100%;
 }
 
-/* 메인 영역이 남는 공간 먹기 */
-.content-wrapper {
+/* 앱 컨테이너 - 일반 페이지용 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* app-root도 flex로 */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 메인 콘텐츠 영역이 남은 공간을 채움 */
+.app-main {
   flex: 1 0 auto;
   width: 100%;
-  min-height: 0; /* 일부 상황에서 레이아웃 깨짐 방지 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* container도 flex로 */
+.app-main .container {
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 /* footer는 아래에 붙게 */
 footer {
-  margin-top: auto;   /* 가장 중요 */
-  flex-shrink: 0;     /* footer 찌그러짐 방지 */
+  margin-top: auto;
+  flex-shrink: 0;
   width: 100%;
 }
