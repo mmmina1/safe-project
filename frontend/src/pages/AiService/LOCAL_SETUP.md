@@ -20,7 +20,7 @@ cd backend
 python main.py
 ```
 
-## 3. Spring Boot (8081) - 다리(Bridge)
+## 3. Spring Boot (8080) - 다리(Bridge)
 ```powershell
 cd backend
 .\gradlew bootRun
