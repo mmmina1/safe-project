@@ -1,4 +1,4 @@
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 export const communityApi={
     //게시글 목록 조회
@@ -16,10 +16,14 @@ export const communityApi={
     },
 
     //게시글 작성
-    createPost: async({title,content,category,tags = []}) => {
-        const res = await axiosInstance.post("/api/community/posts",{
-            title,content,category,tags
-        })
-        return res.data
-    }
+    createPost: async ({ title, content, category, userId }) => {
+        const res = await axiosInstance.post("/api/community/posts", {
+            title,
+            content,
+            category,
+            userId,
+        });
+        return res.data;
+        },
+
 }
