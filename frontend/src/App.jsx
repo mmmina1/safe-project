@@ -53,7 +53,7 @@ function App() {
           <Link to="/chatbot">🤖 AI 챗봇</Link>
         </nav>
 
-      {/* 2. 화면 표시 영역 */}
+  // 팝업창인 경우 간단한 레이아웃
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
