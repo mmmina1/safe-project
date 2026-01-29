@@ -64,3 +64,6 @@ build/
 # Environment variables
 .env
 .env.local
+
+# AI / Vector DB
+**/chroma_db/

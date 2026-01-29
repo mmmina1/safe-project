@@ -39,8 +39,12 @@ const MyPage = () => {
         return <Dashboard />;
     };
 
+
+    // 결과물 페이지 조립
     return (
+        // 부트스트랩 기본 문법
         <div className="container-fluid p-0">
+            {/* 사이드바와 본문을 좌우로 나란히 세우기 위한 컨테이너 */}
             <div className="mypage-container">
                 {/* 왼쪽 메뉴(사이드바) 배치: 선택된 값과 변경 함수를 넘겨줍니다. */}
                 <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
