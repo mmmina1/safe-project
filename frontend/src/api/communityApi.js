@@ -17,14 +17,10 @@ export const communityApi={
 
     //게시글 작성
     createPost: async ({ title, content, category, userId }) => {
-        const res = await axiosInstance.post("/api/community/posts", {
-            title,
-            content,
-            category,
-            userId,
-        });
+        const res = await axiosInstance.post("/api/community/posts", { title, content, category, userId });
         return res.data;
-        },
+        }
+
 
     // 댓글 목록 조회 (500 에러 방지를 위해 post_id 파라미터 명시)
     getComments: async (postId) => {

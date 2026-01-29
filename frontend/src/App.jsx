@@ -18,6 +18,7 @@ import Terms from './pages/terms';
 import Privacy from './pages/privacy';
 import CommunityPost from './components/community/CommunityPost.jsx';
 import CommunityDetail from './components/community/CommunityDetail.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
       }}
     >
     <div className="app-root">
+      <ScrollToTop/>
       {/* 헤더는 메인 페이지에서만 표시 */}
       {showHeaderFooter && <Header />}
     
