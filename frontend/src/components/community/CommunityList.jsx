@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useMemo, useState } from 'react'
 import "../../assets/css/Community.css"
 import { useNavigate } from 'react-router-dom'
-import { communityApi } from '../../assets/api/communityApi'
+import { communityApi } from '../../api/communityApi'
 import CommunityFilters from './CommunityFilters'
 import CommunityCard from './CommunityCard'
 
