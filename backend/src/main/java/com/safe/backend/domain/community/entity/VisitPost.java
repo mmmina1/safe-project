@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
-import com.safe.backend.domain.user.entity.User;
-
 @Getter
 @NoArgsConstructor
 @Entity
@@ -20,10 +18,6 @@ public class VisitPost {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
 
     @Column(name = "category", length = 30, nullable = false)
     private String category;

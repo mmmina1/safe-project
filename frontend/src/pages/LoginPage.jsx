@@ -32,8 +32,7 @@ function LoginPage() {
       setLoading(true);
       setMessage(null);
 
-      // baseURL + 인터셉터가 적용된 axiosInstance 사용
-      const res = await axiosInstance.post('/api/auth/login', {
+      const res = await axios.post('http://localhost:8080/api/auth/login', {
         email,
         password,
       });

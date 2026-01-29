@@ -12,8 +12,6 @@ import lombok.Getter;
 public class VisitPostItem {
 
     private Long postId;
-    private Long userId;
-    private String name;
     private String category;
     private String title;
     private String contentPreview;
@@ -31,16 +29,8 @@ public class VisitPostItem {
         if(preview!=null && preview.length() > 80){
             preview = preview.substring(0,80);
         }
-
-        String name = null;
-        if (p.getUser() != null) {
-            name = p.getUser().getName();
-        }
-
         return new VisitPostItem(
             p.getPostId(),
-            p.getUserId(),
-            name,
             p.getCategory(),
             p.getTitle(),
             preview,
