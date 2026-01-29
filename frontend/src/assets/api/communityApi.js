@@ -1,4 +1,4 @@
-import { axiosInstance } from "../../api/axiosInstance";
+import axiosInstance from "../../api/axiosInstance";
 
 export const communityApi={
     //게시글 목록 조회
