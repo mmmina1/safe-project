@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { phishService } from '../../api';
+import { phishService } from '../../../../api/aiServiceApi';
 
 /**
  * useDiagnosis: 진단 설문 로직을 담당하는 커스텀 훅

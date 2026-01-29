@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import Diagnosis from './pages/AiService/Diagnosis/Diagnosis';
+import Simulator from './pages/AiService/Simulator/Simulator';
 
 // 라우트 전용
 
@@ -26,6 +27,7 @@ function App() {
         <Link to="/" className="me-3">🏠 홈</Link>
         <Link to="/chatbot" className="me-3">🤖 AI 챗봇</Link>
         <Link to="/diagnosis" className="me-3">🛡️ AI 진단</Link>
+        <Link to="/simulator" className="me-3">🎮 보안 훈련</Link>
         <Link to="/mypage">👤 마이페이지</Link>
       </nav>
       {/* 2. 화면 표시 영역 */}
@@ -41,6 +43,7 @@ function App() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/diagnosis" element={<Diagnosis />} />
+        <Route path="/simulator" element={<Simulator />} />
       </Routes>
 
       <Footer />

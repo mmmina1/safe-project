@@ -22,6 +22,10 @@
 *   **설치 명령**: `npm install react-router-dom zustand`
 *   **용도**: 페이지 간 이동(Routing) 및 전역 상태(Store) 관리를 위해 사용됩니다.
 
+### 🎮 유니티 통합 (Simulation)
+*   **설치 명령**: `npm install react-unity-webgl`
+*   **용도**: 유니티 웹빌드(WebGL) 파일을 리액트 컴포넌트 내에서 실행하고 통신하기 위해 사용됩니다.
+
 ---
 
 ## 2. 전체 설치 요약 (한 번에 설치하기)
@@ -30,7 +34,7 @@
 
 ```bash
 cd frontend
-npm install chart.js react-chartjs-2 lucide-react axios react-router-dom zustand
+npm install chart.js react-chartjs-2 lucide-react axios react-router-dom zustand react-unity-webgl
 ```
 
 ---

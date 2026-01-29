@@ -2,7 +2,7 @@
 // 1. 임포트 구역 (라이브러리 및 API 서비스)
 // ============================================================
 import { useState, useRef, useEffect } from 'react';
-import { phishService } from '../../api';
+import { phishService } from '../../../../api/aiServiceApi';
 
 // ============================================================
 // 2. 비즈니스 로직 구역 (커스텀 훅 정의)
