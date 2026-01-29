@@ -2,9 +2,7 @@ import React from 'react'
 import { useMemo, useState } from 'react'
 import "../../assets/css/Community.css"
 
-function CommunityList() {
-
-  const CATEFORIES = ["전체", "긴급사칭", "공문사칭", "결제사기", "피싱", "기타"];
+function CommunityList() {//목록
 
   return (
     <div>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CommunityPost() {//카드 렌더링
+function CommunityPost() {//글 작성
   return (
     <div>
       
