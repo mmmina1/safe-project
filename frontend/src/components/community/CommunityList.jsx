@@ -23,12 +23,15 @@ function CommunityList() {//목록
   
   //db에 저장된 게시글 데이터 백업
   const fetchPosts = async (nextPage = page) => {
-  console.log("REQ page:", nextPage);
-  const data = await communityApi.getPosts({ query, category, sort, page: nextPage, size });
-  console.log("RES data:", data);
-  setItems(data.items || []);
-  setTotal(data.total || 0);
-  setPage(data.page || nextPage);
+  setLoading(true);
+  try {
+    const data = await communityApi.getPosts({ query, category, sort, page: nextPage, size });
+    setItems(data.items || []);
+    setTotal(data.total || 0);
+    setPage(data.page || nextPage);
+  } finally {
+    setLoading(false);
+  }
 };
 
   useEffect(() => {

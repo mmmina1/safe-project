@@ -1,5 +1,5 @@
  .community-subtitle {
-  color: #94a3b8;
+  color: #d6dbe2;
   margin-top: 6px;
 }
 
@@ -20,7 +20,7 @@
 .write-label {
   display: block;
   text-align: left;
-  color: #cbd5e1;
+  color: #dde3eb;
   font-weight: 700;
   margin: 14px 0 8px;
 }
@@ -29,8 +29,8 @@
   width: 100%;
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.2);
-  background: #020617;
-  color: #e5e7eb;
+  background: #fcfcff;
+  color: #000000;
   padding: 12px 14px;
   outline: none;
 }
@@ -39,8 +39,8 @@
   width: 100%;
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.2);
-  background: #020617;
-  color: #e5e7eb;
+  background: #fcfcff;
+  color: #000000;
   padding: 12px 14px;
   outline: none;
   resize: vertical;
