@@ -20,7 +20,7 @@ function LoginPage() {
       setLoading(true);
       setMessage(null);
 
-      const res = await axios.post('http://localhost:8081/api/auth/login', {
+      const res = await axios.post('http://localhost:8080/api/auth/login', {
         email,
         password,
       });
