@@ -175,11 +175,12 @@
   line-height: 1.5;
 }
 
+/* 아이콘 설정 */
 .post-meta { 
   display: flex; 
   gap: 14px; 
   color: #6b7280; 
-  font-size: 13px; 
+  font-size: 14px; 
 }
 
 .post-actions {
