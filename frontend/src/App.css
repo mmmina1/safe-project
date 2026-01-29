@@ -55,36 +55,3 @@ footer {
   flex-shrink: 0;
   width: 100%;
 }
-
-/* footer는 아래에 붙게 */
-footer {
-  margin-top: auto;
-  flex-shrink: 0;
-  width: 100%;
-}
-
-.btn-google {
-  background-color: #4285f4; /* Google Blue */
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-}
-
-.btn-google:hover,
-.btn-google:focus {
-  background-color: #3367d6;
-  color: #ffffff;
-}
-
-.btn-login-default {
-  background-color: #ffffff;
-  color: #1f2937;          /* 거의 블랙에 가까운 다크 */
-  border: 1px solid #d1d5db;
-  font-weight: 600;
-}
-
-.btn-login-default:hover,
-.btn-login-default:focus {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}

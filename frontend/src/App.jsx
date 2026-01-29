@@ -16,6 +16,8 @@ import CommunityList from './components/community/CommunityList.jsx';
 
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
+import CommunityPost from './components/community/CommunityPost.jsx';
+import CommunityDetail from './components/community/CommunityDetail.jsx';
 
 function App() {
 
@@ -56,7 +58,12 @@ function App() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/monitoring" element={<MainPage />} />
         <Route path="/ai" element={<MainPage />} />
+        
+        {/* 커뮤니티 페이지 */}
         <Route path="/community" element={<CommunityList />} />
+        <Route path='/community/new' element={<CommunityPost/>}/>
+        <Route path='/community/:postId' element={<CommunityDetail/>}/>
+
         <Route path="/service" element={<MainPage />} />
 
         {/* 이용약관 페이지 */}
