@@ -9,8 +9,7 @@ const Terms = () => {
       maxWidth: '1000px', 
       margin: '0 auto',
       width: '100%',
-      height: '100%',
-      overflowY: 'auto',
+      minHeight: '100vh',
       boxSizing: 'border-box'
     }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '20px', borderBottom: '3px solid #0d6efd', paddingBottom: '10px' }}>
@@ -236,7 +235,7 @@ const Terms = () => {
 
       <hr style={{ margin: '40px 0', borderTop: '2px solid #dee2e6' }} />
 
-      <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+      <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', marginBottom: '50px' }}>
         <h4 style={{ color: '#495057', marginBottom: '15px' }}>문의사항</h4>
         <p style={{ margin: 0, lineHeight: '1.8' }}>
           본 약관에 관한 문의사항이 있으신 경우 아래 연락처로 문의해 주시기 바랍니다.<br />
