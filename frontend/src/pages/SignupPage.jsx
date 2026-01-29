@@ -22,7 +22,7 @@ function SignupPage() {
       setLoading(true);
       setMessage(null);
 
-      const res = await axios.post('http://localhost:8081/api/auth/signup', {
+      const res = await axios.post('http://localhost:8080/api/auth/signup', {
         email,
         name,
         password,
