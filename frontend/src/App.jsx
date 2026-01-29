@@ -28,59 +28,51 @@ function App() {
   // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
   const showHeaderFooter = !isPopup;
 
-  return (
-    //팝업창
-    <div className="app-container"
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: isPopup ? '100vh' : 'auto',
-        minHeight: '100vh',
-        backgroundColor: '#ffffff',
-        overflow: 'hidden'
-      }}
-    >
-    <div className="app-root">
-      {/* 헤더는 메인 페이지에서만 표시 */}
-      {showHeaderFooter && <Header />}
-    
-      <main className="app-main">
-        <div className="container">
-        {/* 네비/Routes는 container 안에 */}
-        <nav className="my-3 border-bottom pb-2">
-          <Link to="/" className="me-3">🏠 홈</Link>
-          <Link to="/chatbot">🤖 AI 챗봇</Link>
-        </nav>
-
-      {/* 2. 화면 표시 영역 */}
+  // 팝업창인 경우 간단한 레이아웃
+  if (isPopup) {
+    return (
       <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-
-        <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/monitoring" element={<MainPage />} />
-        <Route path="/ai" element={<MainPage />} />
-        <Route path="/community" element={<CommunityList />} />
-        <Route path="/service" element={<MainPage />} />
-
-        {/* 이용약관 페이지 */}
         <Route path="/terms" element={<Terms />} />
-        
-        {/* 개인정보처리방침 페이지 */}
         <Route path="/privacy" element={<Privacy />} />
       </Routes>
+    );
+  }
 
+  // 일반 페이지 레이아웃
+  return (
+    <div className="app-container">
+      <div className="app-root">
+        {/* 헤더 */}
+        <Header />
       
+        <main className="app-main">
+          <div className="container">
+            {/* 네비/Routes는 container 안에 */}
+            <nav className="my-3 border-bottom pb-2">
+              <Link to="/" className="me-3">🏠 홈</Link>
+              <Link to="/chatbot">🤖 AI 챗봇</Link>
+            </nav>
+
+            {/* 2. 화면 표시 영역 */}
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+
+              <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/monitoring" element={<MainPage />} />
+              <Route path="/ai" element={<MainPage />} />
+              <Route path="/community" element={<CommunityList />} />
+              <Route path="/service" element={<MainPage />} />
+            </Routes>
+          </div>
+        </main>
+
+        {/* 푸터 */}
+        <Footer />
+      </div>
     </div>
-    {/* 푸터는 메인 페이지에서만 표시 */}
-    {showHeaderFooter && <Footer />}
-    </main>
-  </div>
-</div>
-    
   );
 }
 
 export default App;
-
