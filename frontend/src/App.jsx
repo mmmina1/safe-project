@@ -70,19 +70,15 @@ function App() {
 
         {/* 이용약관 페이지 */}
         <Route path="/terms" element={<Terms />} />
-        
-        {/* 개인정보처리방침 페이지 */}
         <Route path="/privacy" element={<Privacy />} />
       </Routes>
-
-      
+      </div>
+        {/* 푸터 */}
+        {showHeaderFooter && <Footer/> }
+        </main>
+      </div>
     </div>
-    {/* 푸터는 메인 페이지에서만 표시 */}
-    {showHeaderFooter && <Footer />}
-    </main>
-  </div>
-</div>
-    
   );
 }
 
+export default App;
