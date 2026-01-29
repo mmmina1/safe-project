@@ -9,13 +9,15 @@
   font-size: 32px;
   font-weight: 800;
   margin-bottom: 8px;
+  color: #f1f5f9;
 }
 
 .main-subtitle {
-  color: #555;
+  color: #94a3b8;
   margin-bottom: 32px;
 }
 
+/* 피싱전화번호 검색 */
 .search-box {
   display: flex;
   justify-content: center;
@@ -23,9 +25,10 @@
   align-items: center;
   margin: 0 auto 24px;
   max-width: 520px;
-  border: 2px solid #3b82f6;
+  border: 1px solid hsl(224, 15%, 86%);
   border-radius: 14px;
   padding: 10px 12px;
+  background: #020617;
 }
 
 .search-input {
@@ -34,6 +37,8 @@
   outline: none;
   font-size: 18px;
   padding: 10px;
+  background: transparent;
+  color: #e5e7eb;
 }
 
 .search-btn {
@@ -41,10 +46,11 @@
   background: transparent;
   font-size: 20px;
   cursor: pointer;
+  color: #60a5fa;
 }
 
 .error-text {
-  color: #e11d48;
+  color: #fb7185;
   margin-top: 8px;
 }
 
@@ -58,14 +64,14 @@
 }
 
 .count-number {
-  color: #2563eb;
+  color: #60a5fa;
   font-weight: 800;
   margin-right: 6px;
 }
 
 .period-text {
   font-size: 14px;
-  color: #666;
+  color: #94a3b8;
   margin-bottom: 24px;
 }
 
@@ -80,17 +86,19 @@
   width: 180px;
   border-radius: 16px;
   padding: 18px 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #334155;
+  background: #020617;
 }
 
 .stat-label {
-  color: #666;
+  color: #94a3b8;
   margin-bottom: 8px;
 }
 
 .stat-value {
   font-size: 30px;
   font-weight: 800;
+  color: #f8fafc;
 }
 
 .report-btn {
@@ -102,3 +110,10 @@
   font-weight: 700;
   cursor: pointer;
 }
+/* 전체 css */
+html, body, #root {
+  min-height: 100%;
+  background: #282b36;
+  color: #e5e7eb;
+}
+
