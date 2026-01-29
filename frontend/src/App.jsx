@@ -30,9 +30,29 @@ function App() {
   // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
   const showHeaderFooter = !isPopup;
 
-  // 팝업창인 경우 간단한 레이아웃
-  if (isPopup) {
-    return (
+  return (
+    //팝업창
+    <div className="app-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: isPopup ? '100vh' : 'auto',
+        minHeight: '100vh',
+        overflow: isPopup ? 'auto' : 'visible'
+      }}
+    >
+    <div className="app-root">
+      {/* 헤더는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Header />}
+    
+      <main className="app-main">
+        <div className="container">
+        {/* 네비/Routes는 container 안에 */}
+        <nav className="my-3 border-bottom pb-2">
+          <Link to="/" className="me-3">🏠 홈</Link>
+          <Link to="/chatbot">🤖 AI 챗봇</Link>
+        </nav>
+
       <Routes>
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
