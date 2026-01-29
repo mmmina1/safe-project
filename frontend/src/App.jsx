@@ -1,46 +1,64 @@
-// src/App.jsx
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './components/Footer.jsx';
-import { Routes, Route, Link } from 'react-router-dom';
-import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import MainPage from './components/main/MainPage.jsx';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
 import './App.css';
 
-import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
-
-// 페이지 컴포넌트들
-import MainPage from './components/main/MainPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import SignupPage from './pages/SignupPage.jsx';
-
-// 라우트 전용
-import { Routes, Route } from 'react-router-dom';
-
 function App() {
+  const location = useLocation();
+  
+  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
+  const isPopup = window.opener !== null;
+  
+  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
+  const showHeaderFooter = !isPopup && location.pathname === '/';
+
   return (
-    <div className="container">
-      {/* 1. 메뉴판 (네비게이션) 추가 */}
-      <nav className="my-3 border-bottom pb-2">
-        <Link to="/" className="me-3">🏠 홈</Link>
-        <Link to="/chatbot">🤖 AI 챗봇</Link>
-      </nav>
-      {/* 2. 화면 표시 영역 */}
-      <Routes>
-        <Route path="/" element={
-          /* 기존 코드 보존 (홈 화면) */
-          <div className="text-center mt-5">
-            <h1>초기 세팅 확인</h1>
-            <p className="text-primary">스프링이랑 연결 성공했다!</p>
-          </div>
-        } />
+    <div 
+      className="app-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: isPopup ? '100vh' : 'auto',
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        overflow: 'hidden'
+      }}
+    >
+      {/* 헤더는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Header />}
+      
+      {/* 메인 컨텐츠 영역 */}
+      <div 
+        className="content-wrapper"
+        style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column',
+          height: isPopup ? '100vh' : 'auto',
+          overflow: isPopup ? 'auto' : 'visible' 
+        }}
+      >
+        <Routes>
+          {/* 메인 페이지 */}
+          <Route path="/" element={<MainPage />} />
+          
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={<Terms />} />
+          
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={<Privacy />} />
+        </Routes>
+      </div>
 
-        <Route path="/chatbot" element={<Chatbot />} />
-      </Routes>
-
-      <Footer />
+      {/* 푸터는 메인 페이지에서만 표시 */}
+      {showHeaderFooter && <Footer />}
     </div>
+    
   );
 }
 
 export default App;
-
