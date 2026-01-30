@@ -73,6 +73,13 @@ function App() {
 
           {/* 개인정보처리방침 페이지 */}
           <Route path="/privacy" element={<Privacy />} />
+
+          {/* 관리자 영역 */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="manage" element={<UserManagement />} />
+            <Route path="policy" element={<DataPolicy />} />
+          </Route>
         </Routes>
       </div>
 
