@@ -44,6 +44,28 @@ export const useChatbot = () => {
         scrollToBottom();
     }, [messages]);
 
+    // 초기 로딩 시 대화 기록 불러오기
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const history = await phishService.getChatHistory('react_user');
+                if (history && history.length > 0) {
+                    const mappedMessages = history.map((msg, index) => ({
+                        id: `history-${index}`,
+                        text: msg.content,
+                        sender: msg.role === 'bot' ? 'bot' : 'user',
+                        timestamp: new Date(msg.timestamp)
+                    }));
+                    setMessages(mappedMessages);
+                }
+            } catch (error) {
+                console.error("Failed to fetch chat history:", error);
+            }
+        };
+
+        fetchHistory();
+    }, []);
+
     // --- [이벤트 핸들러] ---
     // 사용자가 메시지를 보내는 함수
     const handleSendMessage = async (e) => {

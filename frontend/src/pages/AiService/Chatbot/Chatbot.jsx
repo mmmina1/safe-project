@@ -65,6 +65,8 @@ const Chatbot = () => {
         messagesEndRef
     } = useChatbot();
 
+
+
     return (
         <div className="container chatbot-container mt-4">
             <div className="card chatbot-card" style={{ maxWidth: '900px', margin: '0 auto' }}>
