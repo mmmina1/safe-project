@@ -4,8 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import Terms from './pages/terms';
+import Header from './components/Header.jsx';
 import Privacy from './pages/privacy';
 import './App.css';
+import MonitoringPage from './components/monitoring/MonitoringPage.jsx';
 
 function App() {
   const location = useLocation();
@@ -18,34 +20,20 @@ function App() {
 
   return (
     <div 
-      className="app-container"
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: isPopup ? '100vh' : 'auto',
-        minHeight: '100vh',
-        backgroundColor: '#ffffff',
-        overflow: 'hidden'
-      }}
+      className="app-container"      
     >
       {/* 헤더는 메인 페이지에서만 표시 */}
       {showHeaderFooter && <Header />}
       
       {/* 메인 컨텐츠 영역 */}
       <div 
-        className="content-wrapper"
-        style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column',
-          height: isPopup ? '100vh' : 'auto',
-          overflow: isPopup ? 'auto' : 'visible' 
-        }}
+        className="content-wrapper"      
       >
         <Routes>
           {/* 메인 페이지 */}
           <Route path="/" element={<MainPage />} />
-          
+          {/* 관제 페이지 */}
+          <Route path="/monitoring" element={<MonitoringPage />} />
           {/* 이용약관 페이지 */}
           <Route path="/terms" element={<Terms />} />
           

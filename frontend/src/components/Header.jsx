@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -7,9 +6,8 @@ function Header() {
     <Navbar
       expand="lg"
       variant="dark"
-      sticky="top"
-      className="py-4"
-      style={{ backgroundColor: '#171a33' }} // 푸터와 톤 통일
+      fixed="top"
+      className="app-header"
     >
       <Container fluid="lg">
         {/* 로고 / 서비스명 */}
