@@ -7,17 +7,20 @@
 .admin-header {
   height: 72px;
   background-color: #171a33;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
-  /* sticky 설정 */
-  position: sticky;
+
+  /* 고정 방식 변경: sticky -> fixed */
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  right: 0;
+  z-index: 2000; /* App.js의 다른 요소보다 위에 오도록 높임 */
   width: 100%;
+  box-sizing: border-box; /* 패딩이 너비에 영향을 주지 않도록 설정 */
 }
 
 .admin-logo {
