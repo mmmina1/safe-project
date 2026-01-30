@@ -37,3 +37,4 @@ function ProductList({items, loading, error}) {
 }
 
 export default ProductList
+
