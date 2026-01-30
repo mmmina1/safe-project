@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { communityApi } from '../../api/communityApi'
-import "../../assets/css/CommunityDetail.css"
+import "../../assets/css/community/CommunityDetail.css"
 
 
 function CommunityDetail() {
