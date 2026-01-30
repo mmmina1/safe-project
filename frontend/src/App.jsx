@@ -21,6 +21,10 @@ import CommunityPost from './components/community/CommunityPost.jsx';
 import CommunityDetail from './components/community/CommunityDetail.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 
+//상품 페이지 컴포넌트
+import ProductPage from './pages/ServiceProduct/ProductPage.jsx';
+import ProductDetailPage from './pages/ServiceProduct/ProductDetailPage.jsx';
+
 function App() {
 
   const location = useLocation();
@@ -69,7 +73,9 @@ function App() {
         <Route path='/community/new' element={<CommunityPost/>}/>
         <Route path='/community/:postId' element={<CommunityDetail/>}/>
 
-        <Route path="/service" element={<MainPage />} />
+        {/* 서비스 상품 페이지 */}
+        <Route path="/product" element={<ProductPage />} />
+        <Route path='/product/:productId' element={<ProductDetailPage/>}/>
 
         {/* 이용약관 페이지 */}
         <Route path="/terms" element={<Terms />} />
