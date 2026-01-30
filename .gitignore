@@ -67,3 +67,4 @@ build/
 
 # AI / Vector DB
 **/chroma_db/
+*.bin
