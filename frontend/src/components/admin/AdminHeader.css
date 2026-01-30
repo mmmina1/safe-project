@@ -1,0 +1,48 @@
+/* src/components/admin/AdminHeader.css */
+
+:root {
+  --admin-header-height: 72px;
+}
+
+.admin-header {
+  height: 72px;
+  background-color: #171a33;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  /* sticky 설정 */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.admin-logo {
+  color: #ffc107;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+}
+
+.admin-nav-wrap {
+  display: flex;
+  gap: 24px;
+}
+
+.admin-nav {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+}
+
+.admin-nav.active {
+  color: #ffc107;
+  font-weight: 700;
+  border-bottom-color: #ffc107;
+}

@@ -1,0 +1,101 @@
+/* src/pages/admin/UserManagement.css */
+
+.user-management {
+  color: #e6e8f0;
+}
+
+.admin-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.admin-subtitle {
+  font-size: 0.9rem;
+  color: #a9b0d4;
+  margin-bottom: 20px;
+}
+
+/* 탭 */
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-tab {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #b8c0e0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.admin-tab.active {
+  border-color: #ffc107;
+  color: #ffc107;
+  font-weight: 600;
+}
+
+/* 카드 & 테이블 */
+.admin-card {
+  background-color: #171a33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-table th {
+  color: #a9b0d4;
+  font-weight: 500;
+}
+
+/* 버튼 */
+.btn-admin {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* 상태 배지 */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid;
+}
+
+.badge-normal {
+  color: #4cc9f0;
+  border-color: rgba(76, 201, 240, 0.6);
+}
+
+.badge-warning {
+  color: #ffb020;
+  border-color: rgba(255, 176, 32, 0.6);
+}
+
+.badge-blocked {
+  color: #ff5c5c;
+  border-color: rgba(255, 92, 92, 0.6);
+}

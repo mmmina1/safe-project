@@ -1,0 +1,42 @@
+/* src/pages/admin/DataPolicy.css */
+
+.data-policy {
+  color: #e6e8f0;
+}
+
+.admin-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.admin-subtitle {
+  font-size: 0.9rem;
+  color: #a9b0d4;
+  margin-bottom: 24px;
+}
+
+.policy-card {
+  background-color: #171a33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+.policy-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.policy-card ul {
+  padding-left: 18px;
+}
+
+.policy-card li {
+  font-size: 0.85rem;
+  color: #cfd3ff;
+  margin-bottom: 6px;
+}
