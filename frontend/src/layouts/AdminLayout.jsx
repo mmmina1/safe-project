@@ -14,11 +14,9 @@ function AdminLayout() {
 
       <main
         style={{
-          padding: '100px 60px 40px',
+          padding: '104px 60px 40px',
           maxWidth: '1400px',
           margin: '0 auto',
-          width: '100%',
-          boxSizing: 'border-box'
         }}
       >
         <Outlet />

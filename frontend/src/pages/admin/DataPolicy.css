@@ -1,6 +1,7 @@
+/* src/pages/admin/DataPolicy.css */
+
 .data-policy {
   color: #e6e8f0;
-  padding-top: 50px;
 }
 
 .admin-title {
@@ -21,46 +22,21 @@
   border-radius: 12px;
   padding: 20px 24px;
   margin-bottom: 16px;
-  border-top: 3px solid #007AFF; 
 }
-
-.policy-card.security { border-top-color: #FF3B30; }
-.policy-card.system { border-top-color: #34C759; }
 
 .policy-card h2 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .policy-card ul {
   padding-left: 18px;
-  margin: 0;
 }
 
 .policy-card li {
   font-size: 0.85rem;
   color: #cfd3ff;
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
-
-/* 수식이나 강조 텍스트용 스타일 */
-.policy-card strong {
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.formula {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-family: monospace;
-  color: #34C759;
-  display: inline-block;
-  margin: 8px 0;
+  margin-bottom: 6px;
 }
