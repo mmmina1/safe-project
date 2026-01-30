@@ -2,13 +2,15 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Header from './components/Header.jsx';          //  Header import 추가
+import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
-import LoginPage from './pages/LoginPage.jsx';         //  로그인 페이지
-import SignupPage from './pages/SignupPage.jsx';       //  회원가입 페이지
+import LoginPage from './pages/LoginPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
+import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';  //  추가
+import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 
 import './App.css';
 
@@ -60,6 +62,12 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
 
+          {/*  카카오 로그인 콜백 */}
+          <Route path="/oauth/callback/kakao" element={<KakaoCallbackPage />} />
+          
+          {/*  구글 로그인 콜백 */}
+          <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
+          
           {/* 이용약관 페이지 */}
           <Route path="/terms" element={<Terms />} />
 
