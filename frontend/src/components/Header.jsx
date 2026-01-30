@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -7,24 +6,34 @@ function Header() {
     <Navbar
       expand="lg"
       variant="dark"
-      sticky="top"
-      className="py-4"
-      style={{ backgroundColor: '#171a33' }} // 푸터와 톤 통일
+      fixed="top"
+      className="app-header"
     >
       <Container fluid="lg">
         {/* 로고 / 서비스명 */}
         <Navbar.Brand
           as={Link}
           to="/"
+          className="d-flex align-items-center"
           style={{
+            color: '#BFC3C7',
             fontSize: '1.7rem',
-            fontWeight: 600,  
+            fontWeight: 600,
             letterSpacing: '0.08em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            textShadow: '0 1px 2px rgba(0,0,0,0.6)'
           }}
         >
+          <img
+            src="/logo-riskWatch.png"     // public 폴더 기준
+            alt="Risk Watch Logo"
+            width="32"
+            height="32"
+            className="me-2"
+          />
           Risk Watch
         </Navbar.Brand>
+
 
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
