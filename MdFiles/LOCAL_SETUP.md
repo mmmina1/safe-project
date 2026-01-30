@@ -5,23 +5,26 @@
 
 ## 1. Frontend (5173) - 화면
 최초 1회만 `install` 명령어가 필요합니다.
-```powershell
+
 cd frontend
 npm install
 npm install react-router-dom lucide-react zustand
 npm run dev
-```
+
+cd frontend
+npm run dev
+
 
 ## 2. Python AI (8000) - 두뇌
-```powershell
+
 cd backend-python\py
 .\.venv\Scripts\Activate.ps1
 cd backend
 python main.py
-```
+
 
 ## 3. Spring Boot (8081) - 다리(Bridge)
-```powershell
+
 cd backend
 .\gradlew bootRun
-```
+

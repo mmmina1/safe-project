@@ -1,11 +1,11 @@
-package com.safe.backend.domain.aiservice.domain.model;
+package com.safe.backend.domain.aiservice.domain.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ChatSource {
+public class ChatSourceEntity {
     private final String content;
     private final String source;
 }

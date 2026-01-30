@@ -1,4 +1,4 @@
-package com.safe.backend.domain.aiservice.domain.model;
+package com.safe.backend.domain.aiservice.domain.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,8 +6,8 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ChatResult {
+public class ChatResultEntity {
     private final String answer;
-    private final List<ChatSource> sources;
+    private final List<ChatSourceEntity> sources;
     private final String mode;
 }

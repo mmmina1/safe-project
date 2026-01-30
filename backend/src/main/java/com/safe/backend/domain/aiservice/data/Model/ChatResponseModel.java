@@ -1,4 +1,4 @@
-package com.safe.backend.domain.aiservice.data.dto;
+package com.safe.backend.domain.aiservice.data.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatResponse {
+public class ChatResponseModel {
     private String answer;
     private List<ChatSourceDto> sources;
     private String mode;
