@@ -1,4 +1,4 @@
-package com.safe.backend.domain.aiservice.data.repository;
+package com.safe.backend.domain.aiservice.data.repositoryImp;
 
 import com.safe.backend.domain.aiservice.data.Model.ChatResponseModel;
 import com.safe.backend.domain.aiservice.data.datasource.AiChatDBDataSource;
@@ -46,11 +46,6 @@ public class AiRepositoryImpl implements AiRepository {
     }
 
     @Override
-    public String diagnosePhishing(String phoneNumber) {
-        return pythonAiDataSource.requestDiagnosis(phoneNumber);
-    }
-
-    @Override
     public List<ChatMessageEntity> getChatHistory(String userId) {
         long numericUserId = parseUserId(userId);
         return aiChatDBDataSource.read(numericUserId).stream()
@@ -59,6 +54,11 @@ public class AiRepositoryImpl implements AiRepository {
                         model.getContent(),
                         model.getCreatedDate()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String diagnosePhishing(String phoneNumber) {
+        return pythonAiDataSource.requestDiagnosis(phoneNumber);
     }
 
     /**
