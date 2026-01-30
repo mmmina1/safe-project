@@ -1,8 +1,6 @@
 package com.safe.backend.domain.auth.controller;
 
-import com.safe.backend.domain.auth.dto.LoginRequest;
-import com.safe.backend.domain.auth.dto.LoginResponse;
-import com.safe.backend.domain.auth.dto.SignupRequest;
+import com.safe.backend.domain.auth.dto.*;
 import com.safe.backend.domain.auth.service.AuthService;
 import com.safe.backend.domain.user.entity.User;
 import com.safe.backend.domain.user.repository.UserRepository;
@@ -23,6 +21,9 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * 회원가입
+     */
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
         // 1. DTO에서 값 꺼내기
@@ -37,6 +38,9 @@ public class AuthController {
         return ResponseEntity.ok("회원가입이 완료되었습니다");
     }
 
+    /**
+     * 일반 이메일/비밀번호 로그인
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
@@ -63,6 +67,55 @@ public class AuthController {
 
         } catch (IllegalArgumentException e) {
             // 비밀번호/이메일 오류 등 -> 400 + 에러 메시지
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 카카오 로그인
+     * - 프론트에서 code를 JSON body로 넘겨줌: { "code": "..." }
+     * - AuthService.kakaoLogin(code) 에서 카카오 토큰/유저 조회 + 우리 JWT 발급까지 처리
+     */
+    @PostMapping("/kakao")
+    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginRequest request) {
+        try {
+            String code = request.getCode();
+            if (code == null || code.isBlank()) {
+                throw new IllegalArgumentException("카카오 인가 코드가 없습니다.");
+            }
+
+            // 1. 인가코드로 카카오 로그인 처리 + JWT 발급 (서비스로 위임)
+            LoginResponse response = authService.kakaoLogin(code);
+
+            // 2. accessToken / email / name 이 들어있는 LoginResponse 그대로 반환
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            // 잘못된 코드, 회원 정보 문제 등
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    /**
+     * 구글 로그인
+     * - 프론트에서 code를 JSON body로 넘겨줌: { "code": "..." }
+     * - AuthService.googleLogin(code) 에서 토큰/유저 조회 + JWT 발급까지 처리
+     */
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
+        try {
+            String code = request.getCode();
+            if (code == null || code.isBlank()) {
+                throw new IllegalArgumentException("구글 인가 코드가 없습니다.");
+            }
+
+            // 1. 인가코드로 구글 로그인 처리 + JWT 발급 (서비스로 위임)
+            LoginResponse response = authService.googleLogin(code);
+
+            // 2. accessToken / email / name 이 들어있는 LoginResponse 그대로 반환
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            // 잘못된 코드, 회원 정보 문제 등
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
