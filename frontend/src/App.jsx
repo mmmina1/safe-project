@@ -1,55 +1,92 @@
-// src/App.jsx
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from './components/Footer.jsx';
-import { Routes, Route, Link } from 'react-router-dom';
-import Chatbot from './pages/AiService/Chatbot/Chatbot';
-import './App.css';
 
 import Header from './components/Header.jsx';
-
-
-// 페이지 컴포넌트들
+import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
-import MyPage from './pages/MyPage/MyPage.jsx';
-import Diagnosis from './pages/AiService/Diagnosis/Diagnosis';
-import Simulator from './pages/AiService/Simulator/Simulator';
+import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';  //  추가
+import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 
-// 라우트 전용
-
+import './App.css';
 
 function App() {
+  const location = useLocation();
+
+  // 팝업창인지 확인 (window.opener가 있으면 팝업창)
+  const isPopup = window.opener !== null;
+
+  // 팝업이거나 terms/privacy일 때만 헤더/푸터 숨기기
+  const hideHeaderFooter =
+    isPopup ||
+    location.pathname === '/terms' ||
+    location.pathname === '/privacy';
+
+  const showHeaderFooter = !hideHeaderFooter;
+
   return (
-    <div className="container">
-      {/* 1. 메뉴판 (네비게이션) 추가 */}
-      <nav className="my-3 border-bottom pb-2">
-        <Link to="/" className="me-3">🏠 홈</Link>
-        <Link to="/chatbot" className="me-3">🤖 AI 챗봇</Link>
-        <Link to="/diagnosis" className="me-3">🛡️ AI 진단</Link>
-        <Link to="/simulator" className="me-3">🎮 보안 훈련</Link>
-        <Link to="/mypage">👤 마이페이지</Link>
-      </nav>
-      {/* 2. 화면 표시 영역 */}
-      <Routes>
-        <Route path="/" element={
-          /* 기존 코드 보존 (홈 화면) */
-          <div className="text-center mt-5">
-            <h1>초기 세팅 확인</h1>
-            <p className="text-primary">스프링이랑 연결 성공했다!</p>
-          </div>
-        } />
+    <div
+      className="app-container"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: isPopup ? '100vh' : 'auto',
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 헤더: 팝업/약관/개인정보 페이지 제외하고 항상 표시 */}
+      {showHeaderFooter && <Header />}
 
-        <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/diagnosis" element={<Diagnosis />} />
-        <Route path="/simulator" element={<Simulator />} />
-      </Routes>
+      {/* 메인 컨텐츠 영역 */}
+      <div
+        className="content-wrapper"
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          height: isPopup ? '100vh' : 'auto',
+          overflow: isPopup ? 'auto' : 'visible',
+        }}
+      >
+        <Routes>
+          {/* 메인 페이지 */}
+          <Route path="/" element={<MainPage />} />
 
-      <Footer />
+          {/* 로그인 / 회원가입 */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/*  카카오 로그인 콜백 */}
+          <Route path="/oauth/callback/kakao" element={<KakaoCallbackPage />} />
+          
+          {/*  구글 로그인 콜백 */}
+          <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
+          
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={<Terms />} />
+
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={<Privacy />} />
+
+          {/* 관리자 영역 */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="manage" element={<UserManagement />} />
+            <Route path="policy" element={<DataPolicy />} />
+          </Route>
+        </Routes>
+      </div>
+
+      {/* 푸터: 팝업/약관/개인정보 페이지 제외하고 표시 */}
+      {showHeaderFooter && <Footer />}
     </div>
   );
 }
 
 export default App;
-
