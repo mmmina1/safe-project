@@ -10,6 +10,21 @@
 | **bootstrap** | `src/main.jsx` | 전역 스타일 및 레이아웃 기초 |
 | **react-bootstrap** | `src/components/`, `src/pages/` | Modal, Button, Navbar 등 UI 컴포넌트 구성 |
 
+## 🏗️ 주요 페이지별 사용 라이브러리 (Page Details)
+
+### 1. 🤖 AI 서비스 (`src/pages/AiService`)
+| 패키지명 | 상세 용도 |
+| :--- | :--- |
+| **react-unity-webgl** | 시뮬레이터(`Simulator.jsx`)에서 Unity 게임 엔진 로드 및 데이터 통신 |
+| **lucide-react** | 챗봇 아이콘(`Bot`, `User`), 진단 상태 아이콘(`ShieldCheck`, `AlertTriangle`) 등 |
+
+### 2. 👤 마이페이지 (`src/pages/MyPage`)
+| 패키지명 | 상세 용도 |
+| :--- | :--- |
+| **chart.js** | 대시보드(`Dashboard.jsx`)의 보안 점수 데이터 시각화 엔진 |
+| **react-chartjs-2** | Chart.js를 리액트용 선 그래프(`Line`) 컴포넌트로 사용 |
+| **lucide-react** | 사이드바 메뉴(`Sidebar.jsx`), 결과 리포트 아이콘 등 전반적인 UI 요소 |
+
 ## 🛠️ 기능성 라이브러리 (Logic & Data)
 | 패키지명 | 주요 파일/위치 | 상세 용도 |
 | :--- | :--- | :--- |
@@ -27,12 +42,10 @@
 
 ---
 
-## ⚡ 설치 가이드
-모든 라이브러리를 한 번에 설치하려면 아래 명령어를 사용하세요:
-
 ```bash
+# 프론트엔드 폴더로 이동 후 설치
 cd frontend
-npm install axios bootstrap chart.js lucide-react react-bootstrap react-chartjs-2 react-icons react-router-dom react-unity-webgl zustand
+npm install react react-dom react-router-dom axios zustand bootstrap react-bootstrap lucide-react react-icons chart.js react-chartjs-2 react-unity-webgl
 ```
 
 > [!NOTE]

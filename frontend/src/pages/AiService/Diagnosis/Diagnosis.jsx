@@ -29,7 +29,7 @@ const Diagnosis = () => {
             <div className="diagnosis-container">
                 <div className="diagnosis-card loading-box">
                     <div className="loading-icon">🔍</div>
-                    <h3 className="fw-bold mb-3">AI가 당신의 보안 상태를 정밀 분석 중입니다...</h3>
+                    <h3 className="fw-bold mb-3">보안 상태를 정밀 분석 중입니다...</h3>
                     <p className="text-muted">잠시만 기다려 주세요. 금방 완료됩니다!</p>
                 </div>
             </div>
@@ -54,7 +54,7 @@ const Diagnosis = () => {
                     <div className="p-4 bg-light rounded-4 mb-4">
                         <h5 className="fw-bold mb-3 d-flex align-items-center">
                             <ShieldCheck size={20} className="me-2 text-primary" />
-                            AI 분석 총평
+                            보안 정밀 분석 결과
                         </h5>
                         <p className="mb-0 text-dark leading-relaxed">{result.summary}</p>
                     </div>
@@ -96,7 +96,7 @@ const Diagnosis = () => {
                             <button
                                 key={idx}
                                 className="option-button border-0 shadow-none"
-                                onClick={() => handleAnswer(currentQuestion.weights[idx])}
+                                onClick={() => handleAnswer(idx)}
                             >
                                 <span>{opt}</span>
                                 <ChevronRight size={18} className="text-muted" />
@@ -108,7 +108,7 @@ const Diagnosis = () => {
                 {/* 하단 도움말 */}
                 <div className="mt-5 pt-4 border-top d-flex align-items-start text-muted small">
                     <AlertTriangle size={16} className="me-2 mt-1 flex-shrink-0" />
-                    <p className="mb-0">답변하신 내용은 AI 보안 분석에만 활용되며, 외부로 유출되지 않으니 안심하고 답변해 주세요.</p>
+                    <p className="mb-0">답변하신 내용은 보안 분석 용도로만 활용되며, 외부로 유출되지 않으니 안심하고 답변해 주세요.</p>
                 </div>
             </div>
         </div>
