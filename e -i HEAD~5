@@ -1,0 +1,50 @@
+[33m0c36f73[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop-safe[m[33m)[m 14:43 커미;ㅅ
+[33mf1de02b[m 1/30 16:09 (운영자,로그인)커밋
+[33md564c3b[m 1/30 4:09 커밋(운영자,로그인)
+[33m2573aeb[m 1/30 12:41 커밋
+[33m8093fff[m 1/29 17:25 커밋 ^^
+[33m96accc9[m 1/29 15:36 민영아 가져가
+[33m943b7d0[m 1/29 12:45 커밋
+[33md65a3be[m 1/29 9:53 커밋
+[33m8c7c233[m 1/28 17:30 커밋
+[33m17cee0f[m 1/28 3:52 커밋
+[33m15622a9[m 1/30 12:41 커밋
+[33m8a5ef32[m 1/29 17:25 커밋 ^^
+[33m0d9f44f[m 1/29 15:36 민영아 가져가
+[33m00bde7c[m 1/29 12:45 커밋
+[33m68e8a87[m 1/29 9:53 커밋
+[33md5395cf[m 1/28 17:30 커밋
+[33mce9409f[m 1/28 3:52 커밋
+[33mb33f799[m 1/28 3:52 커밋
+[33m6efade1[m outh.db.jwt 암호화
+[33m04621ef[m 수정
+[33m6dfa094[m 토큰
+[33mf60dd36[m 토큰
+[33me7c28c6[m[33m ([m[1;31morigin/develop-safe[m[33m)[m 1/30 3:16 관리자 커밋
+[33ma9ad07f[m Merge branch 'develop-safe' of https://github.com/mmmina1/safe-project into develop-safe
+[33mbd4b53c[m 1/30 12:41 커밋
+[33m178ac2f[m 1/29 17:25 커밋 ^^
+[33m607ba37[m 1/29 15:36 민영아 가져가
+[33m6454141[m 1/29 12:45 커밋
+[33m9dd160c[m 1/29 9:53 커밋
+[33m8047637[m 1/28 17:30 커밋
+[33m9bb47cc[m 힘들어ㅋㅋ
+[33m68f389c[m 1/28 3:52 커밋
+[33m453e5f6[m 수정 됨
+[33m3c81dfb[m 1/28 3:52 커밋
+[33mdbdc96c[m Merge pull request #41 from mmmina1/feature/admin
+[33mba8144c[m 1/30 12:41 커밋
+[33m6ab1af7[m[33m ([m[1;31morigin/feature/admin[m[33m)[m feat: 데이터 정책 페이지 보완 및 대시보드 UI/UX 개선
+[33maab8d55[m frontend
+[33m1a53d4f[m 1/29 17:25 커밋 ^^
+[33m3afb2db[m 1/29 15:36 민영아 가져가
+[33md2cdabf[m 1/29 12:45 커밋
+[33mb53b1fd[m Merge branch 'develop' of https://github.com/mmmina1/safe-project into develop
+[33m33e67f2[m 1/29 9:53 커밋
+[33m3b5289f[m 1/28 17:30 커밋
+[33m37c0497[m 4/57 푸터 적용 완료
+[33ma8cf9e4[m 힘들어ㅋㅋ
+[33m45872c0[m Merge pull request #38 from mmmina1/my/footer
+[33mbdac751[m Merge branch 'develop' into my/footer
+[33mb95fda2[m 최종입니다
+[33mee0016c[m Merge branch 'my/footer' of https://github.com/mmmina1/safe-project into my/footer
