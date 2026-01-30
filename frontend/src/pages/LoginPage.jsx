@@ -1,7 +1,7 @@
 // src/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { axiosInstance } from '../api/axiosInstance'; // 공용 axios 인스턴스 사용
+import axiosInstance from '../api/axiosInstance'; // 공용 axios 인스턴스 사용
 
 // 카카오 OAuth 설정 (카카오 개발자 콘솔에 등록된 값과 동일해야 함)
 const KAKAO_CLIENT_ID = '3eaf9384381a56ea64f0a95314dcb658';

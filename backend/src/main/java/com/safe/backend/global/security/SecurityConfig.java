@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
+
 
 
 import java.util.List;
@@ -46,8 +48,27 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/test",
                                 "/oauth2/**",
-                                "/outh2/callback/**"
+                                "/oauth2/callback/**"
                         ).permitAll()
+
+                        //✅ 해당 내용 추가!! - 최민아
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/community/posts/**",
+                                "/api/products/**",      // 실제 백엔드 경로에 맞게!
+                                "/api/product/**"        // 혹시 이 경로면 이것도!
+                        ).permitAll()
+
+                        // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
+                        .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
+
+                        // ✅ 상품: 등록/수정/삭제는 일단 로그인 필요(또는 ADMIN으로 변경 가능)
+                        .requestMatchers(HttpMethod.POST,   "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,    "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
+
+
                         // 그 외는 토큰 필요
                         .anyRequest().authenticated()
                 );
