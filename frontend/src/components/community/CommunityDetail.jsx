@@ -12,14 +12,21 @@ function CommunityDetail() {
   const [post,setPost] = useState(null)
   const [loading,setLoading] = useState(true)
 
+  useEffect(() => {
+    if (!postId || postId === "undefined") {
+      setLoading(false)
+      return
+    }
 
-  useEffect(()=> {
-    const run = async() => {
+    const run = async () => {
       setLoading(true)
-      try{
+      try {
         const data = await communityApi.getPostDetail(postId)
         setPost(data)
-      }finally{
+      } catch (e) {
+        console.error("상세 조회 실패:", e)
+        setPost(null)
+      } finally {
         setLoading(false)
       }
     }
