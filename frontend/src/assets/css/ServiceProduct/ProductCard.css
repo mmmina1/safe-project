@@ -1,0 +1,74 @@
+/* src/assets/css/ServiceProduct/ProductCard.css */
+
+.sp-listGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .sp-listGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .sp-listGrid { grid-template-columns: 1fr; }
+}
+
+.sp-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 12px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.sp-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.sp-thumb {
+  height: 110px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(90,120,255,0.35), rgba(255,70,140,0.22));
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.sp-cardBody {
+  margin-top: 10px;
+}
+
+.sp-cardTitle {
+  color: #eaf0ff;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.sp-cardMeta {
+  margin-top: 6px;
+  color: rgba(234,240,255,0.65);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sp-dot { opacity: 0.6; }
+
+.sp-cardPrice {
+  margin-top: 10px;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 15px;
+}
+
+.sp-likeFab {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.25);
+  color: rgba(234,240,255,0.9);
+}
