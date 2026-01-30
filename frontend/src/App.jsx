@@ -1,16 +1,16 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MainPage from './components/main/MainPage.jsx';
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
-
-import AdminLayout from './layouts/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import UserManagement from './pages/admin/UserManagement';
-import DataPolicy from './pages/admin/DataPolicy';
+import LoginPage from './pages/LoginPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
+import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';  //  추가
+import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 
 import './App.css';
 
@@ -20,11 +20,13 @@ function App() {
   // 팝업창인지 확인 (window.opener가 있으면 팝업창)
   const isPopup = window.opener !== null;
 
-  // 관리자 페이지 여부 확인 (/admin으로 시작하는 모든 경로)
-  const isAdminPage = location.pathname.startsWith('/admin');
+  // 팝업이거나 terms/privacy일 때만 헤더/푸터 숨기기
+  const hideHeaderFooter =
+    isPopup ||
+    location.pathname === '/terms' ||
+    location.pathname === '/privacy';
 
-  // 팝업창이거나 terms/privacy, 관리자 페이지면 헤더와 푸터 숨김
-  const showHeaderFooter = !isPopup && !isAdminPage && location.pathname === '/';
+  const showHeaderFooter = !hideHeaderFooter;
 
   return (
     <div
@@ -35,10 +37,10 @@ function App() {
         height: isPopup ? '100vh' : 'auto',
         minHeight: '100vh',
         backgroundColor: '#ffffff',
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     >
-      {/* 헤더는 메인 페이지에서만 표시 */}
+      {/* 헤더: 팝업/약관/개인정보 페이지 제외하고 항상 표시 */}
       {showHeaderFooter && <Header />}
 
       {/* 메인 컨텐츠 영역 */}
@@ -49,13 +51,23 @@ function App() {
           display: 'flex',
           flexDirection: 'column',
           height: isPopup ? '100vh' : 'auto',
-          overflow: isPopup ? 'auto' : 'visible'
+          overflow: isPopup ? 'auto' : 'visible',
         }}
       >
         <Routes>
           {/* 메인 페이지 */}
           <Route path="/" element={<MainPage />} />
 
+          {/* 로그인 / 회원가입 */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/*  카카오 로그인 콜백 */}
+          <Route path="/oauth/callback/kakao" element={<KakaoCallbackPage />} />
+          
+          {/*  구글 로그인 콜백 */}
+          <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
+          
           {/* 이용약관 페이지 */}
           <Route path="/terms" element={<Terms />} />
 
@@ -71,10 +83,9 @@ function App() {
         </Routes>
       </div>
 
-      {/* 푸터는 메인 페이지에서만 표시 */}
+      {/* 푸터: 팝업/약관/개인정보 페이지 제외하고 표시 */}
       {showHeaderFooter && <Footer />}
     </div>
-
   );
 }
 
