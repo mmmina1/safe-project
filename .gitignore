@@ -65,6 +65,10 @@ build/
 .env
 .env.local
 
-# AI / Vector DB
-**/chroma_db/
-*.bin
+
+# =========================
+# Backend secret configs
+# =========================
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-dev.properties
+backend/src/main/resources/application-prod.properties
