@@ -1,5 +1,23 @@
 # 🚀 실행 가이드
 
+<<<<<<< HEAD
+=======
+1번콘솔
+cd frontend
+npm run dev
+
+2번콘솔
+cd backend-python\py
+.\.venv\Scripts\Activate.ps1
+cd backend
+python main.py
+
+3번콘솔
+cd backend
+.\gradlew bootRun
+
+
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
 ## 📋 개요
 
 이 프로젝트는 3개의 서버로 구성되어 있습니다:

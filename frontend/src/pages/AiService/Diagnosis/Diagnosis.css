@@ -1,0 +1,162 @@
+/* 진단 서비스 전용 프리미엄 디자인 시스템 */
+
+.diagnosis-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.diagnosis-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 진행바 스타일 */
+.diagnosis-progress-container {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin-bottom: 3rem;
+    overflow: hidden;
+}
+
+.diagnosis-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1a237e, #3949ab);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(26, 35, 126, 0.3);
+}
+
+/* 질문 제목 */
+.question-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 2.5rem;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+/* 선택지 버튼 목록 */
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-button {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.option-button:hover {
+    background: #f8f9ff;
+    border-color: #1a237e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(26, 35, 126, 0.1);
+}
+
+.option-button:active {
+    transform: translateY(0);
+}
+
+/* 결과 화면 스타일 */
+.result-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.result-score {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #1a237e;
+}
+
+.result-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.badge-danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-caution {
+    background: #fffde7;
+    color: #f9a825;
+}
+
+.badge-safe {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* 로딩 화면 애니메이션 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+.loading-box {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.loading-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    animation: pulse 1.5s infinite;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

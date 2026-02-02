@@ -1,5 +1,9 @@
 import React from 'react';
+<<<<<<< HEAD
 import { Routes, Route, useLocation } from 'react-router-dom';
+=======
+import { Routes, Route, useLocation, Link } from 'react-router-dom';
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from './components/Header.jsx';
@@ -11,8 +15,21 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';  //  추가
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
+<<<<<<< HEAD
 
 import './App.css';
+=======
+import AdminLayout from './layouts/AdminLayout.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import UserManagement from './pages/admin/UserManagement.jsx';
+import DataPolicy from './pages/admin/DataPolicy.jsx';
+
+import './App.css';
+import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import Diagnosis from './pages/AiService/Diagnosis/Diagnosis';
+import Simulator from './pages/AiService/Simulator/Simulator';
+import MyPage from './pages/MyPage/MyPage.jsx';
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
 
 function App() {
   const location = useLocation();
@@ -43,6 +60,19 @@ function App() {
       {/* 헤더: 팝업/약관/개인정보 페이지 제외하고 항상 표시 */}
       {showHeaderFooter && <Header />}
 
+<<<<<<< HEAD
+=======
+      {/* ⚠️ AI 서비스 임시 네비게이션 (개발용) */}
+      {showHeaderFooter && (
+        <nav className="p-2 bg-light border-bottom text-center">
+          <Link to="/chatbot" className="me-3 text-decoration-none">🤖 챗봇</Link>
+          <Link to="/diagnosis" className="me-3 text-decoration-none">🛡️ 진단</Link>
+          <Link to="/simulator" className="me-3 text-decoration-none">🎮 훈련</Link>
+          <Link to="/mypage" className="text-decoration-none">👤 마이페이지</Link>
+        </nav>
+      )}
+
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
       {/* 메인 컨텐츠 영역 */}
       <div
         className="content-wrapper"
@@ -64,10 +94,17 @@ function App() {
 
           {/*  카카오 로그인 콜백 */}
           <Route path="/oauth/callback/kakao" element={<KakaoCallbackPage />} />
+<<<<<<< HEAD
           
           {/*  구글 로그인 콜백 */}
           <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
           
+=======
+
+          {/*  구글 로그인 콜백 */}
+          <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
+
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
           {/* 이용약관 페이지 */}
           <Route path="/terms" element={<Terms />} />
 
@@ -80,6 +117,15 @@ function App() {
             <Route path="manage" element={<UserManagement />} />
             <Route path="policy" element={<DataPolicy />} />
           </Route>
+<<<<<<< HEAD
+=======
+
+          {/* AI 서비스 추가 */}
+          <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/diagnosis" element={<Diagnosis />} />
+          <Route path="/simulator" element={<Simulator />} />
+          <Route path="/mypage" element={<MyPage />} />
+>>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
         </Routes>
       </div>
 
