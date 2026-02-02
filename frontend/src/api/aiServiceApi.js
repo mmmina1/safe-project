@@ -29,5 +29,17 @@ export const phishService = {
             console.error('Diagnosis API Error:', error);
             throw error;
         }
+    },
+
+    getChatHistory: async (userId = 'react_user') => {
+        try {
+            const response = await api.get('/history', {
+                params: { userId }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Get History API Error:', error);
+            throw error;
+        }
     }
 };
