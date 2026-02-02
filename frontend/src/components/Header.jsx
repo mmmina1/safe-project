@@ -88,7 +88,7 @@ function Header() {
 
             <Nav.Link
               as={Link}
-              to="/service"
+              to="/product"
               className="fw-semibold"
               style={{ fontSize: '1.1rem' }}
             >

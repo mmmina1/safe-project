@@ -23,7 +23,7 @@ function KakaoCallbackPage() {
 
     // ✅ 카카오 전용 백엔드 엔드포인트로 code 전송
     axios
-      .post('http://localhost:8081/api/auth/kakao', { code })
+      .post('http://localhost:8080/api/auth/kakao', { code })
       .then((res) => {
         console.log('[KAKAO FRONT] res = ', res.data);
 

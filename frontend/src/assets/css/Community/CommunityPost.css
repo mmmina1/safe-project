@@ -1,0 +1,151 @@
+ .community-subtitle {
+  color: #d6dbe2;
+  margin-top: 6px;
+}
+
+.write-chip-row {
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.write-card {
+  max-width: 920px;
+  margin: 0 auto;
+  background: rgba(2, 6, 23, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.write-label {
+  display: block;
+  text-align: left;
+  color: #dde3eb;
+  font-weight: 700;
+  margin: 14px 0 8px;
+}
+
+.write-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #fcfcff;
+  color: #000000;
+  padding: 12px 14px;
+  outline: none;
+}
+
+.write-textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #fcfcff;
+  color: #000000;
+  padding: 12px 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.write-hint {
+  text-align: right;
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.attach-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.attach-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(2, 6, 23, 0.8);
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.attach-hint {
+  margin-left: 10px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.attach-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.attach-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(2, 6, 23, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.attach-name {
+  color: #e5e7eb;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80%;
+}
+
+.attach-remove {
+  border: none;
+  background: transparent;
+  color: #fb7185;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.write-error {
+  margin-top: 12px;
+  color: #fb7185;
+  text-align: left;
+  font-weight: 600;
+}
+
+.write-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn-ghost {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.btn-primary {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  background: #ef4444; /* 참고 사이트 느낌: 빨간 작성 버튼 */
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
