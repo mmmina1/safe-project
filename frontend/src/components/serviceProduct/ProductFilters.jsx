@@ -46,3 +46,4 @@ function ProductFilters({value, onChange}) {
 }
 
 export default ProductFilters
+
