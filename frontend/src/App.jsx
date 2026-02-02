@@ -30,6 +30,18 @@ import DataPolicy from './pages/admin/DataPolicy';
 import ProductPage from './pages/ServiceProduct/ProductPage.jsx';
 import ProductDetailPage from './pages/ServiceProduct/ProductDetailPage.jsx';
 
+//운영자
+import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
+import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
+import UserSearchPage from './pages/admin/operator/UserSearchPage.jsx';
+import CsDashboardPage from './pages/admin/operator/CsDashboardPage.jsx';
+import ServiceProductsPage from './pages/admin/operator/ServiceProductsPage.jsx';
+import CommunityReportsPage from './pages/admin/operator/CommunityReportsPage.jsx';
+import BlindReasonsPage from './pages/admin/operator/BlindReasonsPage.jsx';
+import NoticesPage from './pages/admin/operator/NoticesPage.jsx';
+import BannersPage from './pages/admin/operator/BannersPage.jsx';
+import BlacklistPage from './pages/admin/operator/BlacklistPage.jsx';
+
 function App() {
 
   const location = useLocation();
@@ -94,6 +106,21 @@ function App() {
             <Route path="manage" element={<UserManagement />} />
             <Route path="policy" element={<DataPolicy />} />
           </Route>
+
+          {/* 운영자 페이지 */}
+          <Route path="/operator" element={<OperatorLayout />}>
+            <Route index element={<OperatorDashboard />} />
+            <Route path="users" element={<UserSearchPage />} />
+            <Route path="cs" element={<CsDashboardPage />} />
+            <Route path="products" element={<ServiceProductsPage />} />
+            <Route path="community-reports" element={<CommunityReportsPage />} />
+            <Route path="blind-reasons" element={<BlindReasonsPage />} />
+            <Route path="notices" element={<NoticesPage />} />
+            <Route path="banners" element={<BannersPage />} />
+            <Route path="blacklist" element={<BlacklistPage />} />
+          </Route>
+
+
       </Routes>
 
       
