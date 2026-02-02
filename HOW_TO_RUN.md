@@ -29,7 +29,7 @@ gradlew.bat bootRun
 
 또는 IDE에서 `BackendApplication.java` 실행
 
-**확인**: `http://localhost:8081` 접속 가능한지 확인
+**확인**: `http://localhost:8080` 접속 가능한지 확인
 
 ### 3. 프론트엔드 실행
 
@@ -97,7 +97,7 @@ export SPRING_PROFILES_ACTIVE=dev
 ### 포트 충돌
 - MySQL: 3306 포트 사용 중이면 `docker-compose.yml`에서 포트 변경
 - Redis: 6379 포트 사용 중이면 `docker-compose.yml`에서 포트 변경
-- 백엔드: 8081 포트 사용 중이면 `application.yml`에서 변경
+- 백엔드: 8080 포트 사용 중이면 `application.yml`에서 변경
 
 ## 데이터베이스 초기화
 
@@ -129,8 +129,8 @@ docker exec -i safe-mysql mysql -u safe_user -psafe1234 safe_db < schema.sql
 ### Postman / curl 예시
 ```bash
 # 회원 검색
-curl http://localhost:8081/api/admin/users/search?keyword=test
+curl http://localhost:8080/api/admin/users/search?keyword=test
 
 # 블라인드 사유 목록
-curl http://localhost:8081/api/admin/blind-reasons
+curl http://localhost:8080/api/admin/blind-reasons
 ```

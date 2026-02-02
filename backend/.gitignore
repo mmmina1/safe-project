@@ -26,3 +26,21 @@ application-prod.properties
 
 # Uploaded files
 uploads/
+
+# Gradle (❗필수)
+.gradle/
+**/.gradle/
+build/
+**/build/
+
+# Java / Backend build outputs
+bin/
+backend/bin/
+
+# Python virtualenv (❗필수)
+.venv/
+backend/.venv/
+
+# OS / temp
+.DS_Store
+Thumbs.db
