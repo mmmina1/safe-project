@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 //라우터 전용
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import LandingView from './pages/AiService/AiServiceHub/LandingView';
+import Diagnosis from './pages/AiService/Diagnosis/Diagnosis';
+import Simulator from './pages/AiService/Simulator/Simulator';
 import './App.css';
 
 import Header from './components/Header.jsx';
@@ -60,11 +63,7 @@ function App() {
 
         <main className="app-main">
           <div className="container">
-            {/* 네비/Routes는 container 안에 */}
-            <nav className="my-3 border-bottom pb-2">
-              <Link to="/" className="me-3">🏠 홈</Link>
-              <Link to="/chatbot">🤖 AI 챗봇</Link>
-            </nav>
+
 
             {/* 2. 화면 표시 영역 */}
             <Routes>
@@ -77,7 +76,9 @@ function App() {
 
               <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/monitoring" element={<MainPage />} />
-              <Route path="/ai" element={<MainPage />} />
+              <Route path="/ai" element={<LandingView />} />
+              <Route path="/ai/diagnosis" element={<Diagnosis />} />
+              <Route path="/ai/simulator" element={<Simulator />} />
 
               {/* 커뮤니티 페이지 */}
               <Route path="/community" element={<CommunityList />} />

@@ -1,83 +1,99 @@
-import React, { useState } from 'react';
-import { useAppStore } from '../store';
-import { phishService } from '../api';
+import React from 'react';
+import { useDiagnosis } from './hooks/useDiagnosis';
+import { ShieldAlert, CheckCircle, Info } from 'lucide-react';
+import './Diagnosis.css';
 
 const Diagnosis = () => {
-    const { survey, addAnswer, setResult, setSection } = useAppStore();
-    const [loading, setLoading] = useState(false);
+    const {
+        currentStep,
+        currentQuestion,
+        progress,
+        isLoading,
+        result,
+        handleAnswer,
+        resetDiagnosis
+    } = useDiagnosis();
 
-    const currentQuestion = survey.questions[survey.currentStep];
-    const progress = ((survey.currentStep + 1) / survey.questions.length) * 100;
-
-    const handleAnswer = async (value) => {
-        const answerObj = { question_key: currentQuestion.id, answer: value };
-
-        if (survey.currentStep + 1 < survey.questions.length) {
-            addAnswer(answerObj);
-        } else {
-            // Final Question
-            setLoading(true);
-            try {
-                // We need to commit the last answer before submitting
-                const finalAnswers = [...survey.userAnswers, answerObj];
-                const res = await phishService.submitDiagnosis(finalAnswers);
-                setResult(res);
-            } catch (error) {
-                setResult({ score: 0, risk_level: 'ERROR', summary: 'API 통신 실패' });
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-
-    if (loading) {
+    // 로딩 중일 때 표시할 화면
+    if (isLoading) {
         return (
-            <section className="animate-fade" style={{ display: 'block', textAlign: 'center', paddingTop: '100px' }}>
-                <div className="card">
-                    <h2>🔍 진단 결과를 분석 중입니다...</h2>
+            <div className="diagnosis-container">
+                <div className="diagnosis-card loading-box">
+                    <div className="loading-icon">🔍</div>
+                    <h3>진단 결과를 분석 중입니다...</h3>
+                    <p>잠시만 기다려주세요.</p>
                 </div>
-            </section>
+            </div>
         );
     }
 
+    // 결과 화면
+    if (result) {
+        const getBadgeClass = () => {
+            if (result.risk_level === 'DANGER') return 'badge-danger';
+            if (result.risk_level === 'CAUTION') return 'badge-caution';
+            return 'badge-safe';
+        };
+
+        const getBadgeIcon = () => {
+            if (result.risk_level === 'DANGER') return <ShieldAlert size={20} />;
+            if (result.risk_level === 'CAUTION') return <Info size={20} />;
+            return <CheckCircle size={20} />;
+        };
+
+        return (
+            <div className="diagnosis-container animate-fade-in">
+                <div className="diagnosis-card text-center">
+                    <div className="result-header">
+                        <span className={`result-badge ${getBadgeClass()} d-inline-flex align-items-center gap-2 mb-3`}>
+                            {getBadgeIcon()} {result.risk_level}
+                        </span>
+                        <div className="result-score">{result.score}점</div>
+                        <h4 className="mt-3">종합 진단 결과</h4>
+                    </div>
+                    <div className="result-body py-4 px-3 bg-light rounded-4 mb-4">
+                        <p className="mb-0" style={{ lineHeight: '1.7', color: '#334155' }}>
+                            {result.summary}
+                        </p>
+                    </div>
+                    <button onClick={resetDiagnosis} className="btn btn-primary btn-lg w-100 rounded-pill py-3">
+                        다시 진단하기
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // 설문 화면
     return (
-        <section id="diagnosis" className="animate-fade" style={{ display: 'block' }}>
-            <div className="survey-box card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <div className="progress-bar" style={{ height: '6px', background: 'var(--glass)', borderRadius: '3px', marginBottom: '40px', overflow: 'hidden' }}>
-                    <div className="progress-fill" style={{ width: `${progress}%`, height: '100%', background: 'var(--primary)', transition: '0.5s' }}></div>
+        <div className="diagnosis-container animate-fade-in">
+            <div className="diagnosis-card">
+                {/* 상단 진행도 */}
+                <div className="diagnosis-progress-container">
+                    <div
+                        className="diagnosis-progress-fill"
+                        style={{ width: `${progress}%` }}
+                    ></div>
                 </div>
 
-                <div className="question-card">
-                    <h2 style={{ marginBottom: '30px' }}>Q{survey.currentStep + 1}. {currentQuestion.text}</h2>
-                    <div className="option-list" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        {currentQuestion.options.map((opt, idx) => (
-                            <div
-                                key={idx}
-                                className="option-item"
-                                onClick={() => handleAnswer(currentQuestion.weights[idx])}
-                                style={{
-                                    padding: '20px',
-                                    background: 'var(--glass)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: '12px',
-                                    cursor: 'pointer'
-                                }}
+                <div className="question-area">
+                    <span className="text-primary fw-bold mb-2 d-block">질문 {currentStep + 1} / 10</span>
+                    <h2 className="question-title">{currentQuestion.text}</h2>
+
+                    <div className="option-group">
+                        {currentQuestion.options.map((option, index) => (
+                            <button
+                                key={index}
+                                className="option-button"
+                                onClick={() => handleAnswer(index)}
                             >
-                                {opt}
-                            </div>
+                                {option}
+                            </button>
                         ))}
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                .option-item:hover {
-                    background: var(--glass-heavy);
-                    border-color: var(--primary-light);
-                    transition: 0.2s;
-                }
-            `}</style>
-        </section>
+        </div>
     );
 };
 

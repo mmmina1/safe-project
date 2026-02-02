@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { confirmPayment } from "../../api/paymentApi";
 
 export default function Success() {
     const [searchParams] = useSearchParams();
@@ -13,9 +13,9 @@ export default function Success() {
 
     useEffect(() => {
         // 성공 페이지 진입 시 자동으로 백엔드 승인 요청
-        const confirmPayment = async () => {
+        const handleConfirm = async () => {
             try {
-                const response = await axios.post("/api/v1/payments/confirm", {
+                const response = await confirmPayment({
                     paymentKey,
                     orderId,
                     amount,
@@ -30,7 +30,7 @@ export default function Success() {
         };
 
         if (paymentKey && orderId && amount) {
-            confirmPayment();
+            handleConfirm();
         }
     }, [paymentKey, orderId, amount]);
 
