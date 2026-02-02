@@ -1,11 +1,14 @@
-/* App.css */
-
-/* 브라우저 기본 여백 제거 */
-body, html {
+/* 전체 레이아웃 리셋 */
+* {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
+  box-sizing: border-box;
+}
+
+/* 높이 전파 (중요) */
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 /* root를 full height flexbox로 설정 */
@@ -16,30 +19,72 @@ body, html {
   width: 100%;
 }
 
-/* 앱 컨테이너 */
+/* 앱 컨테이너 - 일반 페이지용 */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #ffffff;
-  overflow: visible;
+  width: 100%;
 }
 
-/* 팝업창일 때 */
-.app-container.is-popup {
-  overflow: auto;
+/* app-root도 flex로 */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 }
 
 /* 메인 콘텐츠 영역이 남은 공간을 채움 */
-.content-wrapper {
-  flex: 1;
+.app-main {
+  flex: 1 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: visible;
 }
 
-/* 팝업창일 때 콘텐츠 영역 */
-.content-wrapper.is-popup {
-  overflow: auto;
+/* container도 flex로 */
+.app-main .container {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+/* footer는 아래에 붙게 */
+footer {
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* footer는 아래에 붙게 */
+footer {
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.btn-google {
+  background-color: #4285f4; /* Google Blue */
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+}
+
+.btn-google:hover,
+.btn-google:focus {
+  background-color: #3367d6;
+  color: #ffffff;
+}
+
+.btn-login-default {
+  background-color: #ffffff;
+  color: #1f2937;          /* 거의 블랙에 가까운 다크 */
+  border: 1px solid #d1d5db;
+  font-weight: 600;
+}
+
+.btn-login-default:hover,
+.btn-login-default:focus {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
 }

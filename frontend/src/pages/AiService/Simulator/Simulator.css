@@ -1,0 +1,175 @@
+/* 시뮬레이터 전용 디자인 시스템 */
+
+.simulator-container {
+    padding: 2rem;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.simulator-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+.simulator-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a237e;
+    margin-bottom: 0.5rem;
+}
+
+/* 유니티 통신 테스트 UI */
+.unity-comm-test {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    pointer-events: none;
+    /* 유니티 클릭방해 금지 */
+}
+
+.comm-box {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    /* 박스 영역만 클릭 허용 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.comm-box strong {
+    color: #4fc3f7;
+    font-size: 1.2rem;
+    margin-left: 5px;
+}
+
+.btn-send {
+    background: linear-gradient(135deg, #3949ab, #1a237e);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-send:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.2);
+}
+
+.btn-send:active {
+    transform: translateY(0);
+}
+
+.simulator-header p {
+    color: #666;
+    margin-bottom: 2.5rem;
+}
+
+/* 유니티 플레이어 영역 */
+.unity-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0d1117;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.unity-mock-ui {
+    z-index: 2;
+    text-align: center;
+    color: white;
+}
+
+.unity-mock-ui h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.unity-mock-ui p {
+    color: #8b949e;
+    margin-bottom: 2rem;
+}
+
+/* 실행 버튼 */
+.btn-unity-start {
+    background: linear-gradient(135deg, #3949ab, #1a237e);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-unity-start:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(26, 35, 126, 0.4);
+}
+
+/* 안내 문구 */
+.simulator-info {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.simulator-info span {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.floating-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}

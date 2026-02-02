@@ -1,0 +1,165 @@
+/* MyPage.css */
+
+:root {
+    --sidebar-width: 260px;
+    --primary-navy: #1a237e;
+    --accent-gold: #ffd600;
+    --bg-light: #f4f7fa;
+    --safe-green: #28a745;
+    --warning-orange: #f39c12;
+    --danger-red: #e74c3c;
+}
+
+.mypage-container {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    /* Adjust based on your header height */
+    background-color: var(--bg-light);
+}
+
+/* Sidebar Styles */
+.mypage-sidebar {
+    width: var(--sidebar-width);
+    background: white;
+    border-right: 1px solid #e0e6ed;
+    padding: 2rem 0;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    color: #5c6c7b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.sidebar-item:hover {
+    background-color: #f8fbff;
+    color: var(--primary-navy);
+}
+
+.sidebar-item.active {
+    background-color: #e8f0fe;
+    color: var(--primary-navy);
+    border-right: 4px solid var(--primary-navy);
+}
+
+.sidebar-item-label {
+    margin-left: 12px;
+}
+
+.sidebar-category {
+    font-size: 0.75rem;
+    color: #adb5bd;
+    padding: 1.5rem 1.5rem 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Content Area Styles */
+.mypage-content {
+    flex: 1;
+    padding: 2rem 3rem;
+    max-width: 1200px;
+}
+
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+/* Card Styles */
+.dashboard-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    height: 100%;
+}
+
+.card-label {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #34495e;
+}
+
+/* Status Badges */
+.badge-safe {
+    background: #e8f5e9;
+    color: var(--safe-green);
+}
+
+.badge-warning {
+    background: #fff3e0;
+    color: var(--warning-orange);
+}
+
+.badge-danger {
+    background: #ffebee;
+    color: var(--danger-red);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .mypage-container {
+        flex-direction: column;
+    }
+
+    .mypage-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid #e0e6ed;
+        padding: 1rem;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .sidebar-item {
+        padding: 0.5rem 1rem;
+        border-right: none !important;
+    }
+
+    .sidebar-category {
+        display: none;
+    }
+
+    .mypage-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Chart Container */
+.chart-container {
+    height: 300px;
+    width: 100%;
+}

@@ -1,0 +1,7 @@
+# 유니티 빌드 파일이 깨지지 않도록 바이너리로 지정
+*.wasm binary
+*.data binary
+*.br binary
+*.js.br binary
+*.wasm.br binary
+*.data.br binary

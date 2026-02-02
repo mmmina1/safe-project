@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false, length = 50)
     private String name; // 닉네임/이름(필수) - DB 스키마에 따르면 name이 닉네임/이름 역할
 
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "password_hash", nullable = true, length = 255)
     private String passwordHash;
 
     /* ===============================

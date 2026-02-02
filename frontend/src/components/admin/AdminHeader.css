@@ -1,0 +1,51 @@
+/* src/components/admin/AdminHeader.css */
+
+:root {
+  --admin-header-height: 72px;
+}
+
+.admin-header {
+  height: 72px;
+  background-color: #171a33;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /* 고정 방식 변경: sticky -> fixed */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000; /* App.js의 다른 요소보다 위에 오도록 높임 */
+  width: 100%;
+  box-sizing: border-box; /* 패딩이 너비에 영향을 주지 않도록 설정 */
+}
+
+.admin-logo {
+  color: #ffc107;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+}
+
+.admin-nav-wrap {
+  display: flex;
+  gap: 24px;
+}
+
+.admin-nav {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+}
+
+.admin-nav.active {
+  color: #ffc107;
+  font-weight: 700;
+  border-bottom-color: #ffc107;
+}

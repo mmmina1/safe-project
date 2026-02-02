@@ -1,0 +1,481 @@
+/* ProductDetail.css */
+
+/* 뒤로가기 버튼 */
+.sp-back-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  padding: 10px 20px;
+  color: #eaf0ff;
+  font-weight: 600;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.sp-back-btn:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* 로딩 및 에러 */
+.sp-detail-loading,
+.sp-detail-error {
+  padding: 60px 20px;
+  text-align: center;
+  color: #eaf0ff;
+  font-size: 16px;
+}
+
+/* 메인 컨테이너 */
+.sp-detail-container {
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* 상품 카드 */
+.sp-product-card {
+  padding: 24px;
+}
+
+.sp-product-card-inner {
+  position: relative;
+  min-height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(70,90,200,0.4), rgba(180,70,140,0.3));
+}
+
+/* 상품 정보 오버레이 */
+.sp-product-overlay {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  padding: 24px;
+  margin: -32px;
+  margin-top: 100px;
+  border-radius: 0 0 20px 20px;
+}
+
+.sp-product-name {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 900;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.sp-product-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sp-star {
+  color: #FFD700;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sp-reviews {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+}
+
+.sp-product-desc {
+  color: rgba(255,255,255,0.9);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+/* 가격 및 액션 */
+.sp-product-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sp-product-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.sp-price-label {
+  color: rgba(255,255,255,0.8);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sp-price-amount {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.sp-price-unit {
+  color: rgba(255,255,255,0.9);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sp-free {
+  color: #4CAF50;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.sp-subscribe-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, rgba(255,70,140,0.9), rgba(255,100,100,0.9));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sp-subscribe-button:hover {
+  background: linear-gradient(135deg, rgba(255,70,140,1), rgba(255,100,100,1));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255,70,140,0.5);
+}
+
+/* 탭 메뉴 */
+.sp-tabs {
+  display: flex;
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+  padding: 0 24px;
+}
+
+.sp-tab-button {
+  flex: 1;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  color: rgba(234,240,255,0.5);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.sp-tab-button:hover {
+  color: rgba(234,240,255,0.8);
+}
+
+.sp-tab-button.active {
+  color: #eaf0ff;
+  border-bottom-color: rgba(255,70,140,0.9);
+}
+
+/* 탭 컨텐츠 */
+.sp-tab-content {
+  padding: 32px 24px;
+  min-height: 200px;
+}
+
+.sp-intro-content,
+.sp-reviews-content {
+  color: rgba(234,240,255,0.85);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.sp-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.sp-features-list li {
+  padding: 12px 0;
+  padding-left: 28px;
+  position: relative;
+  color: rgba(234,240,255,0.9);
+}
+
+.sp-features-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #4CAF50;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+/* 모달 배경 */
+.sp-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+  padding: 20px;
+}
+
+/* 모달 */
+.sp-modal {
+  background: rgba(30,35,55,0.98);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  backdrop-filter: blur(20px);
+}
+
+.sp-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sp-modal-header h3 {
+  color: #eaf0ff;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.sp-modal-close {
+  background: none;
+  border: none;
+  color: rgba(234,240,255,0.6);
+  font-size: 32px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.sp-modal-close:hover {
+  background: rgba(255,255,255,0.05);
+  color: #eaf0ff;
+}
+
+.sp-modal-body {
+  padding: 28px;
+}
+
+/* 플랜 옵션 */
+.sp-plan-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-plan-option:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.sp-plan-option input[type='radio'] {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sp-plan-option input[type='radio']:checked {
+  border-color: rgba(255,70,140,0.9);
+}
+
+.sp-plan-option input[type='radio']:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: rgba(255,70,140,0.9);
+  border-radius: 50%;
+}
+
+.sp-plan-info {
+  flex: 1;
+}
+
+.sp-plan-name {
+  color: #eaf0ff;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.sp-plan-price {
+  color: rgba(234,240,255,0.65);
+  font-size: 13px;
+}
+
+/* 결제 요약 */
+.sp-payment-summary {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.sp-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  color: rgba(234,240,255,0.7);
+  font-size: 14px;
+}
+
+.sp-summary-row:not(:last-child) {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sp-summary-row strong {
+  color: #eaf0ff;
+  font-weight: 700;
+}
+
+/* 체크박스 */
+.sp-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255,70,140,0.08);
+  border: 1px solid rgba(255,70,140,0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.sp-checkbox-label input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: rgba(255,70,140,0.9);
+}
+
+.sp-checkbox-label span {
+  color: rgba(234,240,255,0.9);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 모달 푸터 */
+.sp-modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 28px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.sp-modal-btn {
+  flex: 1;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.sp-btn-subscribe {
+  background: linear-gradient(135deg, rgba(255,70,140,0.9), rgba(255,100,100,0.9));
+  color: white;
+}
+
+.sp-btn-subscribe:hover {
+  background: linear-gradient(135deg, rgba(255,70,140,1), rgba(255,100,100,1));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255,70,140,0.4);
+}
+
+.sp-btn-cancel {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(234,240,255,0.8);
+}
+
+.sp-btn-cancel:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  .sp-detail-container {
+    max-width: 100%;
+  }
+  
+  .sp-product-card {
+    padding: 16px;
+  }
+  
+  .sp-product-card-inner {
+    min-height: 450px;
+    padding: 24px;
+  }
+  
+  .sp-product-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sp-subscribe-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .sp-modal {
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+  }
+}
