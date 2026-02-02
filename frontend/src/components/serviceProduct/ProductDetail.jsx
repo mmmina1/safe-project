@@ -91,6 +91,11 @@ function ProductDetail() {
                             {/* 상품 설명 */}
                             <p className='sp-detail-desc'>{product.description}</p>
 
+                            {/* 가격 */}
+                            <div>
+                                
+                            </div>
+                        
 
 
                         </div>
