@@ -86,10 +86,11 @@ function LoginPage() {
   // 카카오 로그인 버튼 클릭 시
   const handleKakaoLogin = () => {
     const kakaoAuthUrl =
-      `https://kauth.kakao.com/oauth/authorize?` +
+      'https://kauth.kakao.com/oauth/authorize?' +
       `client_id=${KAKAO_CLIENT_ID}` +
       `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}` +
-      `&response_type=code`;
+      '&response_type=code' +
+      '&prompt=login'; // 매번 계정 선택/로그인 강제
 
     window.location.href = kakaoAuthUrl;
   };
@@ -135,6 +136,7 @@ function LoginPage() {
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="off"           // 브라우저 자동완성 방지
           />
         </div>
 
@@ -147,12 +149,13 @@ function LoginPage() {
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"  // 브라우저 자동완성 방지
           />
         </div>
 
         <button
           type="submit"
-          className="btn btn-primary w-100"
+          className="btn btn-login-default w-100"
           disabled={loading}
         >
           {loading ? '처리 중...' : '로그인'}
@@ -174,7 +177,7 @@ function LoginPage() {
       {/* 구글 로그인 버튼 */}
       <button
         type="button"
-        className="btn btn-outline-dark w-100"
+        className="btn btn-google w-100"
         onClick={handleGoogleLogin}
       >
         구글로 로그인
