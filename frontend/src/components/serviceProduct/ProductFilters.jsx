@@ -6,7 +6,7 @@ function ProductFilters({value, onChange}) {
 
     //엔터 키 지원을 위한 핸들러
     const handleKeyDown = (e) => {
-        if(e.key === "ENTER"){
+        if(e.key === "Enter"){
             onChange({q:localQ})
         }
     }
