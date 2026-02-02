@@ -1,70 +1,204 @@
-# Getting Started with Create React App
+# Safe Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+사기 방지 및 피해 예방 플랫폼
 
-## Available Scripts
+## 기술 스택
 
-In the project directory, you can run:
+### Backend
+- **Framework**: Spring Boot 3.5.10
+- **Database**: MySQL 8.0
+- **ORM**: Hibernate + QueryDSL
+- **Security**: Spring Security + JWT
+- **Cache**: Redis
+- **Scheduler**: Spring Scheduler
+- **HTTP Client**: RestTemplate / WebClient
 
-### `npm start`
+### Frontend
+- **Framework**: React + Vite
+- **State Management**: React Query, Zustand
+- **HTTP Client**: Axios
+- **Form**: React Hook Form
+- **Charts**: Recharts
+- **Map**: Kakao Map API
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Infrastructure
+- **Container**: Docker + Docker Compose
+- **Web Server**: Nginx
+- **CI/CD**: GitHub Actions (선택사항)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 프로젝트 구조
 
-### `npm test`
+```
+safe-project/
+├── backend/              # Spring Boot 백엔드
+│   ├── src/main/java/
+│   │   └── com/safe/backend/
+│   │       ├── domain/   # 도메인별 기능
+│   │       │   ├── admin/    # 관리자 기능
+│   │       │   ├── user/     # 회원 관리
+│   │       │   ├── auth/     # 인증
+│   │       │   └── ...
+│   │       └── global/    # 전역 설정
+│   └── src/main/resources/
+│       └── application.yml
+├── backend-python/       # Python 백엔드 (AI 서비스)
+├── frontend/             # React 프론트엔드
+└── docker-compose.yml    # Docker Compose 설정
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 시작하기
 
-### `npm run build`
+### 사전 요구사항
+- Java 17+
+- Node.js 18+
+- Docker & Docker Compose
+- MySQL 8.0 (또는 Docker 사용)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. 데이터베이스 실행 (Docker)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# MySQL + Redis 실행
+docker-compose up -d
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# 로그 확인
+docker-compose logs -f mysql
+```
 
-### `npm run eject`
+### 2. 백엔드 실행
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+cd backend
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Gradle Wrapper로 실행
+./gradlew bootRun
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# 또는 IDE에서 BackendApplication 실행
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+백엔드는 `http://localhost:8081`에서 실행됩니다.
 
-## Learn More
+### 3. 프론트엔드 실행
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+cd frontend
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# 의존성 설치
+npm install
 
-### Code Splitting
+# 개발 서버 실행
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+프론트엔드는 `http://localhost:5173`에서 실행됩니다.
 
-### Analyzing the Bundle Size
+## 환경 변수
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 로컬 개발 환경
+기본적으로 `application-local.yml` 설정을 사용합니다.
 
-### Making a Progressive Web App
+```yaml
+spring:
+  profiles:
+    active: local
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 개발 서버 환경
+```bash
+export SPRING_PROFILES_ACTIVE=dev
+export DB_URL=jdbc:mysql://3.39.143.83:3306/safe_db
+export DB_USERNAME=admin
+export DB_PASSWORD=safe1234
+```
 
-### Advanced Configuration
+### 운영 환경
+```bash
+export SPRING_PROFILES_ACTIVE=prod
+export DB_URL=...
+export DB_USERNAME=...
+export DB_PASSWORD=...
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 주요 기능
 
-### Deployment
+### 관리자 기능
+- 회원 검색 및 조회
+- 고객지원 대시보드
+- 서비스 상품 관리
+- 신고 게시글 처리
+- 블라인드 사유 관리
+- 공지사항 관리
+- 배너 관리
+- 블랙리스트 관리
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### 사용자 기능
+- 회원가입/로그인 (자체, 카카오, 구글)
+- AI 취약도 진단
+- 커뮤니티 게시글 작성/조회
+- 사례 공유 및 검색
 
-### `npm run build` fails to minify
+## 데이터베이스
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 주요 테이블
+- `users` - 회원 정보
+- `visit_post` - 커뮤니티 게시글
+- `post_reason` - 게시글 신고
+- `blind_reasons` - 블라인드 사유
+- `blacklist` - 블랙리스트 (전화번호/URL)
+- `notices` - 공지사항
+- `banners` - 메인 배너
+- `service_products` - 서비스 상품
+- `ai_diag_session` - AI 진단 세션
+- `risk_detection_log` - 위험 탐지 로그
+
+## API 문서
+
+### 관리자 API
+- `GET /api/admin/users/search` - 회원 검색
+- `GET /api/admin/cs/consultations` - CS 상담 목록
+- `GET /api/admin/community/reports` - 신고 게시글 목록
+- `GET /api/admin/blind-reasons` - 블라인드 사유 목록
+- `GET /api/admin/notices` - 공지사항 목록
+- `GET /api/admin/banners` - 배너 목록
+- `GET /api/admin/blacklist` - 블랙리스트 목록
+
+## 개발 가이드
+
+### QueryDSL 사용법
+```java
+@Repository
+public class UserRepositoryCustomImpl implements UserRepositoryCustom {
+    
+    @Autowired
+    private JPAQueryFactory queryFactory;
+    
+    public List<User> searchUsers(String keyword) {
+        QUser user = QUser.user;
+        return queryFactory
+            .selectFrom(user)
+            .where(user.email.contains(keyword)
+                .or(user.name.contains(keyword)))
+            .fetch();
+    }
+}
+```
+
+### Redis 캐싱 사용법
+```java
+@Service
+public class UserService {
+    
+    @Cacheable(value = "users", key = "#userId")
+    public User getUser(Long userId) {
+        return userRepository.findById(userId);
+    }
+    
+    @CacheEvict(value = "users", key = "#userId")
+    public void updateUser(Long userId, User user) {
+        // 업데이트 로직
+    }
+}
+```
+
+## 라이선스
+
+이 프로젝트는 내부 사용을 위한 것입니다.

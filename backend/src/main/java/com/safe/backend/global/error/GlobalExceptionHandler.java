@@ -1,11 +1,19 @@
 package com.safe.backend.global.error;// com.safe.backend.global.error.GlobalExceptionHandler.java
 import com.safe.backend.global.error.ErrorResponse;
+import jakarta.persistence.PersistenceException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class.getName());
 
     // 이메일 중복 / 잘못된 요청
     @ExceptionHandler(IllegalArgumentException.class)
@@ -15,9 +23,36 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
+    // DTO 검증 실패 (@Valid) - 공지 등 폼 검증
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(err -> err.getField() + " " + (err.getDefaultMessage() != null ? err.getDefaultMessage() : "값이 올바르지 않습니다."))
+                .orElse("입력값을 확인해주세요.");
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
+    }
+
+    // DB 제약 위반 (FK 등) - 400으로 반환해 원인 노출
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException e) {
+        log.log(Level.WARNING, "DataIntegrityViolation", e);
+        String msg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+        if (msg != null && msg.length() > 200) msg = msg.substring(0, 200);
+        return ResponseEntity.badRequest().body(new ErrorResponse("데이터 제약으로 처리할 수 없습니다. " + (msg != null ? msg : "")));
+    }
+
+    // JPA/Persistence 예외
+    @ExceptionHandler(PersistenceException.class)
+    public ResponseEntity<ErrorResponse> handlePersistence(PersistenceException e) {
+        log.log(Level.WARNING, "PersistenceException", e);
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage() != null ? e.getMessage() : "DB 처리 중 오류가 발생했습니다."));
+    }
+
     // (선택) 예상 못 한 서버 에러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.log(Level.SEVERE, "Unhandled exception", e);
         return ResponseEntity
                 .internalServerError()
                 .body(new ErrorResponse("서버 오류가 발생했습니다."));

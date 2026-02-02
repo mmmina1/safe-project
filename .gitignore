@@ -1,73 +1,54 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Build
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
 
-# testing
-/coverage
+# Logs
+*.log
+logs/
 
-# production
-/build
-
-# misc
+# OS
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+Thumbs.db
 
+# Environment
+.env
+.env.local
+*.properties.local
+
+# QueryDSL
+backend/build/generated/
+
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# =========================
-# IntelliJ IDEA
-.idea/
-*.iml
-
-# VSCode
-.vscode/
-
-# =========================
-# Gradle / Spring
-.gradle/
-build/
-out/
-
-# Logs
-*.log
-
-# =========================
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-
-# Virtual environments
-.venv/
+.Python
 venv/
 env/
-ENV/
 
-# PyCharm
-.idea/
-*.iml
+# Docker
+docker-compose.override.yml
 
-# Python packages
-*.egg-info/
-dist/
-build/
-
-# Environment variables
-.env
-.env.local
-
-# =========================
-# Backend secret configs
-# =========================
-backend/src/main/resources/application-local.properties
-backend/src/main/resources/application-dev.properties
-backend/src/main/resources/application-prod.properties
+# Database
+*.db
+*.sqlite
