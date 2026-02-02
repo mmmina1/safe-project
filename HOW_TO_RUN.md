@@ -1,28 +1,10 @@
 # 🚀 실행 가이드
 
-<<<<<<< HEAD
-=======
-1번콘솔
-cd frontend
-npm run dev
-
-2번콘솔
-cd backend-python\py
-.\.venv\Scripts\Activate.ps1
-cd backend
-python main.py
-
-3번콘솔
-cd backend
-.\gradlew bootRun
-
-
->>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
 ## 📋 개요
 
 이 프로젝트는 3개의 서버로 구성되어 있습니다:
 - **React Frontend** (포트 5173)
-- **Java Spring Boot Backend** (포트 8081)
+- **Java Spring Boot Backend** (포트 8080)
 - **Python FastAPI AI Backend** (포트 8000)
 
 ---
@@ -46,7 +28,7 @@ cd E:\safe\safe-project\backend
 
 브라우저에서 접속:
 ```
-http://localhost:8081/api/test
+http://localhost:8080/api/test
 ```
 
 응답: `스프링이랑 연결 성공했다!`
@@ -104,7 +86,7 @@ http://localhost:8000/health
 ## 🔗 전체 통신 흐름
 
 ```
-React (5173) → Spring Boot (8081) → Python (8000) → OpenAI API
+React (5173) → Spring Boot (8080) → Python (8000) → OpenAI API
                       ↓
                   MySQL DB
 ```
@@ -114,7 +96,7 @@ React (5173) → Spring Boot (8081) → Python (8000) → OpenAI API
 ## 🧪 AI 챗봇 테스트
 
 1. **모든 서버 실행 확인**
-   - Spring Boot: http://localhost:8081/api/test
+   - Spring Boot: http://localhost:8080/api/test
    - Python: http://localhost:8000/health
    - React: http://localhost:5173
 
@@ -131,7 +113,7 @@ React (5173) → Spring Boot (8081) → Python (8000) → OpenAI API
 ### **포트 충돌**
 ```powershell
 # 포트 사용 중인 프로세스 확인
-netstat -ano | findstr :8081
+netstat -ano | findstr :8080
 netstat -ano | findstr :8000
 netstat -ano | findstr :5173
 

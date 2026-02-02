@@ -64,9 +64,6 @@ build/
 # Environment variables
 .env
 .env.local
-<<<<<<< HEAD
-=======
-
 
 # =========================
 # Backend secret configs
@@ -74,4 +71,3 @@ build/
 backend/src/main/resources/application-local.properties
 backend/src/main/resources/application-dev.properties
 backend/src/main/resources/application-prod.properties
->>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534

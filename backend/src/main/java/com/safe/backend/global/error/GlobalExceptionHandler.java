@@ -1,9 +1,5 @@
 package com.safe.backend.global.error;// com.safe.backend.global.error.GlobalExceptionHandler.java
-<<<<<<< HEAD
 import com.safe.backend.global.error.ErrorResponse;
-=======
-
->>>>>>> b0ab98293bedc6ec51b2aff874dc0d691bf6e534
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
