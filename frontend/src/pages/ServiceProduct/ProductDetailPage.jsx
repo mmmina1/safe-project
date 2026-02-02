@@ -1,11 +1,5 @@
-import React from 'react'
+import ProductDetail from "../../components/serviceProduct/ProductDetail"
 
-function ProductDetailPage() {
-  return (
-    <div>
-      
-    </div>
-  )
+export default function ProductDetailPage() {
+  return <ProductDetail />;
 }
-
-export default ProductDetailPage
