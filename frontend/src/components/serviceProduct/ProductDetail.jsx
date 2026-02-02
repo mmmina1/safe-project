@@ -93,8 +93,6 @@ function ProductDetail() {
 
 
 
-
-
                         </div>
 
                     </div>
