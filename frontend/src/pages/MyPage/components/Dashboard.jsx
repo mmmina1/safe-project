@@ -37,8 +37,8 @@ const Dashboard = () => {
             {
                 label: '보안 점수',
                 data: [65, 78, 72, 80, 82, 85], // 실제 데이터 값
-                borderColor: '#1a237e', // 선 색상
-                backgroundColor: 'rgba(26, 35, 126, 0.1)', // 선 아래 색상
+                borderColor: '#60a5fa', // 선 색상 (Accent Blue)
+                backgroundColor: 'rgba(96, 165, 250, 0.2)', // 선 아래 색상
                 tension: 0.4, // 선을 부드럽게 만드는 정도
                 fill: true,
             },

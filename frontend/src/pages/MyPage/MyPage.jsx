@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import DiagnosisCenter from './components/DiagnosisCenter';
 import Shopping from './components/Shopping';
 import Settings from './components/Settings';
+import PaymentPractice from './components/PaymentPractice';
 import './MyPage.css';
 
 // ============================================================
@@ -35,6 +36,9 @@ const MyPage = () => {
         }
         if (activeTab.startsWith('settings')) {
             return <Settings initialTab={activeTab === 'settings-profile' ? 'profile' : 'payment'} />;
+        }
+        if (activeTab === 'payment-practice') {
+            return <PaymentPractice />;
         }
         return <Dashboard />;
     };

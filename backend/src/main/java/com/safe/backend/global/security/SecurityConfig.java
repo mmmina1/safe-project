@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.http.HttpMethod;
 
@@ -46,7 +45,8 @@ public class SecurityConfig {
                                                                 "/api/test",
                                                                 "/oauth2/**",
                                                                 "/oauth2/callback/**",
-                                                                "/api/ai/**")
+                                                                "/api/ai/**",
+                                                                "/api/v1/payments/**")
                                                 .permitAll()
 
                                                 // ✅ 해당 내용 추가!! - 최민아
