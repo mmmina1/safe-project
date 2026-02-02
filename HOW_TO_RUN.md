@@ -1,5 +1,40 @@
 # 🚀 실행 가이드
 
+
+1번콘솔
+
+<!-- 첫 실행시 -->
+cd frontend
+npm install
+npm install react-router-dom lucide-react zustand
+npm run dev
+
+<!-- 재시작시 -->
+cd frontend
+npm run dev
+
+2번콘솔
+
+<!-- 첫 실행시 -->
+cd backend-python\py
+python -m venv .venv              
+.\.venv\Scripts\Activate.ps1       
+pip install -r requirements.txt   
+python scripts\ingest.py
+cd backend                         
+python main.py                   
+
+<!-- 재시작시 -->
+cd backend-python\py
+.\.venv\Scripts\Activate.ps1
+cd backend
+python main.py
+
+3번콘솔
+
+cd backend
+.\gradlew bootRun
+
 ## 📋 개요
 
 이 프로젝트는 3개의 서버로 구성되어 있습니다:
