@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from './components/Header.jsx';
@@ -11,6 +11,10 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';  //  추가
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
+import AdminLayout from './layouts/AdminLayout.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import UserManagement from './pages/admin/UserManagement.jsx';
+import DataPolicy from './pages/admin/DataPolicy.jsx';
 
 import './App.css';
 import Chatbot from './pages/AiService/Chatbot/Chatbot';
