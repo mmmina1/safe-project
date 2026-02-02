@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/test",
+                                "/api/monitoring/**",
                                 "/oauth2/**",
                                 "/oauth2/callback/**"
                         ).permitAll()

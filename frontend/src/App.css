@@ -6,9 +6,12 @@
 }
 
 /* 높이 전파 (중요) */
-html, body {
+html,body {
   margin: 0;
   padding: 0;
+  /* 추가부분  */
+  width: 100%;  
+  height: 100%;
 }
 
 /* root를 full height flexbox로 설정 */
@@ -43,6 +46,7 @@ html, body {
   flex-direction: column;
 }
 
+
 /* container도 flex로 */
 .app-main .container {
   flex: 1 0 auto;
@@ -54,4 +58,17 @@ footer {
   margin-top: auto;
   flex-shrink: 0;
   width: 100%;
+}
+
+/* =========================
+   Header (260202 kjs 추가)
+========================= */
+.app-header {
+  position: sticky;   /* fixed ❌ */
+  top: 0;
+  z-index: 1000;
+
+  height: 64px;
+  background-color: #171a33;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }

@@ -14,7 +14,8 @@ import MainPage from './components/main/MainPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import CommunityList from './components/community/CommunityList.jsx';
-
+import MonitoringPage from "./components/monitoring/MonitoringPage";
+ 
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
 import CommunityPost from './components/community/CommunityPost.jsx';
@@ -70,7 +71,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/monitoring" element={<MainPage />} />
+        <Route path="/monitoring" element={<MonitoringPage />} />
         <Route path="/ai" element={<MainPage />} />
         
         {/* 커뮤니티 페이지 */}
