@@ -42,3 +42,4 @@ function CommunityCard({post}) {
 }
 
 export default CommunityCard
+
