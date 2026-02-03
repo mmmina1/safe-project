@@ -51,6 +51,7 @@ function ProductDetail() {
         setLoading(false)
       }
     }
+    
 
     fetchProduct()
     return () => { alive = false }
