@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "leaflet/dist/leaflet.css";  // KJS 추가 260202
 
 const queryClient = new QueryClient({
   defaultOptions: {
