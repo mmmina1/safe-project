@@ -1,0 +1,20 @@
+services:
+  # 파이썬 AI 백엔드 서비스
+  python-backend:
+    build:
+      context: ./backend-python/py
+      dockerfile: Dockerfile
+    container_name: safe-python-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend-python/py:/app
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PYTHONPATH=/app/backend
+    # 실제 .env 파일이 있는 경로로 수정
+    env_file:
+      - ./backend-python/py/backend/.env
+    restart: always
+
+# 향후 여기에 mysql, redis 등을 추가하여 통합 관리할 수 있습니다.
