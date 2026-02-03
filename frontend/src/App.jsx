@@ -1,33 +1,35 @@
-// frontend/src/App.jsx
+// src/App.jsx
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// 라우터
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+//라우터 전용
+import { Routes, Route, Link, useLocation} from 'react-router-dom';
+import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
 
-// 공통 컴포넌트
+
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import ScrollToTop from './components/ScrollToTop.jsx';
+
 
 // 페이지 컴포넌트들
 import MainPage from './components/main/MainPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import CommunityList from './components/community/CommunityList.jsx';
-import CommunityPost from './components/community/CommunityPost.jsx';
-import CommunityDetail from './components/community/CommunityDetail.jsx';
+
 
 import Terms from './pages/terms';
 import Privacy from './pages/privacy';
-
-import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import CommunityPost from './components/community/CommunityPost.jsx';
+import CommunityDetail from './components/community/CommunityDetail.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 // 관리자 영역
 import AdminLayout from './layouts/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import DataPolicy from './pages/admin/DataPolicy';
+import AdminRoute from './AdminRoute.jsx';
 
 // 상품 페이지
 import ProductPage from './pages/ServiceProduct/ProductPage.jsx';
@@ -39,8 +41,9 @@ import KakaoLogoutCallbackPage from './pages/KakaoLogoutCallbackPage.jsx';
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 
 function App() {
-  const location = useLocation();
 
+  const location = useLocation();
+  
   // 팝업창인지 확인 (window.opener가 있으면 팝업창)
   const isPopup = window.opener !== null;
 
@@ -77,7 +80,7 @@ function App() {
               <Link to="/chatbot">🤖 AI 챗봇</Link>
             </nav>
 
-            {/* 라우팅 영역 */}
+                        {/* 라우팅 영역 */}
             <Routes>
               {/* 메인/인증 */}
               <Route path="/" element={<MainPage />} />
@@ -99,30 +102,29 @@ function App() {
               <Route path="/product/:productId" element={<ProductDetailPage />} />
 
               {/* OAuth 콜백 */}
-              <Route
-                path="/oauth/callback/kakao"
-                element={<KakaoCallbackPage />}
-              />
-              <Route
-                path="/oauth/logout/kakao"
-                element={<KakaoLogoutCallbackPage />}
-              />
-              <Route
-                path="/oauth/callback/google"
-                element={<GoogleCallbackPage />}
-              />
+              <Route path="/oauth/callback/kakao" element={<KakaoCallbackPage />} />
+              <Route path="/oauth/logout/kakao" element={<KakaoLogoutCallbackPage />} />
+              <Route path="/oauth/callback/google" element={<GoogleCallbackPage />} />
 
               {/* 약관/개인정보 */}
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
 
               {/* 관리자 영역 */}
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
                 <Route index element={<AdminDashboard />} />
                 <Route path="manage" element={<UserManagement />} />
                 <Route path="policy" element={<DataPolicy />} />
               </Route>
-            </Routes>
+            </Routes> 
+
           </div>
 
           {/* 푸터 */}
