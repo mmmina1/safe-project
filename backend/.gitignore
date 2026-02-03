@@ -46,4 +46,6 @@ backend/.venv/
 Thumbs.db
 
 # Spring Boot config
-src/main/resources/application.properties
+src/main/resources/application-local.properties
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
