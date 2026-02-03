@@ -41,6 +41,17 @@ import KakaoLogoutCallbackPage from './pages/KakaoLogoutCallbackPage.jsx';
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 import MonitoringPage from './components/monitoring/MonitoringPage.jsx';
 
+import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
+import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
+import UserSearchPage from './pages/admin/operator/UserSearchPage.jsx';
+import CsDashboardPage from './pages/admin/operator/CsDashboardPage.jsx';
+import ServiceProductsPage from './pages/admin/operator/ServiceProductsPage.jsx';
+import CommunityReportsPage from './pages/admin/operator/CommunityReportsPage.jsx';
+import BlindReasonsPage from './pages/admin/operator/BlindReasonsPage.jsx';
+import NoticesPage from './pages/admin/operator/NoticesPage.jsx';
+import BannersPage from './pages/admin/operator/BannersPage.jsx';
+import BlacklistPage from './pages/admin/operator/BlacklistPage.jsx';
+
 function App() {
 
   const location = useLocation();
@@ -54,6 +65,11 @@ function App() {
 
   // 팝업이거나 약관/개인정보 페이지면 헤더/푸터 숨김
   const showHeaderFooter = !isPopup && !isTermsOrPrivacy;
+
+  const isAdminLike =
+  location.pathname.startsWith('/admin') ||
+  location.pathname.startsWith('/operator');
+
 
   return (
     <div
@@ -74,12 +90,12 @@ function App() {
         <main className="app-main">
           <div className="container">
             {/* 네비게이션 */}
-            <nav className="my-3 border-bottom pb-2">
-              <Link to="/" className="me-3">
-                🏠 홈
-              </Link>
-              <Link to="/chatbot">🤖 AI 챗봇</Link>
-            </nav>
+            {!isAdminLike && (
+                <nav className="my-3 border-bottom pb-2">
+                  <Link to="/" className="me-3">🏠 홈</Link>
+                  <Link to="/chatbot">🤖 AI 챗봇</Link>
+                </nav>
+              )}
 
                         {/* 라우팅 영역 */}
             <Routes>
@@ -123,6 +139,19 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="manage" element={<UserManagement />} />
                 <Route path="policy" element={<DataPolicy />} />
+              </Route>
+
+              {/* 운영자 페이지 */}
+              <Route path="/operator" element={<OperatorLayout />}>
+                <Route index element={<OperatorDashboard />} />
+                <Route path="users" element={<UserSearchPage />} />
+                <Route path="cs" element={<CsDashboardPage />} />
+                <Route path="products" element={<ServiceProductsPage />} />
+                <Route path="community-reports" element={<CommunityReportsPage />} />
+                <Route path="blind-reasons" element={<BlindReasonsPage />} />
+                <Route path="notices" element={<NoticesPage />} />
+                <Route path="banners" element={<BannersPage />} />
+                <Route path="blacklist" element={<BlacklistPage />} />
               </Route>
             </Routes> 
 

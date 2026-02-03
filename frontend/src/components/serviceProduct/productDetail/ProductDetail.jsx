@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProductDetail } from '../../../api/productAPI'
-import "../../assets/css/ServiceProduct/ProductDetail.css"
-import ProductQuickInfo from './ProductQuickInfo'
+import "../../../assets/css/ServiceProduct/ProductDetail.css";
 
 function ProductDetail() {
   const { productId } = useParams()
@@ -195,7 +194,32 @@ function ProductDetail() {
 
           {/* 상세 정보 섹션 */}
           <div className='sp-detail-info'>
-            <ProductQuickInfo stockQty={product.stockQty} serviceLevel={product.serviceLevel} status={product.status}/>
+            {/* 빠른 정보 카드: DB 없으니 임시(있으면 표시) */}
+            <div className='sp-quick-info'>
+              <div className='sp-info-item'>
+                <div className='sp-info-icon'>📦</div>
+                <div className='sp-info-content'>
+                  <span className='sp-info-label'>재고</span>
+                  <span className='sp-info-value'>
+                    {product.stockQty != null ? `${product.stockQty}개` : '-'}
+                  </span>
+                </div>
+              </div>
+              <div className='sp-info-item'>
+                <div className='sp-info-icon'>🏷️</div>
+                <div className='sp-info-content'>
+                  <span className='sp-info-label'>서비스 등급</span>
+                  <span className='sp-info-value'>{product.serviceLevel ?? '-'}</span>
+                </div>
+              </div>
+              <div className='sp-info-item'>
+                <div className='sp-info-icon'>✅</div>
+                <div className='sp-info-content'>
+                  <span className='sp-info-label'>상태</span>
+                  <span className='sp-info-value'>{product.status ?? '-'}</span>
+                </div>
+              </div>
+            </div>
 
             {/* 탭 메뉴 */}
             <div className='sp-tabs'>
