@@ -3,12 +3,18 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-router = APIRouter(tags=["Simulator"]) # 라우터 정의
+from app.features.a_data.sim.sources import sim_source
 
-@router.post("/simulator") # 경로 정의
-async def simulator_endpoint():
-    print("시뮬레이터 API 호출됨")
-    return {"status": "success"} # 최소한의 응답
+router = APIRouter(tags=["Simulator"])
+
+class SimRequest(BaseModel):
+    message: str
+
+@router.post("/simulator")
+async def simulator_endpoint(request: SimRequest):
+    print(f"시뮬레이터 API 호출됨: {request.message}")
+    result = sim_source.get_simulation_response(request.message)
+    return {"status": "success", "data": result}
 
 
 

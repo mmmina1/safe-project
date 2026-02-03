@@ -35,9 +35,16 @@ docker-compose up
 - 소스 코드 수정 사항은 빌드 없이도 실시간 반영(Hot-reload)됩니다.
 - 접속 주소: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-#### 안전하게 종료하기
 - 실행 중인 터미널 창에서 **`Ctrl + C`**를 누르면 안전하게 종료됩니다.
 - 또는 다른 터미널에서 `docker-compose down` 명령어를 입력하세요.
+
+#### 🧠 AI 지식(Vector DB) 업데이트 방법
+텍스트 파일(`data/` 폴더 내)을 수정하거나 추가한 후에는 다음 명령어를 실행하여 AI의 지식을 갱신해야 합니다.
+```powershell
+# 도커 컨테이너 안에서 인제스트 스크립트 실행
+docker exec -it safe-python-backend python scripts/ingest.py
+```
+- `data/chat`, `data/simulation`, `data/diagnosis` 폴더별로 지식이 자동 분류되어 저장됩니다.
 
 ---
 
