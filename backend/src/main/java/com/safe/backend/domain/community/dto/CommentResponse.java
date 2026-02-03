@@ -21,7 +21,7 @@ public class CommentResponse {
     private Boolean isDeleted;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    
+
 
     // Entity -> DTO 변환
     public static CommentResponse from(Comment comment) {
