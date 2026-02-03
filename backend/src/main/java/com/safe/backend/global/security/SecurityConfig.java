@@ -53,6 +53,9 @@ public class SecurityConfig {
                                 // "/api/comments/**" - test용
                         ).permitAll()
 
+                        //  관리자 전용 API
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         //✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
                                 "/api/community/posts/**",
