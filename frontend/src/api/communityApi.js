@@ -19,7 +19,21 @@ export const communityApi={
     createPost: async ({ title, content, category, userId }) => {
         const res = await axiosInstance.post("/api/community/posts", { title, content, category, userId });
         return res.data;
-        }
+        },
 
 
-}
+    // 댓글 목록 조회 (500 에러 방지를 위해 post_id 파라미터 명시)
+    getComments: async (postId) => {
+        const res = await axiosInstance.get("/api/comments", {
+            params: { post_id: postId } 
+        });
+        return res.data;
+    },
+
+    // 댓글 작성
+    createComment: async (commentData) => {
+        // 호출할 때 { post_id, user_id, content } 객체를 통째로 넘기세요
+        const res = await axiosInstance.post("/api/comments", commentData);
+        return res.data;
+    }
+};
