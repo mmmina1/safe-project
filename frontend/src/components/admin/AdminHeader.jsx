@@ -1,13 +1,17 @@
 // src/components/admin/AdminHeader.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import '../common/UserAuthNav'; // 타입 미스 방지용이 아니라, 아래에서 실제 import 필요
+import UserAuthNav from '../common/UserAuthNav';
 import './AdminHeader.css';
 
 function AdminHeader() {
   return (
     <header className="admin-header">
+      {/* 왼쪽 로고 영역 */}
       <div className="admin-logo">RISK WATCH · ADMIN</div>
 
+      {/* 가운데 네비게이션 영역 */}
       <nav className="admin-nav-wrap">
         <NavLink to="/admin" end className="admin-nav">
           대시보드
@@ -19,6 +23,11 @@ function AdminHeader() {
           데이터 기준
         </NavLink>
       </nav>
+
+      {/* 오른쪽: 메인과 동일한 사용자 이름 + 로그아웃 메뉴 */}
+      <div className="admin-user-wrap">
+        <UserAuthNav />
+      </div>
     </header>
   );
 }
