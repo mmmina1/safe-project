@@ -44,3 +44,6 @@ backend/.venv/
 # OS / temp
 .DS_Store
 Thumbs.db
+
+# Spring Boot config
+src/main/resources/application.properties

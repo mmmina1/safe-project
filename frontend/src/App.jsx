@@ -11,6 +11,7 @@ import Footer from './components/Footer.jsx';
 
 // 페이지 컴포넌트들
 import MainPage from './components/main/MainPage.jsx';
+import MonitoringPage from "./components/monitoring/MonitoringPage";
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import CommunityList from './components/community/CommunityList.jsx';
@@ -82,7 +83,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/monitoring" element={<MainPage />} />
+        <Route path="/monitoring" element={<MonitoringPage />} />
         <Route path="/ai" element={<MainPage />} />
         
         {/* 커뮤니티 페이지 */}

@@ -46,6 +46,7 @@ public class SecurityConfig {
                         // 회원가입 / 로그인 / 테스트 API 등은 모두 허용
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/monitoring/**",
                                 "/api/test",
                                 "/oauth2/**",
                                 "/oauth2/callback/**"
