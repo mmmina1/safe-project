@@ -15,13 +15,30 @@ npm run dev
 2번콘솔
 파이썬-백엔드
 <!-- 첫 실행시 -->
+# 1. 프로젝트 폴더로 이동
 cd backend-python\py
-py -m venv .venv              
-.\.venv\Scripts\Activate.ps1       
-pip install -r requirements.txt   
+
+# 2. Python 버전 확인 (가급적 3.11 또는 3.12 권장)
+python --version
+
+# 3. 가상환경 생성
+python -m venv .venv
+
+# 4. 가상환경 활성화 (권한 오류 방지를 위해 ExecutionPolicy 설정 추가)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+.\.venv\Scripts\Activate.ps1
+
+# 5. 최신 pip 업데이트 및 패키지 설치
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. 데이터 인저스션 실행 (한글 인코딩 방지를 위한 환경변수 설정 추가)
+$env:PYTHONIOENCODING="utf-8"
 python scripts\ingest.py
-cd backend                         
-python main.py                   
+
+# 7. 백엔드 서버 실행
+cd backend
+python main.py          
 
 <!-- 재시작시 -->
 cd backend-python\py

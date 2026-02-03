@@ -3,7 +3,9 @@ uvicorn
 langchain
 langchain-openai
 langchain-community
-chromadb
+chromadb>=0.5.0
 python-dotenv
 httpx
 mysql-connector-python
+pydantic-settings
+langchain-chroma
