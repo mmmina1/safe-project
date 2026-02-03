@@ -16,7 +16,7 @@ npm run dev
 파이썬-백엔드
 <!-- 첫 실행시 -->
 cd backend-python\py
-python -m venv .venv              
+py -m venv .venv              
 .\.venv\Scripts\Activate.ps1       
 pip install -r requirements.txt   
 python scripts\ingest.py
