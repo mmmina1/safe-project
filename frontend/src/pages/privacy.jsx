@@ -2,16 +2,7 @@ import React from 'react';
 
 const Privacy = () => {
   return (
-    <div style={{ 
-      padding: '50px', 
-      lineHeight: '1.8', 
-      color: '#333', 
-      maxWidth: '1000px', 
-      margin: '0 auto',
-      width: '100%',
-      minHeight: '100vh',
-      boxSizing: 'border-box'
-    }}>
+    <div style={{ padding: '50px', lineHeight: '1.8', color: '#333', maxWidth: '1000px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '20px', borderBottom: '3px solid #0d6efd', paddingBottom: '10px' }}>
         개인정보처리방침
       </h1>
@@ -301,7 +292,7 @@ const Privacy = () => {
 
       <hr style={{ margin: '40px 0', borderTop: '2px solid #dee2e6' }} />
 
-      <div style={{ padding: '20px', backgroundColor: '#fff3cd', borderRadius: '8px', borderLeft: '4px solid #ffc107', marginBottom: '50px' }}>
+      <div style={{ padding: '20px', backgroundColor: '#fff3cd', borderRadius: '8px', borderLeft: '4px solid #ffc107' }}>
         <h4 style={{ color: '#856404', marginBottom: '15px' }}>중요 안내사항</h4>
         <p style={{ margin: 0, lineHeight: '1.8', color: '#856404' }}>
           본 개인정보 처리방침은 Risk Watch 서비스를 이용하시는 모든 분들에게 적용됩니다. 

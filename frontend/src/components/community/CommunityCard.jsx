@@ -6,7 +6,14 @@ function CommunityCard({post}) {
     const navigate = useNavigate()
 
     const handleClick = () => {
-        navigate(`/community/${post.post_id}`)
+        const pid = post.postId ?? post.post_id ?? post.id
+
+        if (!pid) {
+        console.error("게시글 ID가 없습니다. post 객체 확인:", post)
+        return
+        }
+
+        navigate(`/community/${pid}`)
     }
 
     //내용 미리보기 처리
@@ -35,3 +42,4 @@ function CommunityCard({post}) {
 }
 
 export default CommunityCard
+
