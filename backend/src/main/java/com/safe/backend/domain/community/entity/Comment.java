@@ -3,10 +3,14 @@ package com.safe.backend.domain.community.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
+
 import com.safe.backend.domain.user.entity.User;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -14,13 +18,13 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id") // MySQL: comment_id
+    @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(name = "post_id", nullable = false) // MySQL: post_id
+    @Column(name = "post_id", nullable = false)
     private Long postId;
 
-    @Column(name = "user_id", nullable = false) // MySQL: user_id
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +37,7 @@ public class Comment {
     @Column(name = "like_count", nullable = false)
     private int likeCount;
 
-    @Column(name = "is_deleted", nullable = false) // MySQL: is_deleted
+    @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
     @Column(name = "created_date", nullable = false, updatable = false)
@@ -42,7 +46,7 @@ public class Comment {
     @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
-    @Column(name = "parent_comment_id") // MySQL 컬럼명
+    @Column(name = "parent_comment_id")
     private Long parentCommentId;
 
     public static Comment create(Long postId, Long userId, String content) {
@@ -53,8 +57,18 @@ public class Comment {
         c.likeCount = 0;
         c.isDeleted = false;
         LocalDateTime now = LocalDateTime.now();
-        c.createdDate = now; // 매핑된 created_date 컬럼으로 저장
+        c.createdDate = now;
         c.updatedDate = now;
         return c;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+        this.updatedDate = LocalDateTime.now();
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+        this.updatedDate = LocalDateTime.now();
     }
 }

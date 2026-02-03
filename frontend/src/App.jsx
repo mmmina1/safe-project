@@ -37,6 +37,7 @@ import ProductDetailPage from './pages/ServiceProduct/ProductDetailPage.jsx';
 import KakaoCallbackPage from './pages/KakaoCallbackPage.jsx';
 import KakaoLogoutCallbackPage from './pages/KakaoLogoutCallbackPage.jsx';
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
+import MonitoringPage from './components/monitoring/MonitoringPage.jsx';
 
 function App() {
   const location = useLocation();
@@ -86,7 +87,7 @@ function App() {
 
               {/* AI / 모니터링 (임시로 MainPage 재사용) */}
               <Route path="/chatbot" element={<Chatbot />} />
-              <Route path="/monitoring" element={<MainPage />} />
+              <Route path="/monitoring" element={<MonitoringPage />} />
               <Route path="/ai" element={<MainPage />} />
 
               {/* 커뮤니티 */}
