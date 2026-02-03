@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/test",
                                 "/oauth2/**",
                                 "/oauth2/callback/**"
+                                // "/api/comments/**" - test용
                         ).permitAll()
 
                         //✅ 해당 내용 추가!! - 최민아
