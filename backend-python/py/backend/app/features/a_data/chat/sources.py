@@ -5,7 +5,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from ..domain.entities import ChatResult, ChatSource
+from app.features.a_domain.chat.entities import ChatResult, ChatSource
 
 # 실제 AI 모델과 벡터 DB(ChromaDB)를 연동하는 데이터 소스 전담 클래스
 class LLMChatSource:

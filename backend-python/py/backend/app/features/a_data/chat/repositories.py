@@ -1,5 +1,5 @@
-from ..domain.repositories import BaseChatRepository
-from ..domain.entities import ChatResult
+from app.features.a_domain.chat.repositories import BaseChatRepository
+from app.features.a_domain.chat.entities import ChatResult
 from .sources import chat_source
 
 # 도메인 인터페이스의 실제 구현체

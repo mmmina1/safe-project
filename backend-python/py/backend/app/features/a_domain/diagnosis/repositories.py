@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from app.features.diagnosis.domain.entities import DiagnosisResult
+from app.features.a_domain.diagnosis.entities import DiagnosisResult
 
 # 보안 진단 데이터 저장을 위한 인터페이스 정의
 # 도메인 비즈니스 로직은 실제 DB가 무엇인지 상관없이 이 규칙에 따라 데이터를 요청합니다.

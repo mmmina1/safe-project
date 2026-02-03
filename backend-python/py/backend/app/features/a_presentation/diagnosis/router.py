@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from app.features.diagnosis.presentation.dtos import DiagnosisRequestDTO, DiagnosisResponseDTO
-from app.features.diagnosis.domain.entities import DiagnosisRequest, SurveyAnswer
-from app.features.diagnosis.domain.usecases import CalculateRiskUseCase
+from app.features.a_presentation.diagnosis.dtos import DiagnosisRequestDTO, DiagnosisResponseDTO
+from app.features.a_domain.diagnosis.entities import DiagnosisRequest, SurveyAnswer
+from app.features.a_domain.diagnosis.usecases import CalculateRiskUseCase
 from app.dependencies import get_diagnosis_use_case
 
 # 보안 진단 관련 API 경로를 정의하는 라우터

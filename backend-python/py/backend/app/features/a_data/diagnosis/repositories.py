@@ -1,7 +1,7 @@
 from typing import Optional
-from app.features.diagnosis.domain.entities import DiagnosisResult
-from app.features.diagnosis.domain.repositories import BaseDiagnosisRepository
-from app.features.diagnosis.data.sources import diagnosis_db, MySQLDiagnosisDataSource
+from app.features.a_domain.diagnosis.entities import DiagnosisResult
+from app.features.a_domain.diagnosis.repositories import BaseDiagnosisRepository
+from app.features.a_data.diagnosis.sources import diagnosis_db, MySQLDiagnosisDataSource
 
 # 도메인 리포지토리 인터페이스의 MySQL 구현체
 # 데이터 소스(sources.py)와 도메인 모델(entities.py) 사이의 다리 역할을 합니다.

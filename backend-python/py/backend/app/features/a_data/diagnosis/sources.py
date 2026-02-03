@@ -64,4 +64,3 @@ class MySQLDiagnosisDataSource:
 
 # 실제 DB 연동을 위한 싱글톤 인스턴스
 diagnosis_db = MySQLDiagnosisDataSource()
-

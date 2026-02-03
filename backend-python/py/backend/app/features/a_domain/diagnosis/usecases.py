@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
-from app.features.diagnosis.domain.entities import DiagnosisRequest, DiagnosisResult
-from app.features.diagnosis.domain.repositories import BaseDiagnosisRepository
+from app.features.a_domain.diagnosis.entities import DiagnosisRequest, DiagnosisResult
+from app.features.a_domain.diagnosis.repositories import BaseDiagnosisRepository
 
 # 보안 진단 점수 계산 및 결과 생성을 담당하는 핵심 비즈니스 로직 클래스
 class CalculateRiskUseCase:

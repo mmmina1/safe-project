@@ -1,5 +1,5 @@
-from app.features.diagnosis.domain.usecases import CalculateRiskUseCase
-from app.features.diagnosis.data.repositories import DiagnosisRepositoryImpl
+from app.features.a_domain.diagnosis.usecases import CalculateRiskUseCase
+from app.features.a_data.diagnosis.repositories import DiagnosisRepositoryImpl
 
 
 def get_diagnosis_use_case() -> CalculateRiskUseCase:

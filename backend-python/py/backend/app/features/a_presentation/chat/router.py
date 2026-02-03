@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from .dtos import ChatRequestDTO, ChatResponseDTO
-from ..domain.usecases import GetChatAnswerUseCase
-from ..data.repositories import ChatRepositoryImpl
+from app.features.a_domain.chat.usecases import GetChatAnswerUseCase
+from app.features.a_data.chat.repositories import ChatRepositoryImpl
 
 # API 입구(/chat)를 정의하는 라우터
 router = APIRouter(tags=["AI Chatbot"])
