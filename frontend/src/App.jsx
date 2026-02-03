@@ -52,6 +52,9 @@ import NoticesPage from './pages/admin/operator/NoticesPage.jsx';
 import BannersPage from './pages/admin/operator/BannersPage.jsx';
 import BlacklistPage from './pages/admin/operator/BlacklistPage.jsx';
 
+// src/App.jsx 상단 import 목록에 추가
+import OperatorRoute from './OperatorRoute.jsx';
+
 function App() {
 
   const location = useLocation();
@@ -142,7 +145,14 @@ function App() {
               </Route>
 
               {/* 운영자 페이지 */}
-              <Route path="/operator" element={<OperatorLayout />}>
+              <Route
+                path="/operator"
+                element={
+                  <OperatorRoute>
+                    <OperatorLayout />
+                  </OperatorRoute>
+                }
+              >
                 <Route index element={<OperatorDashboard />} />
                 <Route path="users" element={<UserSearchPage />} />
                 <Route path="cs" element={<CsDashboardPage />} />
