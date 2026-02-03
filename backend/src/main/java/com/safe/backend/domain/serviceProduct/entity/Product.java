@@ -64,5 +64,4 @@ public class Product {
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetail detail;
-    
 }
