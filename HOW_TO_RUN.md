@@ -21,13 +21,23 @@ npm run dev
 - **Docker Desktop** 설치 ([다운로드 링크](https://www.docker.com/products/docker-desktop/))
 
 ### 2. 실행 방법
+
+#### 처음 실행하거나 라이브러리를 추가했을 때 (빌드 포함)
 ```powershell
-# 프로젝트 루트(최상위 폴더)에서 실행
 docker-compose up --build
 ```
-- 파이썬 서버가 **8000번 포트**에서 자동으로 실행됩니다.
+
+#### 평소에 다시 켤 때 (매우 빠름)
+```powershell
+docker-compose up
+```
+- 이미 빌드된 이미지를 사용하여 즉시 실행됩니다.
+- 소스 코드 수정 사항은 빌드 없이도 실시간 반영(Hot-reload)됩니다.
 - 접속 주소: [http://localhost:8000/docs](http://localhost:8000/docs)
-- 수정 사항이 즉시 반영(Hot-reload)되도록 설정되어 있습니다.
+
+#### 안전하게 종료하기
+- 실행 중인 터미널 창에서 **`Ctrl + C`**를 누르면 안전하게 종료됩니다.
+- 또는 다른 터미널에서 `docker-compose down` 명령어를 입력하세요.
 
 ---
 
