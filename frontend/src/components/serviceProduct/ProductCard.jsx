@@ -7,19 +7,22 @@ function ProductCard({item}) {
     const navigate = useNavigate()
 
     //db 스키마를 최우선으로 참조
-    const id = item.id;
+    const id = item.productId ?? item.product_id ?? item.id;
     
     //name 참조
     const title = item.name ?? "상품명 없음";
 
     //price 참조
-    const price = item.price ?? 0;
+    const priceType = item.priceType ?? item.price_type;
+    const price = item.price ?? item.monthlyPrice ?? 0;
 
-    const rating = item.rating ?? 0;
-    const reviewCount = item.reviewCount ?? 0;
+    const rating = item.rating ?? item.avgRating ?? 0;
+    const reviewCount = item.reviewCount ?? item.review_count ?? item.reviewsCount ?? 0;
 
-    const imageStyle = item.mainImage
-        ? { backgroundImage: `url(${item.mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+    const mainImage = item.mainImage ?? item.main_image ?? null;
+
+    const imageStyle = mainImage
+        ? { backgroundImage: `url(${mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
         : { backgroundColor: '#2a2f3a' };
 
   return (
@@ -45,7 +48,7 @@ function ProductCard({item}) {
 
                 {/* 가격 정보 */}
                 <div className='sp-cardPrice'>
-                    {item.priceType === 'FREE' ? (
+                    {priceType === 'FREE' ? (
                         <span className='sp-free'>무료</span>
                     ):(
                         <>
