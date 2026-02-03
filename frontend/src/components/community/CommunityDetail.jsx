@@ -4,7 +4,7 @@ import { communityApi } from '../../api/communityApi'
 import "../../assets/css/CommunityDetail.css"
 
 function CommunityDetail() {
-  const { postId } = useParams()
+  const { id: postId } = useParams()
   const navigate = useNavigate()
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)

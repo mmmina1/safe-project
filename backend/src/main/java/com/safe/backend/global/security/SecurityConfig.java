@@ -49,7 +49,8 @@ public class SecurityConfig {
                                 "/api/monitoring/**",
                                 "/api/test",
                                 "/oauth2/**",
-                                "/oauth2/callback/**"
+                                "/oauth2/callback/**",
+                                "/api/comments/**"
                         ).permitAll()
 
                         //✅ 해당 내용 추가!! - 최민아
