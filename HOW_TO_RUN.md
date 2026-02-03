@@ -14,33 +14,32 @@ npm run dev
 
 2번콘솔
 파이썬-백엔드
-<!-- 첫 실행시 -->
-# 1. 프로젝트 폴더로 이동
+
+<!-- 프로젝트 초기 설정 (새 컴퓨터 또는 가상환경 재설정 시) -->
+# 1. 파이썬 3.12 설치 (최초 1회 필수)
+# 다운로드: https://www.python.org/ftp/python/3.12.8/python-3.12.8-amd64.exe
+# 설치 시 "Add Python to PATH" 반드시 체크
+
+# 2. 기존 가상환경 삭제 및 재생성
 cd backend-python\py
+Remove-Item -Recurse -Force .venv -ErrorAction SilentlyContinue
+py -3.12 -m venv .venv
 
-# 2. Python 버전 확인 (가급적 3.11 또는 3.12 권장)
-python --version
-
-# 3. 가상환경 생성
-python -m venv .venv
-
-# 4. 가상환경 활성화 (권한 오류 방지를 위해 ExecutionPolicy 설정 추가)
+# 3. 가상환경 활성화 및 패키지 설치
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 .\.venv\Scripts\Activate.ps1
-
-# 5. 최신 pip 업데이트 및 패키지 설치
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-# 6. 데이터 인저스션 실행 (한글 인코딩 방지를 위한 환경변수 설정 추가)
+# 4. 데이터 초기화 (AI 학습 데이터 임베딩)
 $env:PYTHONIOENCODING="utf-8"
 python scripts\ingest.py
 
-# 7. 백엔드 서버 실행
+# 5. 서버 실행
 cd backend
-python main.py          
+python main.py
 
-<!-- 재시작시 -->
+<!-- 일상적인 재시작 시 -->
 cd backend-python\py
 .\.venv\Scripts\Activate.ps1
 cd backend
