@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getProductDetail } from '../../api/productAPI'
+import { getProductDetail } from '../../../api/productAPI'
 import "../../assets/css/ServiceProduct/ProductDetail.css"
+import ProductQuickInfo from './ProductQuickInfo'
 
 function ProductDetail() {
   const { productId } = useParams()
@@ -115,108 +116,88 @@ function ProductDetail() {
         </button>
 
         <div className='sp-detail-container sp-glass'>
-         <div className='sp-product-card'>
-            <div className='sp-simple-header'>
-              <div className='sp-simple-top'>
-                <div>
-                  <div className='sp-simple-category'>{product.categoryName}</div>
-                  <h1 className='sp-simple-title'>{product.name}</h1>
-                </div>
+          {/* 상품 카드 */}
+          <div className='sp-product-card'>
+                {/* isNew/isPopular은 DB 없으니 조건부로만 */}
+                {product.isNew && <span className='sp-badge sp-badge-new'>NEW</span>}
+                {product.isPopular && <span className='sp-badge sp-badge-hot'>인기</span>}
 
-                <button
-                  className='sp-like-btn'
-                  onClick={(e) => {
+              {/* 상품 정보 오버레이 */}
+              <div className='sp-product-overlay'>
+                <div className='sp-product-header'>
+                  <h1 className='sp-product-name'>{product.name}</h1>
+                  <button className='sp-like-btn' onClick={(e) => {
                     e.stopPropagation()
                     // 찜하기 로직(별도 API 필요)
-                  }}
-                >
-                  <span className='sp-like-icon'>♡</span>
-                </button>
-              </div>
+                  }}>
+                    <span className='sp-like-icon'>♡</span>
+                  </button>
+                </div>
 
-              <div className='sp-simple-meta'>
-                <span className='sp-star'>★ {displayRating.toFixed(1)}</span>
-                <span className='sp-reviews'>({displayReviewCount}명 평가)</span>
-              </div>
+                <div className='sp-product-meta'>
+                  <div className='sp-product-rating'>
+                    <span className='sp-star'>★ {displayRating.toFixed(1)}</span>
+                    <span className='sp-reviews'>({displayReviewCount}명 평가)</span>
+                  </div>
+                  <div className='sp-product-category'>
+                    <span className='sp-category-badge'>{product.categoryName}</span>
+                  </div>
+                </div>
 
-              {product.description && (
-                <p className='sp-simple-desc'>{product.description}</p>
-              )}
+                {/* ✅ DB: service_products.description or summary */}
+                <p className='sp-product-desc'>{product.description}</p>
 
-              {Array.isArray(product.keyFeatures) && product.keyFeatures.length > 0 && (
-                <div className='sp-key-features'>
-                  {product.keyFeatures.slice(0, 3).map((feature, idx) => (
-                    <div key={idx} className='sp-key-feature-item'>
-                      <span className='sp-feature-icon'>✓</span>
-                      <span>{feature}</span>
+                {/* keyFeatures/features는 DB 없으니 있으면만 */}
+                {Array.isArray(product.keyFeatures) && product.keyFeatures.length > 0 && (
+                  <div className='sp-key-features'>
+                    {product.keyFeatures.slice(0, 3).map((feature, idx) => (
+                      <div key={idx} className='sp-key-feature-item'>
+                        <span className='sp-feature-icon'>✓</span>
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 가격 및 액션 */}
+                <div className='sp-product-action'>
+                  <div className='sp-product-price-box'>
+                    <div className='sp-product-price'>
+                      {isFree ? (
+                        <span className='sp-free'>무료</span>
+                      ) : (
+                        <>
+                          <span className='sp-price-label'>월</span>
+                          <span className='sp-price-amount'>{displayPrice.toLocaleString()}</span>
+                          <span className='sp-price-unit'>원</span>
+                        </>
+                      )}
                     </div>
-                  ))}
-                </div>
-              )}
 
-              <div className='sp-simple-action'>
-                <div className='sp-product-price'>
-                  {isFree ? (
-                    <span className='sp-free'>무료</span>
-                  ) : (
-                    <>
-                      <span className='sp-price-label'>월</span>
-                      <span className='sp-price-amount'>{displayPrice.toLocaleString()}</span>
-                      <span className='sp-price-unit'>원</span>
-                    </>
-                  )}
-                </div>
+                    {/* originalPrice는 DB에 없으니 있으면만 */}
+                    {product.originalPrice && product.originalPrice > displayPrice && (
+                      <div className='sp-price-discount'>
+                        <span className='sp-original-price'>{product.originalPrice.toLocaleString()}원</span>
+                        <span className='sp-discount-rate'>
+                          {Math.round((1 - displayPrice / product.originalPrice) * 100)}% 할인
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                <button
-                  className='sp-subscribe-button'
-                  onClick={() => setShowPlanModal(true)}
-                >
-                  <span className='sp-subscribe-icon'>🛒</span>
-                  <span>구독 신청</span>
-                </button>
+                  <button className='sp-subscribe-button' onClick={() => setShowPlanModal(true)}>
+                    <span className='sp-subscribe-icon'>🛒</span>
+                    <span>구독 신청</span>
+                  </button>
+                </div>
               </div>
-
-              {product.originalPrice && product.originalPrice > displayPrice && (
-                <div className='sp-price-discount'>
-                  <span className='sp-original-price'>
-                    {product.originalPrice.toLocaleString()}원
-                  </span>
-                  <span className='sp-discount-rate'>
-                    {Math.round((1 - displayPrice / product.originalPrice) * 100)}% 할인
-                  </span>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* 상세 정보 섹션 */}
           <div className='sp-detail-info'>
-            <div className='sp-quick-info'>
-              <div className='sp-info-item'>
-                <div className='sp-info-icon'>📦</div>
-                <div className='sp-info-content'>
-                  <span className='sp-info-label'>재고</span>
-                  <span className='sp-info-value'>
-                    {product.stockQty != null ? `${product.stockQty}개` : '-'}
-                  </span>
-                </div>
-              </div>
-              <div className='sp-info-item'>
-                <div className='sp-info-icon'>🏷️</div>
-                <div className='sp-info-content'>
-                  <span className='sp-info-label'>서비스 등급</span>
-                  <span className='sp-info-value'>{product.serviceLevel ?? '-'}</span>
-                </div>
-              </div>
-              <div className='sp-info-item'>
-                <div className='sp-info-icon'>✅</div>
-                <div className='sp-info-content'>
-                  <span className='sp-info-label'>상태</span>
-                  <span className='sp-info-value'>{product.status ?? '-'}</span>
-                </div>
-              </div>
-            </div>
+            <ProductQuickInfo stockQty={product.stockQty} serviceLevel={product.serviceLevel} status={product.status}/>
 
+            {/* 탭 메뉴 */}
             <div className='sp-tabs'>
               <button
                 className={`sp-tab-button ${activeTab === 'intro' ? 'active' : ''}`}
@@ -234,14 +215,18 @@ function ProductDetail() {
               </button>
             </div>
 
+            {/* 탭 컨텐츠 */}
             <div className='sp-tab-content'>
               {activeTab === 'intro' ? (
                 <div className='sp-intro-content'>
                   <h3 className='sp-section-title'>서비스 상세 설명</h3>
+
+                  {/* ✅ DB: product_detail.detail_desc 우선, 없으면 service_products.description */}
                   <p className='sp-section-desc'>
                     {product.detailDesc || product.description || '상세 설명이 없습니다.'}
                   </p>
 
+                  {/* features는 DB 없으니 있으면만 */}
                   {Array.isArray(product.features) && product.features.length > 0 && (
                     <ul className='sp-features-list'>
                       {product.features.map((feature, idx) => (
@@ -254,6 +239,7 @@ function ProductDetail() {
                 <div className='sp-reviews-content'>
                   <h3 className='sp-section-title'>고객 리뷰</h3>
 
+                  {/* ✅ 집계값(평점/리뷰수)만 DB/백엔드에서 내려오면 표시 가능 */}
                   <div className='sp-review-summary'>
                     <div className='sp-review-score'>
                       <span className='sp-score-big'>{displayRating.toFixed(1)}</span>
@@ -262,6 +248,7 @@ function ProductDetail() {
                     </div>
                   </div>
 
+                  {/* ❗ 리뷰 리스트는 별도 API 필요. 지금은 안내만 */}
                   <div className='sp-review-list'>
                     <div className='sp-detail-error' style={{ marginTop: 12 }}>
                       <p>리뷰 목록 API가 준비되면 여기에 실제 리뷰가 표시됩니다.</p>
@@ -287,6 +274,7 @@ function ProductDetail() {
             </div>
 
             <div className='sp-modal-body'>
+              {/* ✅ plans가 없으면 안내 */}
               {(!product.plans || product.plans.length === 0) ? (
                 <div className='sp-detail-error'>
                   <p>현재 플랜 정보가 없습니다. (플랜 테이블/API 추가 필요)</p>
