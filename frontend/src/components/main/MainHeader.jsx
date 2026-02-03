@@ -18,4 +18,3 @@ export default function MainHeader({ phone, setPhone, onSearch, loading }) {
     </div>
   )
 }
-
