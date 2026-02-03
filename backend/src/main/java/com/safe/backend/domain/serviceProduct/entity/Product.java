@@ -40,9 +40,6 @@ public class Product {
     @Column(name = "price_type", nullable = false, length = 10)
     private PriceType priceType;
 
-    @Column(name = "price")
-    private Integer price;
-
     @Column(name = "main_image", length = 300)
     private String mainImage;
 
@@ -67,5 +64,4 @@ public class Product {
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetail detail;
-    
 }
