@@ -46,7 +46,7 @@ function Header() {
             <Nav.Link as={Link} to="/community" className="fw-semibold">
               커뮤니티
             </Nav.Link>
-            <Nav.Link as={Link} to="/service" className="fw-semibold">
+            <Nav.Link as={Link} to="/product" className="fw-semibold">
               서비스 · 상품
             </Nav.Link>
           </Nav>
