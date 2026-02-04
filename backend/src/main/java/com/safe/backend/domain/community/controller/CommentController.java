@@ -18,20 +18,17 @@ public class CommentController {
     
     private final CommentService commentService;
 
-    // 댓글 등록
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentCreate dto) {
         CommentResponse response = commentService.createCommentAndReturn(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 댓글 조회
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getComments(@RequestParam("post_id") Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
     }
 
-    // 🔥 댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
@@ -49,7 +46,6 @@ public class CommentController {
         }
     }
 
-    // 🔥 댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(
             @PathVariable Long commentId,

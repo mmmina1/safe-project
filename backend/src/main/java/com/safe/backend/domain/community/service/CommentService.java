@@ -34,37 +34,30 @@ public class CommentService {
                 .toList();
     }
 
-    // 🔥 댓글 수정 (Setter 사용)
     @Transactional
     public CommentResponse updateComment(Long commentId, String content, Long userId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다"));
 
-        // 🔥 본인 댓글인지 검증
         if (!comment.getUserId().equals(userId)) {
             throw new RuntimeException("본인의 댓글만 수정할 수 있습니다");
         }
 
-        // 🔥 Setter로 간단하게 수정
         comment.setContent(content);
         comment.setUpdatedDate(LocalDateTime.now());
 
         return CommentResponse.from(comment);
     }
 
-    // 🔥 댓글 삭제 (Setter 사용)
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다"));
 
-        // 🔥 본인 댓글인지 검증
         if (!comment.getUserId().equals(userId)) {
             throw new RuntimeException("본인의 댓글만 삭제할 수 있습니다");
         }
 
-        // 🔥 Setter로 간단하게 삭제 (소프트 삭제)
-        comment.setIsDeleted(true);
-        comment.setUpdatedDate(LocalDateTime.now());
+        commentRepository.hardDeleteById(commentId);
     }
 }
