@@ -60,7 +60,8 @@ public class AuthController {
             LoginResponse response = new LoginResponse(
                     accessToken,
                     user.getEmail(),
-                    user.getName()
+                    user.getName(),
+                    user.getRole().name()
             );
 
             return ResponseEntity.ok(response);
