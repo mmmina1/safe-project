@@ -34,7 +34,7 @@ public class CommentService {
                 .toList();
     }
 
-    // 🔥 댓글 수정 메서드 추가
+    // 🔥 댓글 수정 (Setter 사용)
     @Transactional
     public CommentResponse updateComment(Long commentId, String content, Long userId) {
         Comment comment = commentRepository.findById(commentId)
@@ -45,23 +45,14 @@ public class CommentService {
             throw new RuntimeException("본인의 댓글만 수정할 수 있습니다");
         }
 
-        // 🔥 리플렉션으로 content, updatedDate 수정
-        try {
-            java.lang.reflect.Field contentField = Comment.class.getDeclaredField("content");
-            contentField.setAccessible(true);
-            contentField.set(comment, content);
-
-            java.lang.reflect.Field updatedDateField = Comment.class.getDeclaredField("updatedDate");
-            updatedDateField.setAccessible(true);
-            updatedDateField.set(comment, LocalDateTime.now());
-        } catch (Exception e) {
-            throw new RuntimeException("댓글 수정 중 오류 발생", e);
-        }
+        // 🔥 Setter로 간단하게 수정
+        comment.setContent(content);
+        comment.setUpdatedDate(LocalDateTime.now());
 
         return CommentResponse.from(comment);
     }
 
-    // 🔥 댓글 삭제 메서드 추가
+    // 🔥 댓글 삭제 (Setter 사용)
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId)
@@ -72,17 +63,8 @@ public class CommentService {
             throw new RuntimeException("본인의 댓글만 삭제할 수 있습니다");
         }
 
-        // 🔥 실제 삭제 대신 isDeleted = true로 변경 (소프트 삭제)
-        try {
-            java.lang.reflect.Field isDeletedField = Comment.class.getDeclaredField("isDeleted");
-            isDeletedField.setAccessible(true);
-            isDeletedField.set(comment, true);
-
-            java.lang.reflect.Field updatedDateField = Comment.class.getDeclaredField("updatedDate");
-            updatedDateField.setAccessible(true);
-            updatedDateField.set(comment, LocalDateTime.now());
-        } catch (Exception e) {
-            throw new RuntimeException("댓글 삭제 중 오류 발생", e);
-        }
+        // 🔥 Setter로 간단하게 삭제 (소프트 삭제)
+        comment.setIsDeleted(true);
+        comment.setUpdatedDate(LocalDateTime.now());
     }
 }
