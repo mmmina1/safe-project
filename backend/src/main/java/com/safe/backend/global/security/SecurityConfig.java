@@ -56,6 +56,8 @@ public class SecurityConfig {
                         //  관리자 전용 API
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
+                        .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
+
                         //✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
                                 "/api/community/posts/**",
