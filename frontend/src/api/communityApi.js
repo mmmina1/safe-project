@@ -1,14 +1,7 @@
 import axiosInstance from "./axiosInstance";
 
 export const communityApi = {
-  getPosts: async ({
-    query = "",
-    category = "",
-    tag = "",
-    sort = "recent",
-    page = 1,
-    size = 10,
-  }) => {
+  getPosts: async ({ query = "", category = "", tag = "", sort = "recent", page = 1, size = 10 }) => {
     const res = await axiosInstance.get("/api/community/posts", {
       params: { query, category, tag, sort, page, size },
     });
@@ -21,19 +14,12 @@ export const communityApi = {
   },
 
   createPost: async ({ title, content, category, userId }) => {
-    const res = await axiosInstance.post("/api/community/posts", {
-      title,
-      content,
-      category,
-      userId,
-    });
+    const res = await axiosInstance.post("/api/community/posts", { title, content, category, userId });
     return res.data;
   },
 
   getComments: async (postId) => {
-    const res = await axiosInstance.get("/api/comments", {
-      params: { post_id: postId },
-    });
+    const res = await axiosInstance.get("/api/comments", { params: { post_id: postId } });
     return res.data;
   },
 
@@ -48,9 +34,13 @@ export const communityApi = {
   },
 
   deleteComment: async (commentId, userId) => {
-    const res = await axiosInstance.delete(`/api/comments/${commentId}`, {
-      params: { user_id: userId },
-    });
+    const res = await axiosInstance.delete(`/api/comments/${commentId}`, { params: { user_id: userId } });
     return res.data;
   },
+
+  // 🔥 불필요한 인자를 제거하고 백엔드 엔드포인트와 일치시킴
+  likeComment: async (commentId) => {
+    const res = await axiosInstance.post(`/api/comments/${commentId}/like`);
+    return res.data;
+  }
 };

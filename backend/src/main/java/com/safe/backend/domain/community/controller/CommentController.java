@@ -29,6 +29,18 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
     }
 
+    // 🔥 추가됨: 좋아요 기능 엔드포인트
+    @PostMapping("/{commentId}/like")
+    public ResponseEntity<?> likeComment(@PathVariable("commentId") Long commentId) {
+        try {
+            commentService.likeComment(commentId);
+            return ResponseEntity.ok(Map.of("message", "좋아요 성공"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @PutMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
