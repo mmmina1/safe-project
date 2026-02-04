@@ -2,30 +2,42 @@
 
 :root {
     --sidebar-width: 260px;
-    --primary-navy: #1a237e;
-    --accent-gold: #ffd600;
-    --bg-light: #f4f7fa;
-    --safe-green: #28a745;
-    --warning-orange: #f39c12;
-    --danger-red: #e74c3c;
+    --primary-navy: #171a33;
+    /* Header와 동일한 색상 */
+    --accent-blue: #60a5fa;
+    /* 메인 페이지 포인트 블루 */
+    --bg-dark: #282b36;
+    /* 메인 배경색 */
+    --card-bg: #1e1e2d;
+    /* 카드 배경색 (Header보다 약간 밝음 혹은 유사) */
+    --text-main: #f8fafc;
+    /* 주 텍스트 */
+    --text-muted: #94a3b8;
+    /* 부 텍스트 */
+    --border-color: #334155;
+    /* 경계선 색상 */
+    --safe-green: #34d399;
+    --warning-orange: #fbbf24;
+    --danger-red: #f87171;
 }
 
 .mypage-container {
     display: flex;
     min-height: calc(100vh - 80px);
-    /* Adjust based on your header height */
-    background-color: var(--bg-light);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
 }
 
 /* Sidebar Styles */
 .mypage-sidebar {
     width: var(--sidebar-width);
-    background: white;
-    border-right: 1px solid #e0e6ed;
+    background: var(--primary-navy);
+    border-right: 1px solid var(--border-color);
     padding: 2rem 0;
     position: sticky;
-    top: 80px;
-    height: calc(100vh - 80px);
+    top: 0;
+    /* Header가 sticky라면 0 혹은 Header 높이만큼 */
+    height: auto;
 }
 
 .sidebar-menu {
@@ -35,25 +47,26 @@
 }
 
 .sidebar-item {
-    padding: 0.8rem 1.5rem;
+    padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
-    color: #5c6c7b;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
     text-decoration: none;
+    background: transparent;
 }
 
 .sidebar-item:hover {
-    background-color: #f8fbff;
-    color: var(--primary-navy);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
 }
 
 .sidebar-item.active {
-    background-color: #e8f0fe;
-    color: var(--primary-navy);
-    border-right: 4px solid var(--primary-navy);
+    background-color: rgba(96, 165, 250, 0.1);
+    color: var(--accent-blue);
+    border-left: 4px solid var(--accent-blue);
 }
 
 .sidebar-item-label {
@@ -62,7 +75,7 @@
 
 .sidebar-category {
     font-size: 0.75rem;
-    color: #adb5bd;
+    color: #475569;
     padding: 1.5rem 1.5rem 0.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -71,56 +84,78 @@
 /* Content Area Styles */
 .mypage-content {
     flex: 1;
-    padding: 2rem 3rem;
-    max-width: 1200px;
+    padding: 3rem;
+    max-width: 1400px;
 }
 
 .page-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
     margin-bottom: 2rem;
 }
 
 /* Card Styles */
 .dashboard-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 1.8rem;
+    border: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
     height: 100%;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-card.hover-up:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-blue);
 }
 
 .card-label {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #34495e;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    color: var(--text-main);
 }
 
 /* Status Badges */
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
 .badge-safe {
-    background: #e8f5e9;
+    background: rgba(52, 211, 153, 0.1);
     color: var(--safe-green);
+    border: 1px solid rgba(52, 211, 153, 0.2);
 }
 
 .badge-warning {
-    background: #fff3e0;
+    background: rgba(251, 191, 36, 0.1);
     color: var(--warning-orange);
+    border: 1px solid rgba(251, 191, 36, 0.2);
 }
 
 .badge-danger {
-    background: #ffebee;
+    background: rgba(248, 113, 113, 0.1);
     color: var(--danger-red);
+    border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: inline-block;
+/* Table overrides for dark theme */
+.table {
+    color: var(--text-main) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.bg-light {
+    background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Responsive adjustments */
@@ -134,7 +169,7 @@
         height: auto;
         position: static;
         border-right: none;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--border-color);
         padding: 1rem;
     }
 
@@ -142,11 +177,16 @@
         display: flex;
         overflow-x: auto;
         white-space: nowrap;
+        gap: 10px;
     }
 
     .sidebar-item {
-        padding: 0.5rem 1rem;
-        border-right: none !important;
+        padding: 0.6rem 1.2rem;
+        border-left: none !important;
+    }
+
+    .sidebar-item.active {
+        border-bottom: 2px solid var(--accent-blue);
     }
 
     .sidebar-category {
@@ -160,6 +200,33 @@
 
 /* Chart Container */
 .chart-container {
-    height: 300px;
+    height: 350px;
     width: 100%;
+}
+
+/* Animation */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar-menu::-webkit-scrollbar {
+    height: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
 }

@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  python-backend:
+    build:
+      context: ./backend-python/py
+      dockerfile: Dockerfile
+    container_name: safe-python-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend-python/py:/app
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PYTHONPATH=/app/backend
+    env_file:
+      - ./backend-python/py/backend/.env
+    restart: always
+    networks:
+      - safe-network
   mysql:
     image: mysql:8.0
     container_name: safe-mysql
