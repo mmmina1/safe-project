@@ -30,6 +30,7 @@ function ProductDetail() {
         setError(null)
 
         const data = await getProductDetail(productId)
+
         if (!alive) return
 
         const normalized = {
@@ -37,7 +38,7 @@ function ProductDetail() {
           rating: data?.rating ?? 0,
           reviewCount: data?.reviewCount ?? 0,
           price: data?.price ?? 0,
-          summary : data?.summary ?? 0,
+          summary: data?.summary ?? '',
           description: data?.description ?? '',
           detailDesc: data?.detailDesc ?? data?.detailedDescription ?? '',
           categoryName: data?.categoryName ?? '서비스',
@@ -52,6 +53,7 @@ function ProductDetail() {
         console.error(e)
         if (!alive) return
         setError('상품 정보를 불러오지 못했습니다.')
+
       } finally {
         if (!alive) return
         setLoading(false)

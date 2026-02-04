@@ -18,13 +18,23 @@ function Header() {
         <Navbar.Brand
           as={Link}
           to="/"
+          className="d-flex align-items-center"
           style={{
+            color: '#BFC3C7',
             fontSize: '1.7rem',
             fontWeight: 600,
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
+            textShadow: '0 1px 2px rgba(0,0,0,0.6)'
           }}
         >
+          <img
+            src="/logo-riskWatch.png"
+            alt="Risk Watch Logo"
+            width="32"
+            height="32"
+            className="me-2"
+          />
           Risk Watch
         </Navbar.Brand>
 
