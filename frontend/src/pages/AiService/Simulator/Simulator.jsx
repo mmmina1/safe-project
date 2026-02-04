@@ -21,69 +21,86 @@ const Simulator = () => {
     } = useSimulator();
 
     return (
-        <div className="simulator-container animate-fade-in">
-            <div className="simulator-card">
-                {/* A. 상단 제목 영역 */}
-                <div className="simulator-header">
-                    <h2>실전 모의 훈련 시뮬레이터</h2>
-                    <p>실제 보이스피싱 상황을 가상 환경에서 안전하게 체험하고 대응법을 익히세요.</p>
+        <div className="teller-station-container animate-fade-in">
+            {/* 1. 배경용 사무실 분위기 (Ambient Background) */}
+            <div className="station-ambient-bg"></div>
+
+            <div className="teller-desk">
+                {/* 2. 창구 유리창 영역 (The Window) */}
+                <div className="teller-window-frame">
+                    <div className="unity-viewport">
+                        {/* 통신 테스트 UI (원래 있던 기능 복구) */}
+                        {isLoaded && (
+                            <div className="unity-comm-test">
+                                <div className="comm-box">
+                                    <span>수신된 숫자: <strong>{receivedNumber}</strong></span>
+                                    <button onClick={sendRandomNumberToUnity} className="btn-send">
+                                        유니티로 랜덤 숫자 전송
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 로딩 중일 때 표시할 화면 (창구 앞에 가림막이 내려진 느낌) */}
+                        {!isLoaded && (
+                            <div className="window-shutter">
+                                <Loader2 size={48} className="animate-spin mb-3 shutter-spinner" />
+                                <h3>준비 중... {loadingPercentage}%</h3>
+                                <div className="progress-minimal">
+                                    <div
+                                        className="progress-fill"
+                                        style={{ width: `${loadingPercentage}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        )}
+
+                        <Unity
+                            unityProvider={unityProvider}
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                visibility: isLoaded ? "visible" : "hidden",
+                            }}
+                        />
+                    </div>
+                    {/* 유리창 반사 효과 (Glass Overlay) */}
+                    <div className="glass-reflection"></div>
                 </div>
 
-                {/* B. 유니티 WebGL 플레이어 영역 */}
-                <div className="unity-container">
-                    {/* 통신 테스트 UI (유니티 로드 완료 시에만 표시) */}
-                    {isLoaded && (
-                        <div className="unity-comm-test">
-                            <div className="comm-box">
-                                <span>수신된 숫자: <strong>{receivedNumber}</strong></span>
-                                <button onClick={sendRandomNumberToUnity} className="btn-send">
-                                    유니티로 랜덤 숫자 전송
+                {/* 3. 책상 위 업무 단말기 (The Terminal) */}
+                <div className="desk-surface">
+                    <div className="terminal-panel">
+                        <div className="terminal-screen">
+                            <div className="status-bar">
+                                <span className="status-dot"></span>
+                                <span className="status-text">TERMINAL ACTIVE - NODE_01</span>
+                            </div>
+                            <div className="terminal-content">
+                                <div className="info-section">
+                                    <Info size={16} className="text-cyan" />
+                                    <span>현재 세션 정보: <strong>{receivedNumber || 'WAITING...'}</strong></span>
+                                </div>
+                                <button onClick={sendRandomNumberToUnity} className="btn-terminal-action">
+                                    신호 전송 (SIGNAL_TEST)
                                 </button>
                             </div>
                         </div>
-                    )}
+                    </div>
 
-                    {/* 로딩 중일 때 표시할 화면 */}
-                    {!isLoaded && (
-                        <div className="unity-mock-ui">
-                            <Loader2 size={48} className="animate-spin text-primary mb-3" />
-                            <h3>시뮬레이션 로딩 중... {loadingPercentage}%</h3>
-                            <div className="progress w-50 mx-auto mt-3" style={{ height: '10px', background: 'rgba(255,255,255,0.1)' }}>
-                                <div
-                                    className="progress-bar progress-bar-striped progress-bar-animated"
-                                    role="progressbar"
-                                    style={{ width: `${loadingPercentage}%`, background: '#3949ab' }}
-                                ></div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 실제 유니티 화면 */}
-                    <Unity
-                        unityProvider={unityProvider}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            visibility: isLoaded ? "visible" : "hidden",
-                            borderRadius: '20px'
-                        }}
-                    />
+                    {/* 4. 업무 지침서 (Manual/Ledger) */}
+                    <div className="desk-ledger">
+                        <h4><Info size={18} /> 업무 지침 (Standard Operating Procedure)</h4>
+                        <ul>
+                            <li>의심스러운 상황 발생 시 단말기 신호를 즉시 확인하십시오.</li>
+                            <li>실제 사례 기반으로 구성된 시뮬레이션입니다.</li>
+                            <li>창구 너머 손님의 반응을 면밀히 관찰하십시오.</li>
+                        </ul>
+                    </div>
                 </div>
-
-                {/* C. 하단 도움말 영역 */}
-                <div className="simulator-info text-start">
-                    <span><Info size={16} className="me-2 inline-block" /> 시뮬레이터 이용 안내</span>
-                    <ul className="mb-0 ps-3">
-                        <li>이 시뮬레이션은 실제 발생했던 보이스피싱 사례를 바탕으로 재구성되었습니다.</li>
-                        <li>훈련 중 발생하는 상황에 따라 적절한 대응 버튼을 눌러보세요.</li>
-                        <li>결과에 따라 맞춤형 보안 가이드를 제공해 드립니다.</li>
-                    </ul>
-                </div>
-
-                <p className="mt-4 text-muted small">
-                    * 최적의 경험을 위해 데스크톱 환경과 크롬 브라우저 사용을 권장합니다.
-                </p>
             </div>
+
+            <p className="system-footer">* SECURE SESSION ACTIVE | AUTH_LVL: TELLER_GRADE_A</p>
         </div>
     );
 };
