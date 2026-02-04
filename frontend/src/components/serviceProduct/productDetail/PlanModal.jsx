@@ -182,6 +182,7 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
             <span className='sp-btn-icon'>✕</span>
             <span>취소</span>
           </button>
+          
         </div>
       </div>
     </div>
