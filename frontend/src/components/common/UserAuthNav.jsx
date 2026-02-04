@@ -1,42 +1,48 @@
 // src/components/common/UserAuthNav.jsx
 import React, { useEffect, useState } from 'react';
-import { Nav } from 'react-bootstrap';
+import { Nav, NavDropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function UserAuthNav() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
+  const [role, setRole] = useState('');
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 라우트(path)가 바뀔 때마다 토큰/이름 다시 확인
+  // 라우트가 바뀔 때마다 토큰/이름/권한 다시 확인
   useEffect(() => {
-    const token = localStorage.getItem('accessToken'); // LoginPage/KakaoCallbackPage에서 저장한 키
+    const token = localStorage.getItem('accessToken');
     const name = localStorage.getItem('userName');
+    const storedRole = localStorage.getItem('role') || '';
 
     setIsLoggedIn(!!token);
     setUserName(name || '');
+    setRole(storedRole.trim());
 
-    // 디버깅용
     console.log(
       'UserAuthNav: token =',
       token,
       'isLoggedIn =',
       !!token,
       'userName =',
-      name
+      name,
+      'role =',
+      storedRole
     );
   }, [location]);
 
-  // ✅ 로그아웃 (카카오 계정까지 서버에서 처리 + 메인으로 이동)
+  const isAdmin = role.includes('ADMIN');
+  const isOperator = role.includes('OPERATOR');
+
+  // 로그아웃
   const handleLogout = async () => {
     const provider = localStorage.getItem('loginProvider'); // 'KAKAO' / 'GOOGLE' / 'LOCAL' 등
     const kakaoAccessToken = localStorage.getItem('kakaoAccessToken');
-    const ourToken = localStorage.getItem('accessToken'); // 우리 서비스 JWT
+    const ourToken = localStorage.getItem('accessToken');
 
     try {
-      // 카카오 로그인 유저인 경우에만 카카오 로그아웃 API 호출
       if (provider === 'KAKAO' && kakaoAccessToken) {
         await fetch('http://localhost:8080/api/auth/kakao/logout', {
           method: 'POST',
@@ -49,19 +55,18 @@ function UserAuthNav() {
       }
     } catch (e) {
       console.error('카카오 로그아웃 호출 중 오류', e);
-      // 실패해도 프론트 세션은 끊어줄 거라 여기서 막 터뜨리지는 않음
     } finally {
-      // 프론트 세션/스토리지 정리
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('loginProvider');
       localStorage.removeItem('kakaoAccessToken');
+      localStorage.removeItem('role');
 
       setIsLoggedIn(false);
       setUserName('');
+      setRole('');
 
-      // ✅ 항상 메인 페이지로 이동
       navigate('/');
     }
   };
@@ -70,23 +75,48 @@ function UserAuthNav() {
     <Nav className="text-center align-items-center">
       {isLoggedIn ? (
         <>
-          {/* 로그인 유저 이름 표시 */}
-          {userName && (
-            <span className="fw-semibold me-2 text-white">
-              {userName} 님
-           </span>
-          )}
-
-          <Nav.Link as={Link} to="/mypage" className="fw-semibold">
-            마이페이지
-          </Nav.Link>
-          <Nav.Link
-            onClick={handleLogout}
-            className="fw-semibold text-warning"
-            style={{ cursor: 'pointer' }}
+          {/*  이름 클릭 시 드롭다운 */}
+          <NavDropdown
+            title={userName ? `${userName} 님` : '내 계정'}
+            id="user-nav-dropdown"
+            align="end"
+            menuVariant="dark"
           >
-            로그아웃
-          </Nav.Link>
+            {/* 마이페이지 */}
+            <NavDropdown.Item as={Link} to="/mypage">
+              마이페이지
+            </NavDropdown.Item>
+
+            {/* ADMIN 권한일 때만 관리자/운영자 메뉴 둘 다 노출 */}
+            {isAdmin && (
+              <>
+                <NavDropdown.Divider />
+                <NavDropdown.Item as={Link} to="/admin">
+                  관리자 페이지
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/operator">
+                  운영자 페이지
+                </NavDropdown.Item>
+              </>
+            )}
+
+            {/* OPERATOR 전용 (ADMIN이 아니고 OPERATOR만 있는 경우) */}
+            {!isAdmin && isOperator && (
+              <>
+                <NavDropdown.Divider />
+                <NavDropdown.Item as={Link} to="/operator">
+                  운영자 페이지
+                </NavDropdown.Item>
+              </>
+            )}
+
+            <NavDropdown.Divider />
+
+            {/* 로그아웃 */}
+            <NavDropdown.Item onClick={handleLogout}>
+              로그아웃
+            </NavDropdown.Item>
+          </NavDropdown>
         </>
       ) : (
         <>
