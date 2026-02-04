@@ -123,8 +123,8 @@ function CommunityDetail() {
                   <div className="comment-edit-box">
                     <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
                     <div className="edit-btn-group">
-                      <button onClick={() => handleEditSubmit(c.commentId)}>저장</button>
-                      <button onClick={() => setEditingCommentId(null)}>취소</button>
+                      <button className="btn-save-confirm" onClick={() => handleEditSubmit(c.commentId)}>저장</button>
+                      <button className="btn-cancel-edit" onClick={() => setEditingCommentId(null)}>취소</button>
                     </div>
                   </div>
                 ) : (
@@ -138,4 +138,5 @@ function CommunityDetail() {
     </div>
   )
 }
+
 export default CommunityDetail;
