@@ -14,7 +14,7 @@ class AIEngine:
             
         self.api_key = os.getenv("OPENAI_API_KEY")
         self.embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
-        self.llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0)
+        self.llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0.5)
         
         self.db_path = DATABASE_PATH
         self.collection_name = self.config["collection_name"]
