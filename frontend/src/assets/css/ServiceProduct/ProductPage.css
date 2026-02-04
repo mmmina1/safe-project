@@ -50,8 +50,27 @@
 }
 
 /* =======================  필터 박스! ======================= */
-.sp-filterBox {
+.sp-filterBox{
   padding: 16px;
+  position: sticky;
+  top: 90px;              /* 헤더 높이에 맞게 조절 */
+  align-self: start;      /* grid/flex에서 안정 */
+  max-height: calc(100vh - 110px);
+  overflow: auto;
+}
+
+/* 왼쪽 패널 자체를 고정 */
+.sp-leftPanel {
+  position: sticky; 
+  top: 115px;
+  height: fit-content;
+}
+
+/* 만약 fixed로 하고 싶으면 */
+.sp-leftPanel.fixed {
+  position: fixed;
+  top: 90px;
+  width: 320px; 
 }
 
 .sp-filterTitle {
@@ -84,6 +103,11 @@
   color: #ffffff;
   padding: 10px 12px;
   outline: none;
+}
+
+.sp-select option {
+  background: #1e1938;
+  color: #eaf0ff;
 }
 
 .sp-input::placeholder {

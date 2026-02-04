@@ -38,6 +38,7 @@ function ProductDetail() {
           rating: data?.rating ?? 0,
           reviewCount: data?.reviewCount ?? 0,
           price: data?.price ?? 0,
+          stockQty: data?.stockQty ?? 0,
           summary: data?.summary ?? '',
           description: data?.description ?? '',
           detailDesc: data?.detailDesc ?? data?.detailedDescription ?? '',
@@ -116,6 +117,7 @@ function ProductDetail() {
   const displayPrice = isFree ? 0 : product.price ?? 0
   const displayRating = Number(product.rating ?? 0)
   const displayReviewCount = Number(product.reviewCount ?? 0)
+  const isOutOfStock = product.stockQty === 0
 
   return (
     <div className="sp-bg">
@@ -143,6 +145,7 @@ function ProductDetail() {
                   <span className="sp-like-icon">♡</span>
                 </button>
               </div>
+              <p className="sp-product-desc">{product.summary}</p>
 
               <div className="sp-product-meta">
                 <div className="sp-product-rating">
@@ -153,8 +156,6 @@ function ProductDetail() {
                   <span className="sp-category-badge">{product.categoryName}</span>
                 </div>
               </div>
-
-              <p className="sp-product-desc">{product.summary}</p>
 
               {Array.isArray(product.keyFeatures) && product.keyFeatures.length > 0 && (
                 <div className="sp-key-features">
@@ -193,10 +194,18 @@ function ProductDetail() {
                   )}
                 </div>
 
-                <button className="sp-subscribe-button" onClick={() => setShowPlanModal(true)}>
-                  <span className="sp-subscribe-icon">🛒</span>
-                  <span>구독 신청</span>
-                </button>
+                <button className="sp-subscribe-button"
+                    onClick={() => setShowPlanModal(true)}
+                    disabled={isOutOfStock}
+                    aria-disabled={isOutOfStock}
+                  >
+                    <span className="sp-subscribe-icon" aria-hidden="true">
+                      {isOutOfStock ? '⛔' : '🛒'}
+                    </span>
+                    <span className="sp-subscribe-label">
+                      {isOutOfStock ? '재고 소진' : '구독 신청'}
+                    </span>
+                  </button>
               </div>
             </div>
           </div>
@@ -204,9 +213,9 @@ function ProductDetail() {
           {/* 상세 정보 섹션 */}
           <div className="sp-detail-info">
             <ProductQuickInfo
-              stockQty={product.stockQty}
-              serviceLevel={product.serviceLevel}
-              status={product.status}
+              stockQty={product?.stockQty}
+              serviceLevel={product?.priceType}
+              status={product?.status}
             />
 
             {/* 탭 메뉴 */}
