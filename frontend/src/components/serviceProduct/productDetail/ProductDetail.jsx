@@ -103,10 +103,11 @@ function ProductDetail() {
         <div className="sp-shell">
           <div className="sp-detail-error">
             <div className="sp-error-icon">⚠️</div>
-            <p>{error ?? '상품을 찾을 수 없습니다.'}</p>
+            <p className="sp-error-text">{error ?? '상품을 찾을 수 없습니다.'}</p>
           </div>
-          <button className="sp-back-btn" onClick={() => navigate(-1)}>
-            ← 뒤로
+          <button className="sp-back-btn sp-back-btn-large" onClick={() => navigate(-1)}>
+            <span className="sp-back-icon">←</span>
+            <span>뒤로가기</span>
           </button>
         </div>
       </div>
@@ -121,8 +122,8 @@ function ProductDetail() {
 
   return (
     <div className="sp-bg">
-      <div className="sp-shell">
-        <button className="sp-back-btn" onClick={() => navigate(-1)}>
+      <div className="sp-shell-detail">
+        <button className="sp-back-btn sp-back-btn-large" onClick={() => navigate(-1)}>
           <span className="sp-back-icon">←</span>
           <span>뒤로가기</span>
         </button>
@@ -141,6 +142,7 @@ function ProductDetail() {
                   onClick={(e) => {
                     e.stopPropagation()
                   }}
+                  aria-label="관심 상품 추가"
                 >
                   <span className="sp-like-icon">♡</span>
                 </button>
@@ -200,7 +202,7 @@ function ProductDetail() {
                     aria-disabled={isOutOfStock}
                   >
                     <span className="sp-subscribe-icon" aria-hidden="true">
-                      {isOutOfStock ? '⛔' : '🛒'}
+                      {isOutOfStock ? '🔒' : '🛒'}
                     </span>
                     <span className="sp-subscribe-label">
                       {isOutOfStock ? '재고 소진' : '구독 신청'}
@@ -221,18 +223,18 @@ function ProductDetail() {
             {/* 탭 메뉴 */}
             <div className="sp-tabs">
               <button
-                className={`sp-tab-button ${activeTab === 'intro' ? 'active' : ''}`}
+                className={`sp-tab-button sp-tab-button-large${activeTab === 'intro' ? 'active' : ''}`}
                 onClick={() => setActiveTab('intro')}
               >
                 <span className="sp-tab-icon">📋</span>
-                <span>서비스 소개</span>
+                <span className='sp-tab-text'>서비스 소개</span>
               </button>
               <button
                 className={`sp-tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
                 onClick={() => setActiveTab('reviews')}
               >
                 <span className="sp-tab-icon">💬</span>
-                <span>이용 후기</span>
+                <span className='sp-tab-text'>이용 후기</span>
               </button>
             </div>
 
@@ -255,7 +257,7 @@ function ProductDetail() {
       </div>
 
       <PlanModal
-        open={showPlanModal}
+        open={showPlanModal} product={product}
         onClose={() => setShowPlanModal(false)}
         plans={product.plans}
         selectedPlan={selectedPlan}

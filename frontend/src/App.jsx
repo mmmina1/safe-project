@@ -41,6 +41,7 @@ import KakaoLogoutCallbackPage from './pages/KakaoLogoutCallbackPage.jsx';
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 import MonitoringPage from './components/monitoring/MonitoringPage.jsx';
 
+//운영자 페이지
 import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
 import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
 import UserSearchPage from './pages/admin/operator/UserSearchPage.jsx';
