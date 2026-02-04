@@ -49,8 +49,8 @@ public class SecurityConfig {
                                 "/api/monitoring/**",
                                 "/api/test",
                                 "/oauth2/**",
-                                "/oauth2/callback/**"
-                                // "/api/comments/**" - test용
+                                "/oauth2/callback/**",
+                                "/api/comments/**"
                         ).permitAll()
 
                         //  관리자 전용 API
@@ -116,3 +116,4 @@ public class SecurityConfig {
     }
 
 }
+
