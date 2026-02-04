@@ -2,47 +2,36 @@ import axiosInstance from "./axiosInstance";
 
 export const communityApi = {
   getPosts: async ({ query = "", category = "", tag = "", sort = "recent", page = 1, size = 10 }) => {
-    const res = await axiosInstance.get("/api/community/posts", {
-      params: { query, category, tag, sort, page, size },
-    });
+    const res = await axiosInstance.get("/api/community/posts", { params: { query, category, tag, sort, page, size } });
     return res.data;
   },
-
   getPostDetail: async (postId) => {
     const res = await axiosInstance.get(`/api/community/posts/${postId}`);
     return res.data;
   },
-
-  createPost: async ({ title, content, category, userId }) => {
-    const res = await axiosInstance.post("/api/community/posts", { title, content, category, userId });
+  createPost: async (postData) => {
+    const res = await axiosInstance.post("/api/community/posts", postData);
     return res.data;
   },
-
   getComments: async (postId) => {
     const res = await axiosInstance.get("/api/comments", { params: { post_id: postId } });
     return res.data;
   },
-
+  // 💥 21라인: 400 에러 방지를 위해 넘겨받은 객체 그대로 쏩니다.
   createComment: async (commentData) => {
     const res = await axiosInstance.post("/api/comments", commentData);
     return res.data;
   },
-
   updateComment: async (commentId, data) => {
     const res = await axiosInstance.put(`/api/comments/${commentId}`, data);
     return res.data;
   },
-
   deleteComment: async (commentId, userId) => {
     const res = await axiosInstance.delete(`/api/comments/${commentId}`, { params: { user_id: userId } });
     return res.data;
   },
-
-  // 🔥 수정됨: userId를 두 번째 인자로 받고 params로 전달
   likeComment: async (commentId, userId) => {
-    const res = await axiosInstance.post(`/api/comments/${commentId}/like`, null, {
-      params: { user_id: userId }
-    });
+    const res = await axiosInstance.post(`/api/comments/${commentId}/like`, null, { params: { user_id: userId } });
     return res.data;
   }
 };
