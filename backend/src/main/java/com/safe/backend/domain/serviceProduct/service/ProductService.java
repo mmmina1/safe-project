@@ -5,9 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.safe.backend.domain.serviceProduct.dto.ProductDetail;
+import com.safe.backend.domain.serviceProduct.dto.ProductDetailResponse;
 import com.safe.backend.domain.serviceProduct.dto.ProductListItem;
 import com.safe.backend.domain.serviceProduct.entity.Product;
+import com.safe.backend.domain.serviceProduct.entity.ProductDetail;
 import com.safe.backend.domain.serviceProduct.entity.ProductStatus;
 import com.safe.backend.domain.serviceProduct.repository.ProductDetailRepository;
 import com.safe.backend.domain.serviceProduct.repository.ProductRepository;
@@ -60,17 +61,20 @@ public class ProductService {
     }
 
     // 2) 상품 상세 조회
-    public ProductDetail getProductDetail(Long productId) {
+    public ProductDetailResponse getProductDetail(Long productId) {
         Product p = productRepository.findByProductIdAndStatus(productId, ProductStatus.ON_SALE)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
         // detail이 없을 수도 있으니 null-safe
-        var d = p.getDetail(); // EntityGraph로 같이 로딩됨
+        ProductDetail d = p.getDetail();
 
-        Integer price = (d != null) ? d.getPrice() : null;
-        String desc = (d != null && d.getDetailDesc() != null) ? d.getDetailDesc() : p.getDescription();
+        if(d == null){
+            throw new IllegalStateException("상품 디테일이 존재하지 않습니다.");
+        }
 
-        // rating/reviewCount는 PRODUCT_REVIEW 집계 전이라 0 처리
-        return ProductDetail.of(p, price, desc, 0.0, 0);
+        Double rating = 0.0;
+        Integer reviewCount = 0;
+
+    return ProductDetailResponse.of(p, d, rating, reviewCount);
     }
 }

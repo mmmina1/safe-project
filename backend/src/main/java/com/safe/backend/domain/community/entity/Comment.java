@@ -3,10 +3,12 @@ package com.safe.backend.domain.community.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 import com.safe.backend.domain.user.entity.User;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -14,13 +16,15 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id") // MySQL: comment_id
+    @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(name = "post_id", nullable = false) // MySQL: post_id
+    @Column(name = "post_id", nullable = false)
     private Long postId;
 
-    @Column(name = "user_id", nullable = false) // MySQL: user_id
+    // 1. 매핑 복잡도를 줄이기 위해 직접 userId 필드만 사용하거나, 
+    // 아래처럼 연관관계 설정이 되어있다면 중복된 Column 선언을 정리하는 게 좋습니다.
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,9 +35,9 @@ public class Comment {
     private String content;
 
     @Column(name = "like_count", nullable = false)
-    private int likeCount;
+    private int likeCount = 0; // 초기값 설정
 
-    @Column(name = "is_deleted", nullable = false) // MySQL: is_deleted
+    @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
     @Column(name = "created_date", nullable = false, updatable = false)
@@ -42,19 +46,35 @@ public class Comment {
     @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
-    @Column(name = "parent_comment_id") // MySQL 컬럼명
+    @Column(name = "parent_comment_id")
     private Long parentCommentId;
 
+    // 2. 생성 메서드: 필드 누락 방지 및 가독성 최적화
     public static Comment create(Long postId, Long userId, String content) {
         Comment c = new Comment();
-        c.postId = postId;
-        c.userId = userId;
-        c.content = content;
-        c.likeCount = 0;
-        c.isDeleted = false;
+        c.setPostId(postId);
+        c.setUserId(userId);
+        c.setContent(content);
+        c.setLikeCount(0);
+        c.setIsDeleted(false);
+        
         LocalDateTime now = LocalDateTime.now();
-        c.createdDate = now; // 매핑된 created_date 컬럼으로 저장
-        c.updatedDate = now;
+        c.setCreatedDate(now);
+        c.setUpdatedDate(now);
         return c;
+    }
+
+    // 3. 수정 메서드: content가 null이거나 빈 값인 경우 방어 로직 추가 가능
+    public void updateContent(String content) {
+        if (content != null && !content.trim().isEmpty()) {
+            this.content = content;
+            this.updatedDate = LocalDateTime.now();
+        }
+    }
+
+    // 4. 삭제 메서드: 상태값 변경
+    public void softDelete() {
+        this.isDeleted = true;
+        this.updatedDate = LocalDateTime.now();
     }
 }

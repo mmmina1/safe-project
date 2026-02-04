@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -17,18 +18,45 @@ public class CommentController {
     
     private final CommentService commentService;
 
-    // 댓글 등록
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentCreate dto) {
-        // 서비스에서 DB 에러(like_count 등)를 처리한 후 결과를 받아옵니다.
         CommentResponse response = commentService.createCommentAndReturn(dto);
-        // 정상적으로 등록되면 201 Created 응답을 보냅니다.
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 댓글 조회
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getComments(@RequestParam("post_id") Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<?> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody Map<String, Object> payload) {
+        
+        try {
+            String content = (String) payload.get("content");
+            Long userId = ((Number) payload.get("user_id")).longValue();
+            
+            CommentResponse response = commentService.updateComment(commentId, content, userId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long commentId,
+            @RequestParam("user_id") Long userId) {
+        
+        try {
+            commentService.deleteComment(commentId, userId);
+            return ResponseEntity.ok(Map.of("message", "댓글이 삭제되었습니다"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }
