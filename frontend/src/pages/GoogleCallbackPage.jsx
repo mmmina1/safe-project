@@ -6,10 +6,10 @@ import axiosInstance from "../api/axiosInstance";
 function GoogleCallbackPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isCalledRef = useRef(false);   // ✅ 중복 호출 방지용
-
+  const isCalledRef = useRef(false);   //  중복 호출 방지용
+  
   useEffect(() => {
-    // ✅ StrictMode 등으로 인해 effect가 두 번 도는 것 방지
+    //  StrictMode 등으로 인해 effect가 두 번 도는 것 방지
     if (isCalledRef.current) return;
     isCalledRef.current = true;
 
@@ -28,7 +28,7 @@ function GoogleCallbackPage() {
       .then((res) => {
         console.log('[GOOGLE FRONT] res = ', res.data);
 
-        // ✅ role까지 함께 꺼내기 (백엔드 LoginResponse 기준)
+        //  role까지 함께 꺼내기 (백엔드 LoginResponse 기준)
         const { accessToken, email, name, role } = res.data;
 
         if (!accessToken) {
@@ -45,6 +45,9 @@ function GoogleCallbackPage() {
         //  role에 따라 라우팅 분기
         if (role === 'ADMIN') {
           navigate('/admin', { replace: true });
+        } else if (role === 'OPERATOR' || role === 'ROLE_OPERATOR') {
+          // 백엔드가 ROLE_OPERATOR 로 줄 수도 있으니 둘 다 체크
+          navigate('/operator', { replace: true });
         } else {
           navigate('/', { replace: true });
         }

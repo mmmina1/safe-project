@@ -57,7 +57,7 @@ const handleLogin = async (e) => {
     const fallbackName = email.includes('@') ? email.split('@')[0] : email;
     const finalName = name || fallbackName;
 
-    // ✅ 공통 저장
+    //  공통 저장
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('userEmail', userEmail || email);
     localStorage.setItem('userName', finalName);
@@ -66,12 +66,16 @@ const handleLogin = async (e) => {
 
     setMessage('로그인에 성공했습니다.');
 
-    // ✅ 여기서 role 보고 분기
+    //  여기서 role 보고 분기
     if (role === 'ADMIN') {
       navigate('/admin', { replace: true });
+    } else if (role === 'OPERATOR') {
+      navigate('/operator', { replace: true });
     } else {
+      // 일반 유저
       navigate('/', { replace: true });
     }
+
   } catch (err) {
     console.error(err);
 
