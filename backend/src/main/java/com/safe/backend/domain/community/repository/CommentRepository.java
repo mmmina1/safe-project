@@ -1,0 +1,44 @@
+package com.safe.backend.domain.community.repository;
+
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import com.safe.backend.domain.community.entity.Comment;
+
+@Repository
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+    
+    @Query("SELECT c FROM Comment c " +
+           "LEFT JOIN FETCH c.user " +
+           "WHERE c.postId = :postId " +
+           "AND c.isDeleted = false " +
+           "ORDER BY c.createdDate ASC")
+    List<Comment> findAllByPostIdWithUser(@Param("postId") Long postId);
+    
+    @Query("SELECT c FROM Comment c " +
+           "LEFT JOIN FETCH c.user " +
+           "WHERE c.postId = :postId " +
+           "AND c.parentCommentId IS NULL " +
+           "AND c.isDeleted = false " +
+           "ORDER BY c.createdDate ASC")
+    List<Comment> findParentCommentsByPostId(@Param("postId") Long postId);
+    
+    @Query("SELECT c FROM Comment c " +
+           "LEFT JOIN FETCH c.user " +
+           "WHERE c.parentCommentId = :parentCommentId " +
+           "AND c.isDeleted = false " +
+           "ORDER BY c.createdDate ASC")
+    List<Comment> findRepliesByParentId(@Param("parentCommentId") Long parentCommentId);
+    
+    @Query("SELECT COUNT(c) FROM Comment c " +
+           "WHERE c.postId = :postId " +
+           "AND c.isDeleted = false")
+    Long countByPostId(@Param("postId") Long postId);
+    
+    @Modifying
+    @Query(value = "DELETE FROM comments WHERE comment_id = :commentId", nativeQuery = true)
+    void hardDeleteById(@Param("commentId") Long commentId);
+}

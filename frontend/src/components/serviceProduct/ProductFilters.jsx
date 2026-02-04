@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import '../../assets/css/ServiceProduct/ProductCard.css'
 
 function ProductFilters({value, onChange}) {
 
@@ -11,6 +12,7 @@ function ProductFilters({value, onChange}) {
         }
     }
 
+    
   return (
     <div className='sp-glass sp-filterBox'>
         <div className='sp-filterTitle'>필터</div>

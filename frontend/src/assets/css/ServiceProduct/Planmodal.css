@@ -1,0 +1,287 @@
+/* ===== 개선된 모달 스타일 ===== */
+
+.sp-modal-improved {
+  width: min(700px, 95vw);
+}
+
+.sp-modal-header-improved {
+  padding: 32px 36px;
+}
+
+.sp-modal-header-improved h3 {
+  font-size: 28px;
+  gap: 14px;
+}
+
+.sp-modal-close-improved {
+  width: 52px;
+  height: 52px;
+  font-size: 36px;
+}
+
+.sp-modal-body-improved {
+  padding: 36px;
+}
+
+/* ===== 플랜 소개 ===== */
+.sp-plan-intro {
+  margin-bottom: 28px;
+  padding: 20px;
+  background: rgba(100,150,255,0.12);
+  border: 2px solid rgba(100,150,255,0.25);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.sp-plan-intro-text {
+  margin: 0;
+  color: rgba(234,240,255,0.95);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+/* ===== 개선된 플랜 옵션 ===== */
+.sp-plan-options-improved {
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.sp-plan-option-improved {
+  padding: 24px;
+  gap: 20px;
+  min-height: 100px;
+}
+
+.sp-radio-improved {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #ff468c;
+}
+
+.sp-plan-info-improved {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-plan-name-improved {
+  font-size: 22px;
+  margin: 0;
+}
+
+.sp-plan-price-improved {
+  font-size: 19px;
+}
+
+.sp-plan-badge-improved {
+  display: flex;
+  align-items: center;
+}
+
+.sp-discount-badge-improved {
+  padding: 10px 16px;
+  font-size: 17px;
+}
+
+/* ===== 동의 섹션 ===== */
+.sp-agreement-section {
+  padding: 24px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+}
+
+.sp-checkbox-label-improved {
+  padding: 0;
+  background: transparent;
+  border: none;
+  gap: 16px;
+}
+
+.sp-checkbox-improved {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  accent-color: #ff468c;
+}
+
+.sp-agreement-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sp-agreement-main {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.sp-agreement-sub {
+  font-size: 17px;
+  font-weight: 600;
+  color: rgba(234,240,255,0.70);
+}
+
+/* ===== 빈 상태 ===== */
+.sp-empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.sp-empty-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+}
+
+.sp-empty-text {
+  margin: 0;
+  color: rgba(234,240,255,0.80);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== 개선된 모달 푸터 ===== */
+.sp-modal-footer-improved {
+  padding: 28px 36px;
+  gap: 16px;
+}
+
+.sp-btn-subscribe-improved,
+.sp-btn-cancel-improved {
+  min-height: 68px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.sp-btn-icon {
+  font-size: 26px;
+}
+.sp-summary-card {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.sp-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sp-summary-row:last-child {
+  border-bottom: 0;
+}
+
+.sp-summary-label {
+  color: rgba(234,240,255,0.65);
+  font-size: 13px;
+}
+
+.sp-summary-value {
+  color: #eaf0ff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.sp-summary-desc {
+  margin-top: 12px;
+}
+
+.sp-summary-desc-title {
+  color: rgba(234,240,255,0.75);
+  font-weight: 800;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.sp-summary-desc-text {
+  color: rgba(234,240,255,0.85);
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+/* 경고 표시(기간 없음/가격 미정 등) */
+.sp-summary-value.is-warn {
+  color: #ffd18a;
+  font-weight: 800;
+}
+
+.sp-alert {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.sp-alert-warn {
+  background: rgba(255, 209, 138, 0.08);
+  border-color: rgba(255, 209, 138, 0.25);
+}
+
+/* 상세 안내 접기 */
+.sp-details {
+  margin-top: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 12px;
+}
+
+.sp-details-summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: rgba(234,240,255,0.9);
+  list-style: none;
+}
+
+.sp-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.sp-details-body {
+  margin-top: 10px;
+  white-space: pre-wrap;
+  color: rgba(234,240,255,0.85);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 600px) {
+  .sp-modal-header-improved h3 {
+    font-size: 24px;
+  }
+
+  .sp-plan-name-improved {
+    font-size: 20px;
+  }
+
+  .sp-plan-price-improved {
+    font-size: 18px;
+  }
+
+  .sp-agreement-main {
+    font-size: 18px;
+  }
+
+  .sp-btn-subscribe-improved,
+  .sp-btn-cancel-improved {
+    font-size: 20px;
+    min-height: 64px;
+  }
+}

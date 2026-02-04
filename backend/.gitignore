@@ -1,39 +1,49 @@
-HELP.md
-.gradle
+# Build
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+target/
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.class
+*.jar
+*.war
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# QueryDSL generated
+build/generated/
+generated/
 
-### VS Code ###
+# IDE
+.idea/
+*.iml
 .vscode/
 
+# Logs
+*.log
+logs/
+
+# Environment
+application-local.properties
+application-dev.properties
+application-prod.properties
+
+# Uploaded files
+uploads/
+
+# Gradle (❗필수)
+.gradle/
+**/.gradle/
+build/
+**/build/
+
+# Java / Backend build outputs
+bin/
+backend/bin/
+
+# Python virtualenv (❗필수)
+.venv/
+backend/.venv/
+
+# OS / temp
+.DS_Store
+Thumbs.db
+
+# Spring Boot config
 src/main/resources/application.properties

@@ -20,76 +20,95 @@ function LoginPage() {
   const navigate = useNavigate();
 
   // 일반 이메일/비밀번호 로그인
-  const handleLogin = async (e) => {
-    e.preventDefault();
+ // 일반 이메일/비밀번호 로그인
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    if (!email || !password) {
-      setMessage('이메일과 비밀번호를 입력해 주세요.');
+  if (!email || !password) {
+    setMessage('이메일과 비밀번호를 입력해 주세요.');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setMessage(null);
+
+    const res = await axiosInstance.post('/api/auth/login', {
+      email,
+      password,
+    });
+
+    console.log('[LOCAL LOGIN] response:', res.data);
+
+    // ✅ 백엔드에서 내려주는 구조: { accessToken, email, name, role }
+    const {
+      accessToken,
+      email: userEmail,
+      name,
+      role,
+    } = res.data;
+
+    if (!accessToken) {
+      setMessage('로그인에는 성공했지만 토큰이 없습니다. 관리자에게 문의해 주세요.');
       return;
     }
 
-    try {
-      setLoading(true);
-      setMessage(null);
+    // 이름 fallback
+    const fallbackName = email.includes('@') ? email.split('@')[0] : email;
+    const finalName = name || fallbackName;
 
-      // baseURL + 인터셉터가 적용된 axiosInstance 사용
-      const res = await axiosInstance.post('/api/auth/login', {
-        email,
-        password,
-      });
+    //  공통 저장
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('userEmail', userEmail || email);
+    localStorage.setItem('userName', finalName);
+    localStorage.setItem('loginProvider', 'LOCAL');
+    localStorage.setItem('role', role || 'USER');
 
-      console.log('login response:', res.data); // 응답 구조 확인용
+    setMessage('로그인에 성공했습니다.');
 
-      // 백엔드에서 내려주는 JSON 예시: { accessToken: "...", name: "홍길동" }
-      const token = res.data?.accessToken;
-      const nameFromApi = res.data?.name || res.data?.username; // 필드명에 맞게 조정
+    //  여기서 role 보고 분기
+    if (role === 'ADMIN') {
+      navigate('/admin', { replace: true });
+    } else if (role === 'OPERATOR') {
+      navigate('/operator', { replace: true });
+    } else {
+      // 일반 유저
+      navigate('/', { replace: true });
+    }
 
-      if (!token) {
-        setMessage('로그인에는 성공했지만 토큰이 없습니다. 관리자에게 문의해 주세요.');
-        return;
-      }
+  } catch (err) {
+    console.error(err);
 
-      // 토큰 저장
-      localStorage.setItem('accessToken', token);
+    let errorMessage = '로그인 중 오류가 발생했습니다.';
 
-      // 이름도 저장 (없으면 이메일 아이디 부분 사용)
-      const fallbackName = email.includes('@') ? email.split('@')[0] : email;
-      const finalName = nameFromApi || fallbackName;
-      localStorage.setItem('userName', finalName);
-
-      setMessage('로그인에 성공했습니다.');
-      navigate('/');  // 메인 페이지로 이동
-    } catch (err) {
-      console.error(err);
-
-      let errorMessage = '로그인 중 오류가 발생했습니다.';
-
-      if (err.response && err.response.data) {
-        const data = err.response.data;
-        if (typeof data === 'string') {
-          errorMessage = data;               // 예: "이메일 또는 비밀번호가 올바르지 않습니다."
-        } else if (typeof data === 'object') {
-          if (data.message) {
-            errorMessage = data.message;
-          } else {
-            errorMessage = JSON.stringify(data);
-          }
+    if (err.response && err.response.data) {
+      const data = err.response.data;
+      if (typeof data === 'string') {
+        errorMessage = data;
+      } else if (typeof data === 'object') {
+        if (data.message) {
+          errorMessage = data.message;
+        } else {
+          errorMessage = JSON.stringify(data);
         }
       }
-
-      setMessage(`로그인 실패: ${errorMessage}`);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    setMessage(`로그인 실패: ${errorMessage}`);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // 카카오 로그인 버튼 클릭 시
   const handleKakaoLogin = () => {
     const kakaoAuthUrl =
-      `https://kauth.kakao.com/oauth/authorize?` +
+      'https://kauth.kakao.com/oauth/authorize?' +
       `client_id=${KAKAO_CLIENT_ID}` +
       `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}` +
-      `&response_type=code`;
+      '&response_type=code' +
+      '&prompt=login'; // 매번 계정 선택/로그인 강제
 
     window.location.href = kakaoAuthUrl;
   };
@@ -135,6 +154,7 @@ function LoginPage() {
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="off"           // 브라우저 자동완성 방지
           />
         </div>
 
@@ -147,12 +167,13 @@ function LoginPage() {
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"  // 브라우저 자동완성 방지
           />
         </div>
 
         <button
           type="submit"
-          className="btn btn-primary w-100"
+          className="btn btn-login-default w-100"
           disabled={loading}
         >
           {loading ? '처리 중...' : '로그인'}
@@ -174,7 +195,7 @@ function LoginPage() {
       {/* 구글 로그인 버튼 */}
       <button
         type="button"
-        className="btn btn-outline-dark w-100"
+        className="btn btn-google w-100"
         onClick={handleGoogleLogin}
       >
         구글로 로그인

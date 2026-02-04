@@ -5,11 +5,12 @@ public class LoginResponse {
     private String accessToken;
     private String email;
     private String name;
-
-    public LoginResponse(String accessToken, String email, String name) {
+    private String role;
+    public LoginResponse(String accessToken, String email, String name, String role) {
         this.accessToken = accessToken;
         this.email = email;
         this.name = name;
+        this.role = role;
     }
 
     public String getAccessToken() {
@@ -23,4 +24,6 @@ public class LoginResponse {
     public String getName() {
         return name;
     }
+
+    public String getRole() { return role; }
 }

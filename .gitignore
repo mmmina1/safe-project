@@ -64,10 +64,3 @@ build/
 # Environment variables
 .env
 .env.local
-
-# =========================
-# Backend secret configs
-# =========================
-backend/src/main/resources/application-local.properties
-backend/src/main/resources/application-dev.properties
-backend/src/main/resources/application-prod.properties

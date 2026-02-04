@@ -22,7 +22,7 @@ public class User {
     private String email;
 
     @Column(nullable = false, length = 50)
-    private String name;
+    private String name; // 닉네임/이름(필수) - DB 스키마에 따르면 name이 닉네임/이름 역할
 
     @Column(name = "password_hash", nullable = true, length = 255)
     private String passwordHash;
@@ -48,7 +48,7 @@ public class User {
     private LocalDateTime lastLoginAt;
 
     @Column(name = "email_verified_at")
-    private LocalDateTime emailVerifiedAt;
+    private LocalDateTime emailVerifiedAt; // DB에는 email_vertified_at으로 오타가 있지만 email_verified_at 사용
 
     /* ===============================
        날짜 관리
@@ -124,5 +124,18 @@ public class User {
 
     public LocalDateTime getEmailVerifiedAt() {
         return emailVerifiedAt;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    // Setters for admin operations
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 }

@@ -67,7 +67,7 @@ public class CommunityService {
     
     //상세 조회
     @Transactional(readOnly = true)
-    public VisitPostDetail getVisitPostDetail(Long postId) {
+    public VisitPostDetail getVisitPostDetail(long postId) {
         VisitPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("VISIT_POST not found: " + postId));
 
@@ -90,6 +90,8 @@ public class CommunityService {
                 req.getTitle(),
                 req.getContent()
         );
+
+        if (post == null) throw new IllegalStateException("post is null");
 
         return postRepository.save(post).getPostId();
     }
