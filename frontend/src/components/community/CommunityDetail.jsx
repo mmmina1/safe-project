@@ -31,18 +31,13 @@ function CommunityDetail() {
     try {
       const res = await communityApi.getComments(postId)
       const rawData = Array.isArray(res) ? res : []
-      
-      // 데이터 정렬 및 필드 보정
       const sortedData = [...rawData].sort((a, b) => {
-        // 백엔드 필드명(parentCommentId)에 맞춰 우선순위 정렬
         const aParentId = a.parentCommentId || a.parent_comment_id;
         const bParentId = b.parentCommentId || b.parent_comment_id;
         const aId = a.commentId || a.comment_id;
         const bId = b.commentId || b.comment_id;
-
         const aGroup = aParentId || aId;
         const bGroup = bParentId || bId;
-
         if (aGroup === bGroup) {
           if (!aParentId) return -1;
           if (!bParentId) return 1;
@@ -64,15 +59,15 @@ function CommunityDetail() {
 
   useEffect(() => { fetchData() }, [postId])
 
-  // 🔥 좋아요 핸들러: 이제 백엔드 DTO 업데이트로 숫자가 실시간 반영됨
+  // 🔥 핵심 수정: handleLike 호출 시 currentUserId 전달
   const handleLike = async (commentId) => {
     if (!currentUserId) {
       alert("로그인이 필요합니다.");
       return;
     }
     try {
-      await communityApi.likeComment(commentId);
-      // DB 값이 변했으므로 목록을 다시 불러와서 commentLikeCount를 갱신
+      // 🔥 인자로 currentUserId를 반드시 넘겨야 백엔드가 500을 안 뱉습니다.
+      await communityApi.likeComment(commentId, currentUserId);
       await fetchComments(); 
     } catch (err) {
       console.error("좋아요 실패:", err);
@@ -189,24 +184,19 @@ function CommunityDetail() {
                 ) : (
                   <>
                     <p className="comment-body-text">{c.content}</p>
-                    <div className="comment-footer" style={{ marginTop: '8px', fontSize: '13px', color: '#888' }}>
-                        <span 
-                          className="like-btn" 
-                          onClick={() => handleLike(targetCommentId)}
-                          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                        >
-                          {/* 🔥 DTO에서 보내주는 commentLikeCount를 출력 */}
-                          ❤️ {c.commentLikeCount ?? 0}
-                        </span>
+                    <div className="comment-footer" style={{ marginTop: '8px', fontSize: '13px' }}>
+                      <span 
+                        className="like-btn" 
+                        onClick={() => handleLike(targetCommentId)}
+                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#000', fontWeight: '700', userSelect: 'none' }}
+                      >
+                        ❤️ {c.commentLikeCount ?? 0}
+                      </span>
                     </div>
 
                     {replyingToId === targetCommentId && (
                       <div className="comment-edit-box reply-input-container">
-                        <textarea 
-                          value={replyContent} 
-                          onChange={(e) => setReplyContent(e.target.value)} 
-                          placeholder="답글을 입력하세요..."
-                        />
+                        <textarea value={replyContent} onChange={(e) => setReplyContent(e.target.value)} placeholder="답글을 입력하세요..." />
                         <div className="edit-btn-group">
                           <button className="btn-save-confirm" onClick={() => handleReplySubmit(targetCommentId)}>등록</button>
                           <button className="btn-cancel-edit" onClick={() => setReplyingToId(null)}>취소</button>

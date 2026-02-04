@@ -32,7 +32,6 @@ public class Comment {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    // 핵심: DB 컬럼명과 필드명을 강제로 매핑해서 500 에러 방지
     @Column(name = "comment_like_count", nullable = false)
     private int commentLikeCount = 0; 
 
@@ -53,9 +52,8 @@ public class Comment {
         c.setPostId(postId);
         c.setUserId(userId);
         c.setContent(content);
-        c.setCommentLikeCount(0); // 초기값 명시
+        c.setCommentLikeCount(0);
         c.setIsDeleted(false);
-        
         LocalDateTime now = LocalDateTime.now();
         c.setCreatedDate(now);
         c.setUpdatedDate(now);
@@ -67,9 +65,16 @@ public class Comment {
         this.updatedDate = LocalDateTime.now();
     }
 
-    // 500 에러 방지용 안전한 증가 로직
     public void increaseLikeCount() {
         this.commentLikeCount += 1;
+        this.updatedDate = LocalDateTime.now();
+    }
+
+    // 🔥 여기 중괄호 안으로 잘 들어왔습니다!
+    public void decreaseLikeCount() {
+        if (this.commentLikeCount > 0) {
+            this.commentLikeCount -= 1;
+        }
         this.updatedDate = LocalDateTime.now();
     }
 }

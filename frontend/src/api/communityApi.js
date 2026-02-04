@@ -38,9 +38,11 @@ export const communityApi = {
     return res.data;
   },
 
-  // 🔥 불필요한 인자를 제거하고 백엔드 엔드포인트와 일치시킴
-  likeComment: async (commentId) => {
-    const res = await axiosInstance.post(`/api/comments/${commentId}/like`);
+  // 🔥 수정됨: userId를 두 번째 인자로 받고 params로 전달
+  likeComment: async (commentId, userId) => {
+    const res = await axiosInstance.post(`/api/comments/${commentId}/like`, null, {
+      params: { user_id: userId }
+    });
     return res.data;
   }
 };

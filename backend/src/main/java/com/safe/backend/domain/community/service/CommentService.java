@@ -1,19 +1,24 @@
 package com.safe.backend.domain.community.service;
 
 import com.safe.backend.domain.community.entity.Comment;
+import com.safe.backend.domain.community.entity.CommentLike;
 import com.safe.backend.domain.community.repository.CommentRepository;
+import com.safe.backend.domain.community.repository.CommentLikeRepository;
 import com.safe.backend.domain.community.dto.CommentCreate;
 import com.safe.backend.domain.community.dto.CommentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public CommentResponse createCommentAndReturn(CommentCreate dto) {
@@ -52,18 +57,29 @@ public class CommentService {
         commentRepository.hardDeleteById(commentId);
     }
 
-    // 🔥 하트 클릭 시 500 에러 박멸 로직 (수정 완료)
+    // 🔥 좋아요 토글 로직 (500 에러 및 무한 증가 방지 버전)
     @Transactional
-    public void likeComment(Long commentId) {
-        // 1. DB에서 최신 상태를 직접 가져옴
+    public void likeComment(Long commentId, Long userId) {
+        // 1. 해당 댓글이 있는지 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("해당 댓글을 찾을 수 없습니다."));
         
-        // 2. 엔티티 내의 증가 로직 실행 (comment_like_count 증가)
-        comment.increaseLikeCount();
+        // 2. 중요: Repository의 메서드 인자 순서와 (commentId, userId)를 반드시 맞춰야 함!
+        Optional<CommentLike> existingLike = commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
+
+        if (existingLike.isPresent()) {
+            // 3. 기록이 있으면 삭제 (좋아요 취소)
+            commentLikeRepository.delete(existingLike.get());
+            // 즉시 반영을 위해 flush 사용 (선택사항이지만 안전함)
+            commentLikeRepository.flush(); 
+            comment.decreaseLikeCount(); 
+        } else {
+            // 4. 기록이 없으면 추가 (좋아요)
+            commentLikeRepository.save(new CommentLike(commentId, userId));
+            comment.increaseLikeCount();
+        }
         
-        // 3. 🔥 핵심: saveAndFlush를 사용하여 변경 내용을 DB에 즉시 강제 반영
-        // 이렇게 해야 쿼리가 바로 날아가면서 500 에러를 방지할 수 있습니다.
+        // 5. 카운트 업데이트 반영
         commentRepository.saveAndFlush(comment); 
     }
 }
