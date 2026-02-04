@@ -73,4 +73,14 @@ public class AiRepositoryImpl implements AiRepository {
         }
     }
 
+    @Override
+    public Object startSimulation(String scenarioType) {
+        return pythonAiDataSource.startSimulation(scenarioType);
+    }
+
+    @Override
+    public Object evaluateSimulation(String situation, String playerAnswer) {
+        return pythonAiDataSource.evaluateSimulation(situation, playerAnswer);
+    }
+
 }

@@ -28,6 +28,7 @@ const Sidebar = ({ activeTab, onTabChange }) => {
         { category: '설정' },
         { id: 'settings-payment', label: '결제수단 관리', icon: <CreditCard size={20} /> },
         { id: 'settings-profile', label: '프로필 관리', icon: <UserCircle size={20} /> },
+        { id: 'payment-practice', label: '결제 연습', icon: <CreditCard size={20} /> },
     ];
 
     return (
