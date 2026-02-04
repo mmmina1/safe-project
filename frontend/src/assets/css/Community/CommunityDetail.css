@@ -13,7 +13,6 @@
 .comment-section { margin-top: 40px; }
 .comment-title { color: #fff; margin-bottom: 20px; font-size: 20px; }
 
-/* 댓글 입력창 */
 .comment-write-container { display: flex; gap: 10px; margin-bottom: 30px; align-items: stretch; }
 .comment-input-field {
   flex: 1;
@@ -37,7 +36,6 @@
   cursor: pointer;
 }
 
-/* 댓글 리스트 카드 */
 .comment-card-item { background-color: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e5e7eb; }
 .comment-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .comment-author-name { color: #2563eb; font-weight: 800; }
@@ -45,16 +43,14 @@
 .comment-date-text { color: #999; font-size: 12px; }
 .comment-body-text { color: #1f2937; margin-top: 8px; line-height: 1.6; font-size: 15px; white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word; }
 
-/* 수정/삭제 버튼 (작은 텍스트형) */
 .comment-owner-btns button { background: none; border: none; cursor: pointer; font-size: 12px; margin-left: 5px; }
 .btn-edit { color: #10b981; }
 .btn-delete { color: #ef4444; }
 
-/* ★ [NEW] 댓글 수정 모드 디자인 (2번째 사진 감성) ★ */
 .comment-edit-box { display: flex; flex-direction: column; gap: 10px; }
 .comment-edit-box textarea {
   width: 100%;
-  background-color: #f8fafc; /* 수정창은 밝은 카드 위이므로 살짝 연한 배경 */
+  background-color: #f8fafc; 
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 12px;
@@ -64,20 +60,26 @@
   outline: none;
 }
 .edit-btn-group { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
-
-/* 공통 버튼 베이스 */
 .edit-btn-group button {
   padding: 8px 18px;
-  border-radius: 10px; /* 힙한 라운드 */
+  border-radius: 10px; 
   font-weight: 700;
   cursor: pointer;
   border: none;
   font-size: 14px;
   transition: opacity 0.2s;
 }
-.edit-btn-group button:hover { opacity: 0.8; }
-
-/* 저장 버튼 (이미지의 '등록' 버튼 스타일) */
 .btn-save-confirm { background-color: #3b82f6; color: #fff; }
-/* 취소 버튼 (차분한 그레이 스타일) */
 .btn-cancel-edit { background-color: #64748b; color: #fff; }
+
+/* 대댓글 스타일 */
+.btn-reply { color: #3b82f6 !important; font-weight: bold; }
+.comment-reply-item {
+  margin-left: 45px; 
+  background-color: #f9fafb; 
+  border-left: 4px solid #3b82f6; 
+}
+.reply-input-container {
+  margin-top: 15px;
+  padding-left: 10px;
+}
