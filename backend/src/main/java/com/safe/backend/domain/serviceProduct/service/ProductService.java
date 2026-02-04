@@ -7,10 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safe.backend.domain.serviceProduct.dto.ProductDetailResponse;
 import com.safe.backend.domain.serviceProduct.dto.ProductListItem;
+import com.safe.backend.domain.serviceProduct.dto.ProductPlanDto;
 import com.safe.backend.domain.serviceProduct.entity.Product;
 import com.safe.backend.domain.serviceProduct.entity.ProductDetail;
+import com.safe.backend.domain.serviceProduct.entity.ProductPlan;
 import com.safe.backend.domain.serviceProduct.entity.ProductStatus;
 import com.safe.backend.domain.serviceProduct.repository.ProductDetailRepository;
+import com.safe.backend.domain.serviceProduct.repository.ProductPlanRepository;
 import com.safe.backend.domain.serviceProduct.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class ProductService {
     
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
+    private final ProductPlanRepository productPlanRepository;
 
     //1. 상품 목록 조회
     public Page<ProductListItem> getProducts(String q, String category, Pageable pageable) {
@@ -72,9 +76,50 @@ public class ProductService {
             throw new IllegalStateException("상품 디테일이 존재하지 않습니다.");
         }
 
-        Double rating = 0.0;
-        Integer reviewCount = 0;
+        ProductPlan plan = productPlanRepository
+                .findByProduct_ProductId(productId)
+                .orElse(null);
 
-    return ProductDetailResponse.of(p, d, rating, reviewCount);
+        // 2. PlanDto 생성
+        ProductPlanDto planDto = buildPlanDto(p, d, plan);
+
+        return ProductDetailResponse.of(p,d,planDto,0.0, 0);
+    }
+
+    private ProductPlanDto buildPlanDto(Product p, ProductDetail d, ProductPlan plan) {
+
+        boolean isFree = p.getPriceType().name().equals("FREE");
+
+        // 1️⃣ 가격 결정
+        Integer finalPrice;
+        if (isFree) {
+            finalPrice = 0;
+        } else if (plan != null && plan.getPriceOverride() != null) {
+            finalPrice = plan.getPriceOverride();
+        } else {
+            finalPrice = d.getPrice(); // fallback
+        }
+
+        // 2️⃣ 기간 텍스트
+        Integer durationValue = (plan != null) ? plan.getDurationValue() : null;
+        String durationUnit = (plan != null) ? plan.getDurationUnit().name() : null;
+
+        String periodText;
+        if (isFree) {
+            periodText = "무료 · 즉시 적용";
+        } else if (durationValue != null && durationUnit != null) {
+            periodText = "DAY".equals(durationUnit)
+                    ? durationValue + "일"
+                    : durationValue + "개월";
+        } else {
+            periodText = "기간 정보 없음";
+        }
+
+        return ProductPlanDto.builder()
+                .durationValue(durationValue)
+                .durationUnit(durationUnit)
+                .periodText(periodText)
+                .finalPrice(finalPrice)
+                .build();
     }
 }

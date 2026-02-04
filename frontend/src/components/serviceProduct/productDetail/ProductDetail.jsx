@@ -17,7 +17,6 @@ function ProductDetail() {
   const [error, setError] = useState(null)
 
   const [showPlanModal, setShowPlanModal] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState(null)
   const [activeTab, setActiveTab] = useState('intro')
   const [agreed, setAgreed] = useState(false)
 
@@ -43,13 +42,12 @@ function ProductDetail() {
           description: data?.description ?? '',
           detailDesc: data?.detailDesc ?? data?.detailedDescription ?? '',
           categoryName: data?.categoryName ?? '서비스',
-          plans: Array.isArray(data?.plans) ? data.plans : [],
+          plan: data?.plan ?? null,
+          priceType: data?.priceType ?? 'PAID'
         }
 
         setProduct(normalized)
 
-        if (normalized.plans.length > 0) setSelectedPlan(normalized.plans[0])
-        else setSelectedPlan(null)
       } catch (e) {
         console.error(e)
         if (!alive) return
@@ -67,22 +65,30 @@ function ProductDetail() {
     }
   }, [productId])
 
-  const handleSubscribe = () => {
-    if (!product?.plans || product.plans.length === 0) {
-      alert('현재 구독 플랜 정보가 준비되지 않았습니다.')
-      return
-    }
-    if (!selectedPlan) {
-      alert('구독 플랜을 선택해주세요.')
-      return
-    }
-    if (!agreed) {
-      alert('자동 정기결제에 동의해주세요.')
-      return
+    const handleSubscribe = () => {
+      if (!product) return
+
+      // 무료면 plan 없어도 진행 가능하게 할지(선택)
+      const isFree = product.priceType === 'FREE'
+
+      if (!isFree && !product.plan) {
+        alert('이용기간/가격 정보가 없습니다. (플랜 등록 필요)')
+        return
+      }
+
+      if (!agreed) {
+        alert('이용약관에 동의해주세요.')
+        return
+      }
+
+      console.log('구독/결제 진행:', {
+        productId: product.id,
+        period: product.plan?.periodText,
+        price: product.plan?.finalPrice,
+        priceType: product.priceType,
+      })
     }
 
-    console.log('구독하기:', selectedPlan)
-  }
 
   if (loading) {
     return (
@@ -245,6 +251,8 @@ function ProductDetail() {
                   description={product.description}
                   detailDesc={product.detailDesc}
                   features={product.features}
+                  plan={product.plan}
+                  priceType={product.priceType}
                 />
               )}
 
@@ -257,15 +265,8 @@ function ProductDetail() {
       </div>
 
       <PlanModal
-        open={showPlanModal} product={product}
-        onClose={() => setShowPlanModal(false)}
-        plans={product.plans}
-        selectedPlan={selectedPlan}
-        setSelectedPlan={setSelectedPlan}
-        agreed={agreed}
-        setAgreed={setAgreed}
-        onSubscribe={handleSubscribe}
-      />
+        open={showPlanModal} product={product} onClose={() => setShowPlanModal(false)} agreed={agreed}
+        setAgreed={setAgreed} onSubscribe={handleSubscribe} />
     </div>
   )
 }
