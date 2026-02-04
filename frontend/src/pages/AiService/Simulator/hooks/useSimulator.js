@@ -7,6 +7,9 @@ import { useUnityContext } from "react-unity-webgl";
 export const useSimulator = () => {
     // --- [상태 관리] ---
     const [receivedNumber, setReceivedNumber] = useState(0);
+    const [simulationMessage, setSimulationMessage] = useState("");
+    const [evaluationResult, setEvaluationResult] = useState(null);
+    const [isSimulating, setIsSimulating] = useState(false);
 
     // 유니티 컨텍스트 설정: public/unity-sim/uni 폴더의 빌드 파일들을 연결합니다.
     const {
@@ -23,13 +26,67 @@ export const useSimulator = () => {
         codeUrl: "/unity-sim/uni/Build/02.wasm.br",
     });
 
-    // --- [통신 로직] ---
+    // --- [서버 통신 로직] ---
+
+    // 1~4번 흐름: 시나리오 시작 (랜덤 변수 발생 및 서버 송신)
+    const startSimulation = async () => {
+        const types = ["A", "B", "C", "D"];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        setIsSimulating(true);
+        setSimulationMessage("분석 중...");
+        setEvaluationResult(null);
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/ai/simulator/start?scenarioType=${randomType}`);
+            const result = await response.json();
+            const aiDialogue = result.data.answer;
+
+            setSimulationMessage(aiDialogue);
+
+            // 유니티로 AI 대사 전달 (말풍선 띄우기 등)
+            if (isLoaded) {
+                sendMessage("ReactReceiver", "ShowDialogue", aiDialogue);
+            }
+        } catch (error) {
+            console.error("시나리오 시작 실패:", error);
+            setSimulationMessage("시뮬레이션 서버 연결에 실패했습니다.");
+        }
+    };
+
+    // 17~22번 흐름: 사용자 답변 평가
+    const evaluateAnswer = async (playerAnswer) => {
+        if (!simulationMessage) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/ai/simulator/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    situation: simulationMessage,
+                    player_answer: playerAnswer
+                })
+            });
+            const result = await response.json();
+            setEvaluationResult(result.data);
+
+            // 결과에 따른 유니티 연출 유도 (점수 전달 등)
+            if (isLoaded) {
+                sendMessage("ReactReceiver", "SetScore", result.data.score);
+            }
+        } catch (error) {
+            console.error("평가 실패:", error);
+        }
+    };
+
+    // --- [유니티 통신 로직] ---
 
     // 유니티 ➔ 리액트: 유니티에서 보낸 숫자를 수신하는 핸들러
     const handleNumberUpdate = useCallback((val) => {
         console.log("Unity로부터 수신된 숫자:", val);
         setReceivedNumber(val);
-    }, []);
+        // 특정 숫자가 오면 게임 시작 트리거로 쓸 수 있음 (예: 777)
+        if (val === 777) startSimulation();
+    }, [isLoaded]);
 
     // 이벤트 리스너 등록 및 해제
     useEffect(() => {
@@ -37,26 +94,24 @@ export const useSimulator = () => {
         window.dispatchReactEvent = (eventName, ...args) => {
             console.log(`Unity Event: ${eventName}`, args);
             if (eventName === "UpdateNumber") {
-                // 첫 번째 인자가 유니티에서 보낸 숫자(val)입니다.
                 handleNumberUpdate(args[0]);
+            } else if (eventName === "PlayerSpeak") {
+                // 유니티에서 플레이어가 정답을 선택했을 때 호출됨
+                evaluateAnswer(args[0]);
             }
         };
 
-        // 이 부분은 라이브러리의 표준 리스너이지만, 현재 .jslib 구조에서는 위 글로벌 함수가 핵심입니다.
         addEventListener("UpdateNumber", handleNumberUpdate);
 
         return () => {
             removeEventListener("UpdateNumber", handleNumberUpdate);
             delete window.dispatchReactEvent;
         };
-    }, [addEventListener, removeEventListener, handleNumberUpdate]);
+    }, [addEventListener, removeEventListener, handleNumberUpdate, simulationMessage]);
 
     // 리액트 ➔ 유니티: 리액트에서 유니티로 랜덤 숫자를 보냅니다.
     const sendRandomNumberToUnity = () => {
         const randomNum = Math.floor(Math.random() * 100);
-        console.log("Unity로 보내는 숫자:", randomNum);
-
-        // 유니티 프로젝트 사양: 오브젝트 "ReactReceiver", 함수 "SetNumber"
         sendMessage("ReactReceiver", "SetNumber", randomNum);
     };
 
@@ -69,6 +124,11 @@ export const useSimulator = () => {
         isLoaded,
         loadingPercentage,
         receivedNumber,
+        simulationMessage,
+        evaluationResult,
+        isSimulating,
+        startSimulation,
+        evaluateAnswer,
         sendRandomNumberToUnity
     };
 };

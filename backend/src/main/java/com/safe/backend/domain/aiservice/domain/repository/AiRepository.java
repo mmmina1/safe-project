@@ -12,4 +12,8 @@ public interface AiRepository {
     String diagnosePhishing(String phoneNumber);
 
     List<ChatMessageEntity> getChatHistory(String userId);
+
+    Object startSimulation(String scenarioType);
+
+    Object evaluateSimulation(String situation, String playerAnswer);
 }

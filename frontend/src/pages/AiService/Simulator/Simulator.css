@@ -231,6 +231,57 @@
     box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
 }
 
+/* 터미널 입력창 및 결과창 스타일 */
+.terminal-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 10px;
+    color: #22d3ee;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.terminal-input:focus {
+    border-color: #22d3ee;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
+}
+
+.score-badge {
+    display: inline-block;
+    background: #22d3ee;
+    color: #0f172a;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.expert-comment {
+    color: #e2e8f0;
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.improvement-tip {
+    background: rgba(34, 211, 238, 0.05);
+    padding: 10px;
+    border-left: 3px solid #22d3ee;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.terminal-welcome {
+    text-align: center;
+    padding: 20px 0;
+}
+
 /* 4. 업무 지침서 (Ledger) */
 .desk-ledger {
     background: rgba(255, 255, 255, 0.02);

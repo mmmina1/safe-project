@@ -11,6 +11,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.safe.backend.domain.aiservice.data.Model.ChatRequestModel;
 import com.safe.backend.domain.aiservice.data.Model.ChatResponseModel;
+import com.safe.backend.domain.aiservice.data.Model.SimEvaluateRequestModel;
+import com.safe.backend.domain.aiservice.data.Model.SimGeneralResponseModel;
+import com.safe.backend.domain.aiservice.data.Model.SimStartRequestModel;
 
 /**
  * PythonAiDataSource: 파이썬 AI 서버와 통신을 담당하는 데이터 소스 클래스 (Infrastructure Layer)
@@ -73,5 +76,48 @@ public class PythonAiDataSource {
             System.err.println("Python 진단 서비스 호출 실패: " + e.getMessage());
             return "진단 서비스 오류";
         }
+    }
+
+    /**
+     * 시뮬레이션 시나리오 시작 요청
+     */
+    public SimGeneralResponseModel startSimulation(String scenarioType) {
+        String url = pythonBackendUrl + "/simulator/start";
+        SimStartRequestModel request = new SimStartRequestModel(scenarioType);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SimStartRequestModel> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<SimGeneralResponseModel> response = restTemplate.postForEntity(url, entity,
+                    SimGeneralResponseModel.class);
+            return response.getBody();
+        } catch (Exception e) {
+            System.err.println("Python AI 시뮬레이션 시작 실패: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 시뮬레이션 결과 평가 요청
+     */
+    public SimGeneralResponseModel evaluateSimulation(String situation, String playerAnswer) {
+        String url = pythonBackendUrl + "/simulator/evaluate";
+        SimEvaluateRequestModel request = new SimEvaluateRequestModel(situation, playerAnswer);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SimEvaluateRequestModel> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<SimGeneralResponseModel> response = restTemplate.postForEntity(url, entity,
+                    SimGeneralResponseModel.class);
+            return response.getBody();
+        } catch (Exception e) {
+            System.err.println("Python AI 시뮬레이션 평가 실패: " + e.getMessage());
+            return null;
+        }
+    }
     }
 }

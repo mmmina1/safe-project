@@ -17,8 +17,15 @@ const Simulator = () => {
         isLoaded,
         loadingPercentage,
         receivedNumber,
+        simulationMessage,
+        evaluationResult,
+        isSimulating,
+        startSimulation,
+        evaluateAnswer,
         sendRandomNumberToUnity
     } = useSimulator();
+
+    const [localInput, setLocalInput] = React.useState("");
 
     return (
         <div className="teller-station-container animate-fade-in">
@@ -74,16 +81,56 @@ const Simulator = () => {
                         <div className="terminal-screen">
                             <div className="status-bar">
                                 <span className="status-dot"></span>
-                                <span className="status-text">TERMINAL ACTIVE - NODE_01</span>
+                                <span className="status-text">
+                                    {evaluationResult ? `EVALUATION COMPLETE - GRADE ${evaluationResult.evaluation_grade}` : 'TERMINAL ACTIVE - NODE_01'}
+                                </span>
                             </div>
                             <div className="terminal-content">
-                                <div className="info-section">
-                                    <Info size={16} className="text-cyan" />
-                                    <span>현재 세션 정보: <strong>{receivedNumber || 'WAITING...'}</strong></span>
-                                </div>
-                                <button onClick={sendRandomNumberToUnity} className="btn-terminal-action">
-                                    신호 전송 (SIGNAL_TEST)
-                                </button>
+                                {!isSimulating ? (
+                                    <div className="terminal-welcome">
+                                        <p className="text-cyan mb-2">대기 중... 시뮬레이션을 시작하십시오.</p>
+                                        <button onClick={startSimulation} className="btn-terminal-action">
+                                            시나리오 시작 (START_SIM)
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="terminal-active">
+                                        <div className="info-section">
+                                            <Info size={16} className="text-cyan" />
+                                            <span>{simulationMessage}</span>
+                                        </div>
+
+                                        {!evaluationResult && (
+                                            <div className="input-area mt-4">
+                                                <input
+                                                    type="text"
+                                                    placeholder="당신의 대응을 입력하세요..."
+                                                    className="terminal-input"
+                                                    value={localInput}
+                                                    onChange={(e) => setLocalInput(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            evaluateAnswer(localInput);
+                                                            setLocalInput(""); // 제출 후 비우기
+                                                        }
+                                                    }}
+                                                />
+                                                <p className="text-xs text-slate-500 mt-2">Enter를 눌러 평가 요청</p>
+                                            </div>
+                                        )}
+
+                                        {evaluationResult && (
+                                            <div className="result-area animate-fade-in mt-2">
+                                                <div className="score-badge">SCORE: {evaluationResult.score}</div>
+                                                <p className="expert-comment mt-2">"{evaluationResult.expert_comment}"</p>
+                                                <div className="improvement-tip mt-2">💡 {evaluationResult.improvement_tip}</div>
+                                                <button onClick={startSimulation} className="btn-terminal-action mt-4">
+                                                    다음 시나리오 (NEXT)
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -94,7 +141,7 @@ const Simulator = () => {
                         <ul>
                             <li>의심스러운 상황 발생 시 단말기 신호를 즉시 확인하십시오.</li>
                             <li>실제 사례 기반으로 구성된 시뮬레이션입니다.</li>
-                            <li>창구 너머 손님의 반응을 면밀히 관찰하십시오.</li>
+                            <li>채점 기준: 가이드라인 이행 여부 ({evaluationResult?.matched_steps?.length || 0}개 항목 이행됨)</li>
                         </ul>
                     </div>
                 </div>
