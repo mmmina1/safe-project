@@ -33,7 +33,10 @@
 .admin-nav-wrap {
   display: flex;
   gap: 24px;
+  flex: 1;                 /* ⭐ 핵심 */
+  justify-content: center; /* ⭐ 진짜 가운데 정렬 */
 }
+
 
 .admin-nav {
   color: #ffffff;
@@ -48,4 +51,23 @@
   color: #ffc107;
   font-weight: 700;
   border-bottom-color: #ffc107;
+}
+
+.admin-user-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap; /* 이름 길어져도 줄바꿈 방지 */
+}
+
+.admin-user-wrap .nav-link {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 사용자 이름(비활성 텍스트) 강조 */
+.admin-user-wrap .nav-link.disabled {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  cursor: default;
 }

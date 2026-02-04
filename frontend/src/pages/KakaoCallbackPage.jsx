@@ -9,7 +9,7 @@ function KakaoCallbackPage() {
   const isCalledRef = useRef(false);
 
   useEffect(() => {
-    if (isCalledRef.current) return;   // 중복 호출 방지
+    if (isCalledRef.current) return; // 중복 호출 방지
     isCalledRef.current = true;
 
     const params = new URLSearchParams(location.search);
@@ -21,19 +21,19 @@ function KakaoCallbackPage() {
       return;
     }
 
-    //  카카오 전용 백엔드 엔드포인트로 code 전송
+    // 카카오 전용 백엔드 엔드포인트로 code 전송
     axios
       .post('http://localhost:8080/api/auth/kakao', { code })
       .then((res) => {
         console.log('[KAKAO FRONT] res = ', res.data);
 
-        // 백엔드 LoginResponse 구조에 맞게 꺼내기
-        // { accessToken, email, name, kakaoAccessToken }
+        // ✅ 백엔드 LoginResponse 구조에 맞게 꺼내기
+        // { accessToken, email, name, role }
         const {
           accessToken,
           email,
           name,
-          kakaoAccessToken,   //  추가
+          role,
         } = res.data;
 
         if (!accessToken) {
@@ -42,21 +42,19 @@ function KakaoCallbackPage() {
           return;
         }
 
-        // 우리 서비스 JWT + 유저 정보 저장
+        // ✅ 우리 서비스 JWT + 유저 정보 저장
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('userEmail', email || '');
         localStorage.setItem('userName', name || '');
         localStorage.setItem('loginProvider', 'KAKAO');
+        localStorage.setItem('role', role || 'USER'); // 백업 기본값
 
-        //  카카오 access token도 저장 (로그아웃 시 사용)
-        if (kakaoAccessToken) {
-          localStorage.setItem('kakaoAccessToken', kakaoAccessToken);
+        // ✅ 역할에 따라 분기
+        if (role === 'ADMIN') {
+          navigate('/admin', { replace: true });
         } else {
-          console.warn('[KAKAO FRONT] kakaoAccessToken이 응답에 없습니다.');
+          navigate('/', { replace: true });
         }
-
-        alert('카카오 로그인에 성공했습니다.');
-        navigate('/');   // 메인 또는 원하는 페이지
       })
       .catch((err) => {
         console.error('[KAKAO FRONT] 카카오 로그인 처리 오류', err);

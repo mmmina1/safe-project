@@ -196,9 +196,11 @@ public class AuthService {
         // 6) JWT 발급
         String jwt = jwtTokenProvider.createToken(user);
         System.out.println("[KAKAO LOGIN] jwt = " + jwt);
+        // 6-1) User에서 role 추출 (필드명에 맞게 수정)
+        String role = user.getRole().name();  // 예: Role이 enum이면 .name()
 
         // 7) 최종 응답
-        return new LoginResponse(jwt, user.getEmail(), user.getName());
+        return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
     }
 
     @Transactional
@@ -255,7 +257,9 @@ public class AuthService {
 
         String jwt = jwtTokenProvider.createToken(user);
 
-        return new LoginResponse(jwt, user.getEmail(), user.getName());
+        //  여기서도 role 추출
+        String role = user.getRole().name();  // 필드명 다르면 맞춰서 변경
+        return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
     }
 
 
