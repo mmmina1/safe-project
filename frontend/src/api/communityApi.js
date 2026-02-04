@@ -17,11 +17,11 @@ export const communityApi = {
     const res = await axiosInstance.get("/api/comments", { params: { post_id: postId } });
     return res.data;
   },
-  // 💥 21라인: 400 에러 방지를 위해 넘겨받은 객체 그대로 쏩니다.
   createComment: async (commentData) => {
     const res = await axiosInstance.post("/api/comments", commentData);
     return res.data;
   },
+  // 🔥 28라인 수정: data 객체 안에 userId가 포함되어 전달되도록 보장
   updateComment: async (commentId, data) => {
     const res = await axiosInstance.put(`/api/comments/${commentId}`, data);
     return res.data;

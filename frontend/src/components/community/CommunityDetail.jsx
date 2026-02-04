@@ -15,8 +15,7 @@ function CommunityDetail() {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [replyingToId, setReplyingToId] = useState(null)
   const [replyContent, setReplyContent] = useState("")
-  // 🔥 내가 누른 좋아요 상태만 따로 관리
-  const [myLikedComments, setMyLikedComments] = useState(new Set())
+  const [likedComments, setLikedComments] = useState(new Set())
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
@@ -33,6 +32,7 @@ function CommunityDetail() {
     try {
       const res = await communityApi.getComments(postId)
       const rawData = Array.isArray(res) ? res : []
+      // 🔥 정렬 로직 (부모-자식 관계 유지)
       const sortedData = [...rawData].sort((a, b) => {
         const aP = a.parentCommentId || a.parent_comment_id;
         const bP = b.parentCommentId || b.parent_comment_id;
@@ -63,7 +63,7 @@ function CommunityDetail() {
     if (!currentUserId) return;
     try {
       await communityApi.likeComment(id, currentUserId);
-      setMyLikedComments(prev => {
+      setLikedComments(prev => {
         const next = new Set(prev);
         if (next.has(id)) next.delete(id);
         else next.add(id);
@@ -73,16 +73,59 @@ function CommunityDetail() {
     } catch (e) { console.error(e); }
   }
 
-  // ... (다른 등록/수정/삭제 핸들러는 그대로 유지)
+  const handleCommentSubmit = async () => {
+    if (!currentUserId || !commentInput.trim()) return;
+    try {
+      await communityApi.createComment({ postId: Number(postId), userId: currentUserId, content: commentInput });
+      setCommentInput(""); await fetchComments();
+    } catch (err) { alert("등록 실패"); }
+  }
+
+  const handleReplySubmit = async (parentId) => {
+    if (!currentUserId || !replyContent.trim()) return;
+    try {
+      await communityApi.createComment({ postId: Number(postId), userId: currentUserId, content: replyContent, parentCommentId: Number(parentId) });
+      setReplyContent(""); setReplyingToId(null); await fetchComments();
+    } catch (err) { alert("답글 등록 실패"); }
+  }
+
+  const handleEditSubmit = async (id) => {
+    try {
+      await communityApi.updateComment(id, { content: editContent, userId: currentUserId });
+      setEditingCommentId(null); await fetchComments();
+    } catch (e) {}
+  }
+
+  const handleDelete = async (id) => {
+    if (window.confirm("삭제하시겠습니까?")) {
+      try { await communityApi.deleteComment(id, currentUserId); await fetchComments(); } catch (e) {}
+    }
+  }
 
   if (loading) return <div className='detail-wrap'>로딩 중...</div>
 
   return (
     <div className='detail-wrap'>
-      {/* ... 상단 포스트 영역 생략 (원본 유지) ... */}
-      
+      <div className='detail-hero'>
+        <button className='back-btn' onClick={() => navigate(-1)}>←</button>
+        <div className='detail-title-row'>
+          <span className='detail-chip'>{post?.category}</span>
+          <h1 className='detail-title'>{post?.title}</h1>
+        </div>
+        <div className="detail-meta">
+          <span>👤 {post?.name || "익명"}</span>
+          <span>📅 {post?.createdDate?.split('T')[0]}</span>
+        </div>
+      </div>
+
+      <div className='detail-card'><div className='detail-content'>{post?.content}</div></div>
+
       <div className="comment-section">
-        {/* ... 댓글 작성 영역 생략 (원본 유지) ... */}
+        <h3 className="comment-title">댓글 {comments.length}</h3>
+        <div className="comment-write-container">
+          <textarea className="comment-input-field" value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder="댓글을 남겨보세요" />
+          <button className="comment-submit-button" onClick={handleCommentSubmit}>등록</button>
+        </div>
 
         <div className="comment-list-container">
           {comments.map((c) => {
@@ -91,20 +134,29 @@ function CommunityDetail() {
             const isEditing = editingCommentId === cId;
             const isReply = !!(c.parentCommentId || c.parent_comment_id);
             
-            // 🔥 형님! 여기서 좋아요 하트랑 색깔 로직 수정했습니다!
+            // 🔥 형님! 여기 로직 집중해주세요.
+            // 1. 좋아요 수: 백엔드에서 온 데이터(c.commentLikeCount)를 최우선으로 씁니다.
             const likeCount = c.commentLikeCount ?? 0;
-            // 내가 방금 눌렀거나, 서버에서 이미 내가 눌렀다고 판단되는 경우 (isLiked 필드가 백엔드에 있다면 추가)
-            const activeLike = myLikedComments.has(cId); 
+            // 2. 빨간 하트 조건: 좋아요 수가 0보다 크거나, 내가 방금 눌렀거나!
+            const hasLikes = likeCount > 0 || likedComments.has(cId);
 
             return (
               <div key={cId} className={`comment-card-item ${isReply ? 'comment-reply-item' : ''}`}>
                 <div className="comment-item-header">
                   <span className="comment-author-name">{c.name || '익명'}</span>
-                  {/* ... 헤더 생략 (원본 유지) ... */}
+                  <div className="comment-header-right">
+                    <span className="comment-date-text">{c.createdDate?.split('T')[0]}</span>
+                    <div className="comment-owner-btns">
+                      {!isEditing && <button className="btn-reply" onClick={() => {setReplyingToId(cId); setReplyContent("");}}>답글</button>}
+                      {isOwner && !isEditing && (
+                        <><button className="btn-edit" onClick={() => {setEditingCommentId(cId); setEditContent(c.content);}}>수정</button>
+                        <button className="btn-delete" onClick={() => handleDelete(cId)}>삭제</button></>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {isEditing ? (
-                  // ... 수정 영역 생략 (원본 유지) ...
                   <div className="comment-edit-box">
                     <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
                     <button className="btn-save-confirm" onClick={() => handleEditSubmit(cId)}>저장</button>
@@ -123,15 +175,22 @@ function CommunityDetail() {
                           display: 'inline-flex', 
                           alignItems: 'center', 
                           gap: '4px',
-                          // 🔥 좋아요 0개면 회색, 내가 눌렀을 때만 빨간색
-                          color: activeLike || likeCount > 0 ? '#ff4d4f' : '#adb5bd' 
+                          color: hasLikes ? '#ff4d4f' : '#666' // 👈 mina처럼 빨간색 적용
                         }}
                       >
-                        {/* 🔥 0개면 빈 하트, 있으면 채워진 하트 */}
-                        {activeLike || likeCount > 0 ? '❤️' : '🤍'} {likeCount}
+                        {hasLikes ? '❤️' : '🤍'} {likeCount}
                       </span>
                     </div>
-                    {/* ... 답글 입력창 영역 생략 (원본 유지) ... */}
+
+                    {replyingToId === cId && (
+                      <div className="comment-edit-box reply-input-container">
+                        <textarea value={replyContent} onChange={(e) => setReplyContent(e.target.value)} />
+                        <div className="edit-btn-group">
+                          <button className="btn-save-confirm" onClick={() => handleReplySubmit(cId)}>등록</button>
+                          <button className="btn-cancel-edit" onClick={() => setReplyingToId(null)}>취소</button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
