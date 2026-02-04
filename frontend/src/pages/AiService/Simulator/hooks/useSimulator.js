@@ -24,7 +24,28 @@ export const useSimulator = () => {
         dataUrl: "/unity-sim/uni/Build/02.data.br",
         frameworkUrl: "/unity-sim/uni/Build/02.framework.js.br",
         codeUrl: "/unity-sim/uni/Build/02.wasm.br",
+        // 유니티가 키보드 입력을 독점하지 않도록 설정 (입력창 뻑뻑함 해결의 핵심!)
+        // https://react-unity-webgl.dev/docs/usage/unity-config
+        webglContextAttributes: {
+            preserveDrawingBuffer: true,
+        },
+        devicePixelRatio: window.devicePixelRatio,
     });
+
+    // 유니티가 로드된 후 키보드 캡처를 비활성화하는 강제 코드 주입
+    useEffect(() => {
+        if (isLoaded && window.unityInstance) {
+            // 유니티 내부에서 키보드 이벤트를 브라우저로 흘려보내도록 설정
+            // 이 설정이 활성화되어야 React Input 태그가 정상 작동함
+            try {
+                window.unityInstance.Module.canvas.addEventListener('keydown', (e) => {
+                    e.stopPropagation();
+                }, true);
+            } catch (e) {
+                console.warn("Unity keyboard capture override failed:", e);
+            }
+        }
+    }, [isLoaded]);
 
     // --- [서버 통신 로직] ---
 
