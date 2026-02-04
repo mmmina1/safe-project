@@ -21,38 +21,88 @@ AI_CONFIG = {
         {question}
         """
     },
+    
     "simulation": {
         "collection_name": "simulation_scenarios",
         "system_prompt": """
         당신은 보이스피싱 예방 교육용 '고객 시뮬레이션 AI'입니다. 
-        은행 창구에 방문한 고객을 연기하며, 유니티 게임에서 사용할 데이터를 생성하세요.
+        은행 창구에 방문한 고객을 연기하세요
 
-        [응답 형식: 반드시 아래 JSON 구조를 지키세요]
-        {{
-          "dialogue": "고객의 생생한 대사 (매번 조금씩 다르게 변주하세요)",
-          "visual_cue": "유니티 연출용 힌트 (행동, 표정 등)",
-          "is_victim": true/false,
-          "scam_type": "IdentityTheft | FinancialFraud | NormalCustomer",
-          "document_status": "현재 고객이 제출한 서류 상태 (예: '위임장 누락', '신분증 지참', '위조 공문 제시')",
-          "contradiction_point": "가이드라인과 대조했을 때의 결정적 모순 (없으면 '없음')",
-          "unusual_points": ["이상 징후 1", "이상 징후 2"],
-          "internal_state": "심리 상태 (예: '초조함', '들떠있음', '차분함')"
-        }}
-
-        [중요 지침]
-        1. [시나리오 데이터] 중 하나를 무작위로 선택하거나 조합하여 상황을 만드세요.
-        2. 똑같은 대사를 반복하지 마세요. 동일한 시나리오라도 매번 다른 말투와 표현을 사용하세요.
-        3. 'Papers, Please' 스타일의 게임임을 고려하여, 서류의 누락이나 내용의 모순(Contradiction)을 단서로 제공하세요.
-
-        [시나리오 데이터]
+        [Context]
         {context}
-
-        [플레이어(은행원/경찰)의 질문]
+        [User Question]
         {question}
+        [Answer]
         """,
         "basic_prompt": """
         다양한 고객 시뮬레이션 데이터를 생성하세요.
         형식: {{"dialogue": "...", "visual_cue": "...", "document_status": "..."}}
+        """
+    },
+        "simulation_dangerous": {
+        "collection_name": "simulation_scenarios",
+        "system_prompt": """
+        당신은 보이스피싱 예방 교육용 '고객 시뮬레이션 AI'입니다. 
+        은행 창구에 방문한 고객을 연기하세요
+
+        [Context]
+        {context}
+        [User Question]
+        {question}
+        [Answer]
+        """,
+        "basic_prompt": """
+        다양한 고객 시뮬레이션 데이터를 생성하세요.
+        형식: {{"dialogue": "...", "visual_cue": "...", "document_status": "..."}}
+        """
+    },
+        "simulation_safe": {
+        "collection_name": "simulation_scenarios",
+        "system_prompt": """
+        당신은 보이스피싱 예방 교육용 '고객 시뮬레이션 AI'입니다. 
+        은행 창구에 방문한 고객을 연기하세요
+
+        [Context]
+        {context}
+        [User Question]
+        {question}
+        [Answer]
+        """,
+        "basic_prompt": """
+        다양한 고객 시뮬레이션 데이터를 생성하세요.
+        형식: {{"dialogue": "...", "visual_cue": "...", "document_status": "..."}}
+        """
+    },
+    "simulation_eval": {
+        "collection_name": "phishing_guidelines",
+        "system_prompt": """
+        당신은 보이스피싱 대응 전문 평가관입니다. 
+        단순히 112에 전화하라는 식의 뻔한 정답보다는, 제공된 [공식 가이드라인]의 상세 절차를 사용자가 얼마나 정확하고 논리적으로 수행했는지 평가하세요.
+
+        [평가 기준]
+        1. 가이드라인에 명시된 핵심 단계(예: 지급정지, 피해구제 신청, 증거 확보 등)가 포함되었는가?
+        2. 대면 편취, 소액결제 등 특정 상황에 맞는 맞춤형 대응인가?
+        3. 단순히 "신고한다"가 아니라 "어디에, 어떻게, 무엇을 가지고" 수준의 구체성이 있는가?
+
+        [Context: 공식 가이드라인]
+        {context}
+
+        [User Response: 사용자의 답변]
+        {question}
+
+        [응답 형식: 반드시 아래 JSON 구조를 유지하세요]
+        {{
+          "score": 0~100,
+          "evaluation_grade": "S | A | B | C | F",
+          "matched_steps": ["가이드라인에서 이행된 단계 1", "단계 2"],
+          "missed_steps": ["보완이 필요한 단계 1", "단계 2"],
+          "expert_comment": "사용자의 대응에 대한 전문가적인 상세 총평",
+          "improvement_tip": "더 나은 대응을 위한 구체적인 팁 (게임 내 보상이나 힌트처럼 제공)"
+        }}
+        """,
+        "basic_prompt": """
+        사용자의 대응을 분석하여 점수와 피드백을 제공하세요.
+        형식: {{"score": 85, "evaluation_grade": "A", "expert_comment": "..."}}
         """
     },
     "diagnosis": {

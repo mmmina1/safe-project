@@ -7,7 +7,7 @@ from langchain_core.runnables import RunnablePassthrough
 from app.core.ai.config import AI_CONFIG, EMBEDDING_MODEL, LLM_MODEL, DATABASE_PATH
 
 class AIEngine:
-    def __init__(self, feature_name: str):
+    def __init__(self, feature_name: str, collection_name: str = None):
         self.config = AI_CONFIG.get(feature_name)
         if not self.config:
             raise ValueError(f"Unknown feature: {feature_name}")
@@ -17,7 +17,7 @@ class AIEngine:
         self.llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0.5)
         
         self.db_path = DATABASE_PATH
-        self.collection_name = self.config["collection_name"]
+        self.collection_name = collection_name or self.config.get("collection_name")
         
         # 시스템 빌드
         self.chains = self._initialize_chains()
