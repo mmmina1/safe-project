@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 function CommunityFilters({query, onChangeQuery, onSubmitSearch, category, onChangeCategory, sort, onChangeSort}) {
 //검색어 버튼 및 입력, 정렬
     
-  const categories = ["전체", "긴급사칭", "공문사칭", "결제사기", "검찰사기", "피싱예방","피해복구","최신수법","기관공지","자유게시판","질문 답변","기타"];
+  const categories = ["전체", "공문사칭", "결제사기", "지인사칭", "보안/케어", "기타", "피싱예방","피해복구","최신수법","기관공지","자유게시판","질문 답변"];
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
