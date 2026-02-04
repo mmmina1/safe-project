@@ -12,6 +12,7 @@ function ProductFilters({value, onChange}) {
         }
     }
 
+    
   return (
     <div className='sp-glass sp-filterBox'>
         <div className='sp-filterTitle'>필터</div>
