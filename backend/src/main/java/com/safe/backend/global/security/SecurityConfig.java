@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/api/test",
                                 "/oauth2/**",
                                 "/oauth2/callback/**",
-                                "/api/comments/**"
+                                "/api/images/upload"
+                                // "/api/comments/**" - test용
                         ).permitAll()
 
                         //  관리자 전용 API
