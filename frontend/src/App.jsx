@@ -3,9 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 //라우터 전용
 import { Routes, Route, Link, useLocation} from 'react-router-dom';
-import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
 
+// AI 서비스 관련 페이지 (우리의 작업)
+import Chatbot from './pages/AiService/Chatbot/Chatbot';
+import LandingView from './pages/AiService/AiServiceHub/LandingView';
+import Diagnosis from './pages/AiService/Diagnosis/Diagnosis';
+import Simulator from './pages/AiService/Simulator/Simulator';
+// 결제 관련 페이지
+import Success from './pages/Payment/Success.jsx';
+import Fail from './pages/Payment/Fail.jsx';
 
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
@@ -100,10 +107,18 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+              {/* 결제 관련 (우리의 작업) */}
+              <Route path="/payment/success" element={<Success />} />
+              <Route path="/payment/fail" element={<Fail />} />
+
               {/* AI / 모니터링 (임시로 MainPage 재사용) */}
               <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/ai" element={<LandingView />} />
+              <Route path="/ai/diagnosis" element={<Diagnosis />} />
+              <Route path="/ai/simulator" element={<Simulator />} />
+              {/* 4. 모니터링 (팀원 작업) */}
               <Route path="/monitoring" element={<MonitoringPage />} />
-              <Route path="/ai" element={<MainPage />} />
 
               {/* 커뮤니티 */}
               <Route path="/community" element={<CommunityList />} />
