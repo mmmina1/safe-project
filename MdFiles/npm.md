@@ -1,0 +1,52 @@
+# 📦 NPM Dependencies List & Usage
+
+이 문서는 프로젝트의 프론트엔드(`frontend`)에서 사용되는 모든 NPM 패키지 리스트와 해당 패키지들이 **어느 기능, 어느 파일**에서 사용되고 있는지 정리합니다.
+
+## 🚀 필수 라이브러리 (Core & UI)
+| 패키지명 | 주요 파일/위치 | 상세 용도 |
+| :--- | :--- | :--- |
+| **react** | `src/main.jsx`, 전체 컴포넌트 | UI 렌더링 및 컴포넌트 기반 아키텍처 핵심 |
+| **react-router-dom** | `src/App.jsx` | 페이지 라우팅 (Home, MyPage, AiService 등 이동) |
+| **bootstrap** | `src/main.jsx` | 전역 스타일 및 레이아웃 기초 |
+| **react-bootstrap** | `src/components/`, `src/pages/` | Modal, Button, Navbar 등 UI 컴포넌트 구성 |
+
+## 🏗️ 주요 페이지별 사용 라이브러리 (Page Details)
+
+### 1. 🤖 AI 서비스 (`src/pages/AiService`)
+| 패키지명 | 상세 용도 |
+| :--- | :--- |
+| **react-unity-webgl** | 시뮬레이터(`Simulator.jsx`)에서 Unity 게임 엔진 로드 및 데이터 통신 |
+| **lucide-react** | 챗봇 아이콘(`Bot`, `User`), 진단 상태 아이콘(`ShieldCheck`, `AlertTriangle`) 등 |
+
+### 2. 👤 마이페이지 (`src/pages/MyPage`)
+| 패키지명 | 상세 용도 |
+| :--- | :--- |
+| **chart.js** | 대시보드(`Dashboard.jsx`)의 보안 점수 데이터 시각화 엔진 |
+| **react-chartjs-2** | Chart.js를 리액트용 선 그래프(`Line`) 컴포넌트로 사용 |
+| **lucide-react** | 사이드바 메뉴(`Sidebar.jsx`), 결과 리포트 아이콘 등 전반적인 UI 요소 |
+
+## 🛠️ 기능성 라이브러리 (Logic & Data)
+| 패키지명 | 주요 파일/위치 | 상세 용도 |
+| :--- | :--- | :--- |
+| **axios** | `src/api/axiosInstance.js`, `src/api/aiServiceApi.js` | 백엔드(Spring/Python)와의 비동기 HTTP 통신 |
+| **zustand** | `src/store/userStore.js` | 로그인 정보, 유저 설정 등 전역 상태 관리 |
+| **react-unity-webgl**| `src/pages/AiService/Simulator/` | AI 시뮬레이션 게임 엔진(Unity) 임베딩 및 통신 |
+
+## 📊 시각화 및 디자인 (Visualization & Icons)
+| 패키지명 | 주요 파일/위치 | 상세 용도 |
+| :--- | :--- | :--- |
+| **chart.js** | `src/pages/MyPage/components/Dashboard.jsx` | 위험 점수 추이 및 통계 데이터 시각화 엔진 |
+| **react-chartjs-2** | `src/pages/MyPage/components/Dashboard.jsx` | Chart.js를 리액트 컴포넌트로 사용하기 위한 래퍼 |
+| **lucide-react** | `Sidebar.jsx`, `Chatbot.jsx`, `Diagnosis.jsx` | 메뉴, 챗봇 대화창, 진단 결과 등 현대적인 아이콘 표시 |
+| **react-icons** | `src/pages/Landing/Footer.jsx` | 소셜 아이콘 및 기타 범용 아이콘 보조 |
+
+---
+
+```bash
+# 프론트엔드 폴더로 이동 후 설치
+cd frontend
+npm install react react-dom react-router-dom axios zustand bootstrap react-bootstrap lucide-react react-icons chart.js react-chartjs-2 react-unity-webgl
+```
+
+> [!NOTE]
+> 위 리스트는 실제 소스 코드(`src/`) 내의 `import` 문을 바탕으로 작성되었습니다. 새로운 라이브러리 추가 시 이 문서도 함께 업데이트해 주시기 바랍니다.
