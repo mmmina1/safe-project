@@ -20,19 +20,21 @@ function ProductCard({item}) {
     const reviewCount = item.reviewCount ?? item.review_count ?? item.reviewsCount ?? 0;
 
     const mainImage = item.mainImage ?? item.main_image ?? null;
+console.log("mainImage:", mainImage);
 
     const imageStyle = mainImage
-        ? { backgroundImage: `url(${mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        ? { 
+            backgroundImage: `url("${mainImage}")`,
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center' 
+          }
         : { backgroundColor: '#2a2f3a' };
 
   return (
     <div className='sp-card sp-glass' onClick={() => navigate(`/product/${id}`)} role='button' tabIndex={0}>
-        <div className='sp-thumb' style={imageStyle}>
-            {/* 찜하기 버튼 */}
-            <div className="sp-likeFab" onClick={(e) => {
-                e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
-                // 찜하기
-            }}>♡</div>
+        <div className="sp-thumb" style={imageStyle}>
+            {!mainImage && <div className="sp-thumbFallback">이미지 없음</div>}
+            <div className="sp-likeFab" onClick={(e)=>{e.stopPropagation()}}>♡</div>
             </div>
 
             {/* 상품명 */}

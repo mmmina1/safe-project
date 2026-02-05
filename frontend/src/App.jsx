@@ -98,14 +98,6 @@ function App() {
 
         <main className="app-main">
           <div className="container">
-            {/* 상단 퀵 네비게이션 (관리자 모드가 아닐 때만 표시) */}
-            {!isAdminLike && (
-              <nav className="my-3 border-bottom pb-2">
-                <Link to="/" className="me-3">🏠 홈</Link>
-                <Link to="/chatbot">🤖 AI 챗봇</Link>
-              </nav>
-            )}
-
             {/* 라우팅 영역 */}
             <Routes>
               {/* 1. 메인 및 인증 관련 */}

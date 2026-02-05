@@ -41,7 +41,7 @@
 .sp-modal-backdrop .sp-plan-intro-text {
   margin: 0;
   color: rgba(234,240,255,0.95);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.35;
 }
@@ -74,12 +74,12 @@
 }
 
 .sp-modal-backdrop .sp-plan-name-improved {
-  font-size: 16px;
+  font-size: 18px;
   margin: 0;
 }
 
 .sp-modal-backdrop .sp-plan-price-improved {
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .sp-modal-backdrop .sp-discount-badge-improved {
@@ -108,14 +108,16 @@
   border-bottom: 0;
 }
 
+/* 모달창 상품~가격 이름 */
 .sp-modal-backdrop .sp-summary-label {
   color: rgba(234,240,255,0.65);
-  font-size: 12px;
+  font-size: 15px;
 }
 
+/* 모달창 상품 이름~가격 */
 .sp-modal-backdrop .sp-summary-value {
   color: #eaf0ff;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   text-align: right;
 }
@@ -148,7 +150,7 @@
   margin-top: 12px;
   padding: 9px 10px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.10);
@@ -161,11 +163,11 @@
 
 /* 상세 안내 접기 */
 .sp-modal-backdrop .sp-details {
-  margin-top: 12px;
+  margin-top: 20px;
   border-radius: 12px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
-  padding: 10px;
+  padding: 15px;
 }
 
 .sp-modal-backdrop .sp-details-summary {
@@ -173,7 +175,7 @@
   font-weight: 800;
   color: rgba(234,240,255,0.9);
   list-style: none;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .sp-modal-backdrop .sp-details-summary::-webkit-details-marker {
@@ -217,7 +219,7 @@
 }
 
 .sp-modal-backdrop .sp-agreement-main {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #ffffff;
 }

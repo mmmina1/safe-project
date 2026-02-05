@@ -1,0 +1,174 @@
+/* ===== Product Review (전용) ===== */
+
+.sp-reviews-content {
+  width: 100%;
+}
+
+.sp-section-title {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  color: #eaf0ff;
+}
+
+/* 요약 */
+.sp-review-summary {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(234, 240, 255, 0.12);
+  background: rgba(12, 18, 35, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.sp-review-score {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.sp-score-big {
+  font-size: 36px;
+  font-weight: 900;
+  color: #eaf0ff;
+  letter-spacing: -0.6px;
+  line-height: 1;
+}
+
+.sp-score-stars {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: rgba(234, 240, 255, 0.8);
+}
+
+.sp-score-count {
+  font-size: 14px;
+  color: rgba(234, 240, 255, 0.65);
+}
+
+/* 작성 폼 */
+.sp-review-write {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(234, 240, 255, 0.12);
+  background: rgba(12, 18, 35, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+.sp-review-write h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: rgba(234, 240, 255, 0.95);
+}
+
+.sp-review-write input,
+.sp-review-write textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(234, 240, 255, 0.15);
+  background: rgba(10, 14, 28, 0.45);
+  color: rgba(234, 240, 255, 0.95);
+  padding: 10px 12px;
+  outline: none;
+}
+
+.sp-review-write input::placeholder,
+.sp-review-write textarea::placeholder {
+  color: rgba(234, 240, 255, 0.45);
+}
+
+.sp-review-write input:focus,
+.sp-review-write textarea:focus {
+  border-color: rgba(100, 150, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(100, 150, 255, 0.12);
+}
+
+/* 목록 */
+.sp-review-list-title {
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: rgba(234, 240, 255, 0.95);
+}
+
+.sp-review-item {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(234, 240, 255, 0.12);
+  background: rgba(12, 18, 35, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+.sp-review-item-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.sp-review-writer {
+  font-weight: 900;
+  color: rgba(234, 240, 255, 0.95);
+}
+
+.sp-review-rating {
+  margin-left: 10px;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.sp-review-date {
+  opacity: 0.7;
+  font-size: 13px;
+  color: rgba(234, 240, 255, 0.75);
+}
+
+.sp-review-title {
+  margin-top: 6px;
+  font-weight: 900;
+  color: rgba(234, 240, 255, 0.95);
+}
+
+.sp-review-content {
+  margin-top: 6px;
+  color: rgba(234, 240, 255, 0.85);
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.sp-review-like {
+  margin-top: 10px;
+  opacity: 0.8;
+  font-size: 13px;
+  color: rgba(234, 240, 255, 0.75);
+}
+
+/* 페이징 */
+.sp-review-paging {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.sp-review-page-text {
+  align-self: center;
+  opacity: 0.8;
+  color: rgba(234, 240, 255, 0.75);
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  .sp-score-big {
+    font-size: 32px;
+  }
+
+  .sp-review-item-top {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

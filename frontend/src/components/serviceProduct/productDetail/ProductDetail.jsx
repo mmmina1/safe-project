@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getProductDetail } from '../../../api/productAPI'
+import { getProductDetail } from '../../../api/productApi'
+import { uploadMainImage } from '../../../api/productApi'
 import '../../../assets/css/ServiceProduct/ProductDetail.css'
 
 import ProductQuickInfo from './ProductQuickInfo'
@@ -19,6 +20,30 @@ function ProductDetail() {
   const [showPlanModal, setShowPlanModal] = useState(false)
   const [activeTab, setActiveTab] = useState('intro')
   const [agreed, setAgreed] = useState(false)
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0]; // 사용자가 선택한 파일
+    if (!file) return;
+
+    try {
+      setLoading(true); // 로딩 시작
+      
+      // 아까 만든 API 함수를 호출!
+      const result = await uploadMainImage(productId, file);
+      
+      //성공하면 화면의 상품 이미지 상태를 업데이트
+      setProduct(prev => ({
+        ...prev,
+        mainImage: result.url // 백엔드에서 준 S3 URL로 교체
+      }));
+      
+      alert("이미지가 성공적으로 변경되었습니다!");
+    } catch (error) {
+      alert("업로드 실패: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let alive = true
@@ -253,11 +278,12 @@ function ProductDetail() {
                   features={product.features}
                   plan={product.plan}
                   priceType={product.priceType}
+                  imageUrl={product.mainImage}
                 />
               )}
 
               {activeTab === 'reviews' && (
-                <ProductReviewsSection rating={displayRating} reviewCount={displayReviewCount} />
+                <ProductReviewsSection productId={productId} rating={displayRating} reviewCount={displayReviewCount} />
               )}
             </div>
           </div>
