@@ -49,7 +49,6 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
       alert('평점은 1~5 사이여야 합니다.')
       return
     }
-
     try {
       setSubmitting(true)
       await createProductReview(productId, {
