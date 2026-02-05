@@ -1,61 +1,63 @@
-import axios from "axios";
-
-const BASE_URL = "http://localhost:8080/api/comments";
-
-// ✅ 토큰 꺼내기 전용 (이름 'token'으로 통일)
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : {};
-};
+import axiosInstance from "./axiosInstance";
 
 export const communityApi = {
+  getPosts: async ({
+    query = "",
+    category = "",
+    tag = "",
+    sort = "recent",
+    page = 1,
+    size = 10,
+  }) => {
+    const res = await axiosInstance.get("/api/community/posts", {
+      params: { query, category, tag, sort, page, size },
+    });
+    return res.data;
+  },
+
   getPostDetail: async (postId) => {
-    const res = await axios.get(`http://localhost:8080/api/community/posts/${postId}`, { headers: getAuthHeaders() });
+    const res = await axiosInstance.get(`/api/community/posts/${postId}`);
+    return res.data;
+  },
+
+  createPost: async (postData) => {
+    const res = await axiosInstance.post("/api/community/posts", postData);
     return res.data;
   },
 
   getComments: async (postId) => {
-    const res = await axios.get(BASE_URL, { 
-      params: { post_id: Number(postId) },
-      headers: getAuthHeaders()
+    // 백엔드가 post_id로 받는 형태로 통일
+    const res = await axiosInstance.get("/api/comments", {
+      params: { post_id: postId },
     });
     return res.data;
   },
 
   createComment: async (commentData) => {
-    // 🚨 형, 여기서 DTO 이름표(post_id 등) 확실히 맞췄어
-    const payload = {
-      post_id: Number(commentData.post_id),
-      user_id: Number(commentData.user_id),
-      content: String(commentData.content).trim(),
-      parent_comment_id: commentData.parent_comment_id ? Number(commentData.parent_comment_id) : null
-    };
-    const res = await axios.post(BASE_URL, payload, { headers: getAuthHeaders() });
+    // commentData는 이미 snake_case로 넘어오게(아래 컴포넌트에서) 통일
+    const res = await axiosInstance.post("/api/comments", commentData);
     return res.data;
   },
 
   updateComment: async (commentId, data) => {
-    const payload = {
-      content: data.content,
-      user_id: Number(data.user_id) // 컨트롤러 payload.get("user_id") 대응
-    };
-    const res = await axios.put(`${BASE_URL}/${commentId}`, payload, { headers: getAuthHeaders() });
+    // data도 snake_case로 통일
+    const res = await axiosInstance.put(`/api/comments/${commentId}`, data);
     return res.data;
   },
 
   deleteComment: async (commentId, userId) => {
-    const res = await axios.delete(`${BASE_URL}/${commentId}`, {
-      params: { user_id: Number(userId) },
-      headers: getAuthHeaders()
+    const res = await axiosInstance.delete(`/api/comments/${commentId}`, {
+      params: { user_id: userId },
     });
     return res.data;
   },
 
   likeComment: async (commentId, userId) => {
-    const res = await axios.post(`${BASE_URL}/${commentId}/like`, null, {
-      params: { user_id: Number(userId) },
-      headers: getAuthHeaders()
-    });
+    const res = await axiosInstance.post(
+      `/api/comments/${commentId}/like`,
+      null,
+      { params: { user_id: userId } }
+    );
     return res.data;
-  }
+  },
 };
