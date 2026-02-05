@@ -26,7 +26,6 @@ export const communityApi = {
   },
 
   getComments: async (postId) => {
-    // 백엔드가 post_id로 받는 형태로 통일
     const res = await axiosInstance.get("/api/comments", {
       params: { post_id: postId },
     });
@@ -34,14 +33,44 @@ export const communityApi = {
   },
 
   createComment: async (commentData) => {
-    // commentData는 이미 snake_case로 넘어오게(아래 컴포넌트에서) 통일
-    const res = await axiosInstance.post("/api/comments", commentData);
+    const payload = { ...commentData };
+
+    if (payload.post_id !== undefined) payload.post_id = Number(payload.post_id);
+    if (payload.user_id !== undefined) payload.user_id = Number(payload.user_id);
+
+    if (typeof payload.content === "string") payload.content = payload.content.trim();
+
+    if (
+      payload.parent_comment_id === "" ||
+      payload.parent_comment_id === undefined ||
+      payload.parent_comment_id === null
+    ) {
+      delete payload.parent_comment_id;
+    } else {
+      payload.parent_comment_id = Number(payload.parent_comment_id);
+    }
+
+    const res = await axiosInstance.post("/api/comments", payload);
     return res.data;
   },
 
   updateComment: async (commentId, data) => {
-    // data도 snake_case로 통일
-    const res = await axiosInstance.put(`/api/comments/${commentId}`, data);
+    const payload = { ...data };
+
+    if (payload.user_id !== undefined) payload.user_id = Number(payload.user_id);
+    if (typeof payload.content === "string") payload.content = payload.content.trim();
+
+    if (
+      payload.parent_comment_id === "" ||
+      payload.parent_comment_id === undefined ||
+      payload.parent_comment_id === null
+    ) {
+      delete payload.parent_comment_id;
+    } else {
+      payload.parent_comment_id = Number(payload.parent_comment_id);
+    }
+
+    const res = await axiosInstance.put(`/api/comments/${commentId}`, payload);
     return res.data;
   },
 

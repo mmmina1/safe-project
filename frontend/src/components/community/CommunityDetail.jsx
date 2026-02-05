@@ -23,17 +23,36 @@ function CommunityDetail() {
 
   const [likedComments, setLikedComments] = useState(new Set());
 
+  const decodeJwtPayload = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      if (!base64Url) return null;
+
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64 + "===".slice((base64.length + 3) % 4);
+
+      const json = atob(padded);
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token =
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("jwt");
+
     if (!token) return;
 
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const uid = payload.sub || payload.userId || payload.id;
-      if (uid) setCurrentUserId(Number(uid));
-    } catch (e) {
-      console.error(e);
-    }
+    const payload = decodeJwtPayload(token);
+    if (!payload) return;
+
+    const uid = payload.sub ?? payload.userId ?? payload.id;
+    const uidNum = Number(uid);
+
+    if (!Number.isNaN(uidNum)) setCurrentUserId(uidNum);
   }, []);
 
   const fetchComments = async () => {
@@ -41,7 +60,6 @@ function CommunityDetail() {
       const res = await communityApi.getComments(postId);
       const rawData = Array.isArray(res) ? res : [];
 
-      // 부모-자식 관계 정렬 유지
       const sortedData = [...rawData].sort((a, b) => {
         const aP = a.parentCommentId || a.parent_comment_id;
         const bP = b.parentCommentId || b.parent_comment_id;
@@ -102,32 +120,33 @@ function CommunityDetail() {
   };
 
   const handleCommentSubmit = async () => {
-    if (!currentUserId || !commentInput.trim()) return;
+    const trimmed = commentInput.trim();
+    if (!currentUserId || !trimmed) return;
 
     try {
-      // 핵심 수정: 백엔드가 받는 키(snake_case)로 통일
       await communityApi.createComment({
         post_id: Number(postId),
-        user_id: currentUserId,
-        content: commentInput,
+        user_id: Number(currentUserId),
+        content: trimmed,
       });
 
       setCommentInput("");
       await fetchComments();
     } catch (err) {
+      console.error("댓글 등록 실패:", err?.response?.data || err);
       alert("등록 실패");
     }
   };
 
   const handleReplySubmit = async (parentId) => {
-    if (!currentUserId || !replyContent.trim()) return;
+    const trimmed = replyContent.trim();
+    if (!currentUserId || !trimmed) return;
 
     try {
-      // 핵심 수정: parent_comment_id도 snake_case
       await communityApi.createComment({
         post_id: Number(postId),
-        user_id: currentUserId,
-        content: replyContent,
+        user_id: Number(currentUserId),
+        content: trimmed,
         parent_comment_id: Number(parentId),
       });
 
@@ -135,16 +154,19 @@ function CommunityDetail() {
       setReplyingToId(null);
       await fetchComments();
     } catch (err) {
+      console.error("답글 등록 실패:", err?.response?.data || err);
       alert("답글 등록 실패");
     }
   };
 
   const handleEditSubmit = async (id) => {
+    const trimmed = editContent.trim();
+    if (!currentUserId || !trimmed) return;
+
     try {
-      // 핵심 수정: user_id로 통일
       await communityApi.updateComment(id, {
-        content: editContent,
-        user_id: currentUserId,
+        content: trimmed,
+        user_id: Number(currentUserId),
       });
 
       setEditingCommentId(null);
@@ -206,18 +228,15 @@ function CommunityDetail() {
 
         <div className="comment-list-container">
           {comments.map((c) => {
-            const isOwner =
-              c.userId === currentUserId || c.user_id === currentUserId;
+            const isOwner = c.userId === currentUserId || c.user_id === currentUserId;
 
             const cId = c.commentId || c.comment_id;
 
             const isEditing = editingCommentId === cId;
             const isReply = !!(c.parentCommentId || c.parent_comment_id);
 
-            // 좋아요 카운트: camel/snake 둘 다 대응
             const likeCount = c.commentLikeCount ?? c.comment_like_count ?? 0;
 
-            // 하트 표시: 좋아요 수 있거나, 내가 방금 눌렀거나
             const hasLikes = likeCount > 0 || likedComments.has(cId);
 
             return (
@@ -229,9 +248,7 @@ function CommunityDetail() {
                   <span className="comment-author-name">{c.name || "익명"}</span>
 
                   <div className="comment-header-right">
-                    <span className="comment-date-text">
-                      {c.createdDate?.split("T")[0]}
-                    </span>
+                    <span className="comment-date-text">{c.createdDate?.split("T")[0]}</span>
 
                     <div className="comment-owner-btns">
                       {!isEditing && (
@@ -258,10 +275,7 @@ function CommunityDetail() {
                             수정
                           </button>
 
-                          <button
-                            className="btn-delete"
-                            onClick={() => handleDelete(cId)}
-                          >
+                          <button className="btn-delete" onClick={() => handleDelete(cId)}>
                             삭제
                           </button>
                         </>
@@ -272,20 +286,11 @@ function CommunityDetail() {
 
                 {isEditing ? (
                   <div className="comment-edit-box">
-                    <textarea
-                      value={editContent}
-                      onChange={(e) => setEditContent(e.target.value)}
-                    />
-                    <button
-                      className="btn-save-confirm"
-                      onClick={() => handleEditSubmit(cId)}
-                    >
+                    <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                    <button className="btn-save-confirm" onClick={() => handleEditSubmit(cId)}>
                       저장
                     </button>
-                    <button
-                      className="btn-cancel-edit"
-                      onClick={() => setEditingCommentId(null)}
-                    >
+                    <button className="btn-cancel-edit" onClick={() => setEditingCommentId(null)}>
                       취소
                     </button>
                   </div>
@@ -317,16 +322,10 @@ function CommunityDetail() {
                           onChange={(e) => setReplyContent(e.target.value)}
                         />
                         <div className="edit-btn-group">
-                          <button
-                            className="btn-save-confirm"
-                            onClick={() => handleReplySubmit(cId)}
-                          >
+                          <button className="btn-save-confirm" onClick={() => handleReplySubmit(cId)}>
                             등록
                           </button>
-                          <button
-                            className="btn-cancel-edit"
-                            onClick={() => setReplyingToId(null)}
-                          >
+                          <button className="btn-cancel-edit" onClick={() => setReplyingToId(null)}>
                             취소
                           </button>
                         </div>
