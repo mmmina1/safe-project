@@ -49,6 +49,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import DataPolicy from './pages/admin/DataPolicy';
 import AdminRoute from './AdminRoute.jsx';
+import UserRoute from './UserRoute.jsx';
 
 import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
 import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
@@ -112,7 +113,10 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
-              <Route path="/mypage" element={<MyPage />} />
+              <Route path="/mypage" element={
+                <UserRoute>
+                  <MyPage />
+                </UserRoute>} />
 
               {/* 2. 결제 관련 (우리의 작업) */}
               <Route path="/payment/success" element={<Success />} />
@@ -123,7 +127,7 @@ function App() {
               <Route path="/ai" element={<LandingView />} />
               <Route path="/ai/diagnosis" element={<Diagnosis />} />
               <Route path="/ai/simulator" element={<Simulator />} />
-              
+
               {/* 4. 모니터링 (팀원 작업) */}
               <Route path="/monitoring" element={<MonitoringPage />} />
 
@@ -178,7 +182,7 @@ function App() {
                 <Route path="banners" element={<BannersPage />} />
                 <Route path="blacklist" element={<BlacklistPage />} />
               </Route>
-            </Routes> 
+            </Routes>
           </div>
 
           {/* 푸터 영역 */}

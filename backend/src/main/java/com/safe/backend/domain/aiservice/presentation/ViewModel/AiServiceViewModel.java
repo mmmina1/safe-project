@@ -12,6 +12,8 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.safe.backend.domain.user.entity.User;
 
 @RestController
 @RequestMapping("/api/ai")
@@ -26,12 +28,18 @@ public class AiServiceViewModel {
     // 채팅으로 ai에게 질문을 하는 루트
     @PostMapping("/chat")
     //
-    public ChatResultEntity chat(@RequestBody ChatRequestEntity request) {
+    public ChatResultEntity chat(@RequestBody ChatRequestEntity request,
+            @AuthenticationPrincipal Object principal) {
         // Domain Entity를 바로 반환 (Clean Architecture 원칙상 Presentation용 DTO로 변환하는게 좋지만,
         // 편의상 사용)
         // return chatUseCase.execute(request.getMessage(), request.getSession_id());
 
-        ChatResultEntity chatResultEntity = chatUseCase.execute(request.getMessage(), request.getSession_id());
+        Long userId = null;
+        if (principal instanceof User) {
+            userId = ((User) principal).getUserId();
+        }
+
+        ChatResultEntity chatResultEntity = chatUseCase.execute(request.getMessage(), userId);
         return chatResultEntity;
     }
 
@@ -50,8 +58,22 @@ public class AiServiceViewModel {
     }
 
     // 채팅기록을 알려주는 루트
+    // 파라미터 대신 '신분증'(@AuthenticationPrincipal)을 검사함
     @GetMapping("/history")
-    public List<ChatMessageEntity> getHistory(@RequestParam String userId) {
+    public List<ChatMessageEntity> getHistory(@AuthenticationPrincipal Object principal) {
+
+        // 1. 신분증에서 ID 꺼내기 (chat 메소드랑 똑같습니다!)
+        Long userId = null;
+        if (principal instanceof User) {
+            userId = ((User) principal).getUserId();
+        }
+
+        // 2. 만약 로그인을 안 해서 ID가 없으면? -> 빈 리스트 반환 (채팅 기록 없음)
+        if (userId == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        // 3. ID가 있으면 -> 기록 찾아주기
         return chatUseCase.execute(userId);
     }
 

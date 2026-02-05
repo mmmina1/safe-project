@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface AiRepository {
     // ChatResult chat(String message, String userId);
-    ChatResultEntity chat(String message, String userId);
+    ChatResultEntity chat(String message, Long userId);
 
     String diagnosePhishing(String phoneNumber);
 
-    List<ChatMessageEntity> getChatHistory(String userId);
+    List<ChatMessageEntity> getChatHistory(Long userId);
 
     Object startSimulation(String scenarioType);
 

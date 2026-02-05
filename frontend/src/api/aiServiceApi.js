@@ -1,17 +1,24 @@
-import axios from 'axios';
-
-const api = axios.create({
-    baseURL: '/api/ai',  // Spring Boot proxy를 통해 Python 연결
-});
+// import axios from 'axios';
+import axiosInstance from './axiosInstance';
+// const api = axios.create({
+//     baseURL: '/api/ai',  // Spring Boot proxy를 통해 Python 연결
+// });
 
 export const phishService = {
     chat: async (message) => {
         try {
-            const response = await api.post('/chat', {
-                message,
-                session_id: 'react_user',
-                use_rag: true
-            });
+            const token = localStorage.getItem('accessToken');
+            const response = await axiosInstance.post('/api/ai/chat',
+                {
+                    message,
+                    // session_id: 'react_user', // 2. 가짜 이름표 삭제
+                    use_rag: true
+                },
+                {
+                    // 3. 신분증 제시 (토큰이 있을 때만)
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                }
+            );
             return response.data;
         } catch (error) {
             console.error('Chat API Error:', error);
@@ -21,9 +28,14 @@ export const phishService = {
 
     submitDiagnosis: async (answers) => {
         try {
-            const response = await api.post('/diagnosis/', {
-                answers
-            });
+            const token = localStorage.getItem('accessToken');
+            const response = await axiosInstance.post('/api/ai/diagnosis/',
+                {
+                    answers
+                },
+                {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                });
             return response.data;
         } catch (error) {
             console.error('Diagnosis API Error:', error);
@@ -31,10 +43,15 @@ export const phishService = {
         }
     },
 
-    getChatHistory: async (userId = 'react_user') => {
+    getChatHistory: async () => {
         try {
-            const response = await api.get('/history', {
-                params: { userId }
+            const token = localStorage.getItem('accessToken');
+
+            if (!token) {
+                return [];
+            }
+            const response = await axiosInstance.get('/api/ai/history', {
+                headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
         } catch (error) {
