@@ -63,14 +63,30 @@ public class CommentController {
         }
     }
 
+    // ✅ 댓글 수정 (서비스 시그니처: updateComment(Long, String, Long)에 맞춤)
     @PutMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentUpdate dto
     ) {
         try {
-            CommentResponse response = commentService.updateComment(commentId, dto);
+            // dto에서 필요한 값 꺼내서 넘기기
+            String content = dto.getContent();
+            Long userId = dto.getUserId();
+
+            // 간단 검증(없으면 400)
+            if (content == null || content.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("title", "요청 오류", "message", "content는 필수야"));
+            }
+            if (userId == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("title", "요청 오류", "message", "userId는 필수야"));
+            }
+
+            CommentResponse response = commentService.updateComment(commentId, content, userId);
             return ResponseEntity.ok(response);
+
         } catch (RuntimeException e) {
             e.printStackTrace();
             // 권한/검증 실패는 403이 자연스러움
