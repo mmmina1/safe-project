@@ -138,4 +138,7 @@ public class User {
     public void setStatus(UserStatus status) {
         this.status = status;
     }
+    public void changePassword(String encodedPassword) {
+        this.passwordHash = encodedPassword;
+    }
 }
