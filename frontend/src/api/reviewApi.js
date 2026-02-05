@@ -19,4 +19,5 @@ export const createProductReview = async (productId, payload) => {
   // payload: { rating: 4.5, title: "옵션", content: "..." }
   const res = await axios.post(`/api/products/${productId}/reviews`, payload)
   return res.data // reviewId(Long)
+  
 }
