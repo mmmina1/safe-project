@@ -1,160 +1,136 @@
-# 🚀 실행 가이드
+# 실행 가이드
 
-## 📋 개요
+## 빠른 시작
 
-이 프로젝트는 3개의 서버로 구성되어 있습니다:
-- **React Frontend** (포트 5173)
-- **Java Spring Boot Backend** (포트 8081)
-- **Python FastAPI AI Backend** (포트 8000)
+### 1. Docker로 MySQL + Redis 실행
 
----
+```bash
+# 프로젝트 루트에서 실행
+docker-compose up -d
 
-## 1️⃣ Spring Boot 백엔드 실행
+# 상태 확인
+docker-compose ps
 
-### **방법 1: Gradle 사용 (권장)**
-
-```powershell
-cd E:\safe\safe-project\backend
-.\gradlew.bat bootRun
+# 로그 확인
+docker-compose logs -f
 ```
 
-### **방법 2: IntelliJ IDEA**
+### 2. 백엔드 실행
 
-1. `backend` 폴더를 IntelliJ에서 열기
-2. `src/main/java/com/safe/backend/BackendApplication.java` 파일 우클릭
-3. **Run 'BackendApplication'** 클릭
+```bash
+cd backend
 
-### **확인**
+# Windows
+gradlew.bat bootRun
 
-브라우저에서 접속:
+# Linux/Mac
+./gradlew bootRun
 ```
-http://localhost:8081/api/test
-```
 
-응답: `스프링이랑 연결 성공했다!`
+또는 IDE에서 `BackendApplication.java` 실행
 
----
+**확인**: `http://localhost:8081` 접속 가능한지 확인
 
-## 2️⃣ React 프론트엔드 실행
+### 3. 프론트엔드 실행
 
-### **실행 명령어**
+```bash
+cd frontend
 
-```powershell
-cd E:\safe\safe-project\frontend-ex\frontend-react
+# 의존성 설치 (최초 1회)
+npm install
+
+# 개발 서버 실행
 npm run dev
 ```
 
-### **확인**
+**확인**: `http://localhost:5173` 접속 가능한지 확인
 
-브라우저에서 접속:
-```
-http://localhost:5173
-```
+## 환경별 설정
 
-React 앱이 열립니다.
+### 로컬 개발 (기본)
+- MySQL: `localhost:3306`
+- Redis: `localhost:6379`
+- 프로파일: `local`
 
----
-
-## 3️⃣ Python AI 백엔드 실행 (선택사항)
-
-AI 챗봇 기능을 사용하려면 Python 서버도 실행해야 합니다.
-
-### **PyCharm 사용**
-
-1. PyCharm에서 `backend-python/py` 폴더 열기
-2. `backend/main.py` 파일 우클릭
-3. **Run 'main'** 클릭
-
-### **터미널 사용**
-
-```powershell
-cd E:\safe\safe-project\backend-python\py\backend
-python main.py
+### 개발 서버
+```bash
+export SPRING_PROFILES_ACTIVE=dev
 ```
 
-### **확인**
+- MySQL: `3.39.143.83:3306`
+- 프로파일: `dev`
 
-브라우저에서 접속:
-```
-http://localhost:8000/health
-```
+## 문제 해결
 
-응답: `{"status":"ok",...}`
+### MySQL 연결 실패
+1. Docker 컨테이너가 실행 중인지 확인
+   ```bash
+   docker-compose ps
+   ```
 
----
+2. 포트 충돌 확인
+   ```bash
+   # Windows
+   netstat -ano | findstr :3306
+   
+   # Linux/Mac
+   lsof -i :3306
+   ```
 
-## 🔗 전체 통신 흐름
+3. 컨테이너 재시작
+   ```bash
+   docker-compose restart mysql
+   ```
 
-```
-React (5173) → Spring Boot (8081) → Python (8000) → OpenAI API
-                      ↓
-                  MySQL DB
-```
+### Redis 연결 실패
+1. Redis 컨테이너 확인
+   ```bash
+   docker-compose logs redis
+   ```
 
----
+2. Redis 클라이언트로 테스트
+   ```bash
+   docker exec -it safe-redis redis-cli ping
+   # 응답: PONG
+   ```
 
-## 🧪 AI 챗봇 테스트
+### 포트 충돌
+- MySQL: 3306 포트 사용 중이면 `docker-compose.yml`에서 포트 변경
+- Redis: 6379 포트 사용 중이면 `docker-compose.yml`에서 포트 변경
+- 백엔드: 8081 포트 사용 중이면 `application.yml`에서 변경
 
-1. **모든 서버 실행 확인**
-   - Spring Boot: http://localhost:8081/api/test
-   - Python: http://localhost:8000/health
-   - React: http://localhost:5173
+## 데이터베이스 초기화
 
-2. **브라우저에서 테스트**
-   - `http://localhost:5173` 접속
-   - 상단 메뉴에서 **Chatbot** 클릭
-   - 메시지 입력 ("안녕하세요") → 전송
-   - AI 응답 확인
-
----
-
-## ⚠️ 문제 해결
-
-### **포트 충돌**
-```powershell
-# 포트 사용 중인 프로세스 확인
-netstat -ano | findstr :8081
-netstat -ano | findstr :8000
-netstat -ano | findstr :5173
-
-# 프로세스 종료 (PID는 위 명령어로 확인)
-taskkill /PID <PID> /F
-```
-
-### **Java 서버 종료**
-```powershell
-Get-Process | Where-Object {$_.ProcessName -eq "java"} | Stop-Process -Force
-```
-
-### **Python 서버 종료**
-```powershell
-Get-Process | Where-Object {$_.ProcessName -eq "python"} | Stop-Process -Force
+### 테이블 자동 생성 (개발용)
+`application.yml`에서:
+```yaml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
 ```
 
-### **React 서버 종료**
-터미널에서 `Ctrl + C`
+### 수동 SQL 실행
+```bash
+# MySQL 컨테이너 접속
+docker exec -it safe-mysql mysql -u safe_user -psafe1234 safe_db
 
----
-
-## 📁 프로젝트 구조
-
+# SQL 파일 실행
+docker exec -i safe-mysql mysql -u safe_user -psafe1234 safe_db < schema.sql
 ```
-E:\safe\safe-project\
-├── backend\                    # Spring Boot 백엔드
-│   ├── src\
-│   │   └── main\
-│   │       ├── java\
-│   │       └── resources\
-│   └── build.gradle
-│
-├── backend-python\py\          # Python AI 백엔드
-│   ├── backend\
-│   │   └── main.py
-│   ├── requirements.txt
-│   └── .venv\
-│
-└── frontend-ex\frontend-react\ # React 프론트엔드
-    ├── src\
-    ├── package.json
-    └── vite.config.js
+
+## 관리자 페이지 접속
+
+1. 프론트엔드 실행 후: `http://localhost:5173/admin`
+2. 로그인 필요 시 인증 구현 필요
+
+## API 테스트
+
+### Postman / curl 예시
+```bash
+# 회원 검색
+curl http://localhost:8081/api/admin/users/search?keyword=test
+
+# 블라인드 사유 목록
+curl http://localhost:8081/api/admin/blind-reasons
 ```

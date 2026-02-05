@@ -1,88 +1,52 @@
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Row, Col } from 'react-bootstrap';
 
-function Header() {
+function Footer() {
   return (
-    <Navbar
-      expand="lg"
-      variant="dark"
-      sticky="top"
-      className="py-4"
-      style={{ backgroundColor: '#171a33' }} // 푸터와 톤 통일
+    <footer 
+      className="text-light py-4" 
+      style={{ 
+        backgroundColor: '#171a33', // 신뢰감을 주는 다크 네이비 색상
+        width: '100%', 
+        marginTop: 'auto' 
+      }}
     >
       <Container fluid="lg">
-        {/* 로고 / 서비스명 */}
-        <Navbar.Brand
-          as={Link}
-          to="/"
-          style={{
-            fontSize: '1.7rem',
-            fontWeight: 600,  
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase'
-          }}
-        >
-          Risk Watch
-        </Navbar.Brand>
+        <Row className="gy-3 align-items-center">
+          {/* 회사 정보 */}
+          <Col lg={4} md={12} className="text-center text-lg-start">
+            <h6 className="fw-bold mb-2">SAFE SHOP</h6>
+            <div className="x-small opacity-75" style={{ fontSize: '0.85rem' }}>
+              <p className="mb-1">대표자: 세이프 | 사업자번호: 123-45-67890</p>
+              <p className="mb-0">주소: 경기도 수원시 팔달구</p>
+            </div>
+          </Col>
+          
+          {/* 고객 센터 */}
+          <Col lg={4} md={12} className="text-center">
+            <h6 className="fw-bold mb-1">CS CENTER</h6>
+            <p className="fs-4 fw-bold mb-0 text-warning">1588-0000</p>
+            <p className="x-small opacity-50" style={{ fontSize: '0.75rem' }}>
+              평일 09:00 ~ 18:00 (주말/공휴일 휴무)
+            </p>
+          </Col>
 
-        <Navbar.Toggle aria-controls="main-navbar" />
-        <Navbar.Collapse id="main-navbar">
-          {/* 메인 기능 메뉴 */}
-          <Nav className="mx-auto gap-lg-5 text-center">
-            <Nav.Link
-              as={Link}
-              to="/monitoring"
-              className="fw-semibold"
-              style={{ fontSize: '1.1rem' }}
-            >
-              관제
-            </Nav.Link>
-
-            <Nav.Link
-              as={Link}
-              to="/ai"
-              className="fw-semibold"
-              style={{ fontSize: '1.1rem' }}
-            >
-              AI 서비스
-            </Nav.Link>
-
-            <Nav.Link
-              as={Link}
-              to="/community"
-              className="fw-semibold"
-              style={{ fontSize: '1.1rem' }}
-            >
-              커뮤니티
-            </Nav.Link>
-
-            <Nav.Link
-              as={Link}
-              to="/service"
-              className="fw-semibold"
-              style={{ fontSize: '1.1rem' }}
-            >
-              서비스 · 상품
-            </Nav.Link>
-          </Nav>
-
-          {/* 인증 영역 */}
-          <Nav className="text-center">
-            <Nav.Link as={Link} to="/login">로그인</Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/signup"
-              className="fw-semibold text-warning"
-            >
-              회원가입
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
+          {/* 링크 및 저작권 */}
+          <Col lg={4} md={12} className="text-center text-lg-end">
+            <div className="mb-2">
+              <a href="#terms" className="text-light text-decoration-none small mx-2 opacity-75">이용약관</a>
+              <span className="opacity-25">|</span>
+              <a href="#privacy" className="text-light text-decoration-none small mx-2 opacity-75">개인정보처리방침</a>
+            </div>
+            <p className="x-small opacity-50 mb-0" style={{ fontSize: '0.75rem' }}>
+              &copy; 2026 <strong>SAFE SHOP</strong>. All rights reserved.
+            </p>
+          </Col>
+        </Row>
       </Container>
-    </Navbar>
+    </footer>
   );
 }
 
-export default Header;
-
+export default Footer;
+//테스트!!!!!
