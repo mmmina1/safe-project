@@ -20,7 +20,6 @@ function ProductCard({item}) {
     const reviewCount = item.reviewCount ?? item.review_count ?? item.reviewsCount ?? 0;
 
     const mainImage = item.mainImage ?? item.main_image ?? null;
-console.log("mainImage:", mainImage);
 
     const imageStyle = mainImage
         ? { 

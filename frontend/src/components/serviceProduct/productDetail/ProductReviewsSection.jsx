@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../../../assets/css/ServiceProduct/ProductReview.css'
-import { getProductReviews, createProductReview } from '../../../api/reviewApi'
+import { getProductReviews, createProductReview, deleteProductReview } from '../../../api/reviewApi'
 
 function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [loading, setLoading] = useState(true)
@@ -12,6 +12,10 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [form, setForm] = useState({ rating: 5.0, title: '', content: '' })
   const [submitting, setSubmitting] = useState(false)
   const [showWriteForm, setShowWriteForm] = useState(false)
+
+  const userId = localStorage.getItem("userId")
+  console.log("userId:", userId)
+
 
   const fetchPage = async (page = 0) => {
     try {
@@ -85,6 +89,22 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
       stars.push(<span key={`empty-${i}`} className="sp-star-icon sp-star-empty">☆</span>)
     }
     return stars
+  }
+
+  // 댓글 수정 삭제
+  const onEdit = (review) => {
+    console.log("수정할 리뷰: ", review)
+  }
+
+  const onDelete = async(reviewId)=> {
+    if(!window.confirm("정말 이 리뷰를 삭제할까요?")) return
+    try{
+      await deleteProductReview(productId,reviewId)
+      alert("리뷰가 삭제 되었습니다.")
+      fetchPage(pageInfo.page)
+    }catch(e){
+      alert("리뷰 삭제 실패")
+    }
   }
 
   return (
@@ -245,6 +265,13 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                       <span className='sp-like-icon'>👍</span>
                       <span>도움돼요 {r.likeCount ?? 0}</span>
                     </button>
+
+                    {userId && String(r.writerUserId) === String(userId) && ( 
+                      <div className='sp-review-actions'> 
+                      <button className='sp-review-edit-btn' onClick={() => onEdit(r)}>수정</button>
+                      <button className='sp-review-delete-btn' onClick={() => onDelete(r.reviewId)}>삭제</button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

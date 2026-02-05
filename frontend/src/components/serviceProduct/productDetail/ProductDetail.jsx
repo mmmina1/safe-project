@@ -283,7 +283,7 @@ function ProductDetail() {
               )}
 
               {activeTab === 'reviews' && (
-                <ProductReviewsSection productId={productId} rating={displayRating} reviewCount={displayReviewCount} />
+                <ProductReviewsSection productId={productId} rating={product.rating} reviewCount={product.reviewCount} />
               )}
             </div>
           </div>
