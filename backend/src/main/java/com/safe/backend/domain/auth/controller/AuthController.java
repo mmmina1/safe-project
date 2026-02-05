@@ -2,6 +2,7 @@ package com.safe.backend.domain.auth.controller;
 
 import com.safe.backend.domain.auth.dto.*;
 import com.safe.backend.domain.auth.service.AuthService;
+import com.safe.backend.domain.auth.service.PasswordResetService;
 import com.safe.backend.domain.user.entity.User;
 import com.safe.backend.domain.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,14 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final PasswordResetService passwordResetService;
 
     public AuthController(AuthService authService,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          PasswordResetService passwordResetService) {
         this.authService = authService;
         this.userRepository = userRepository;
+        this.passwordResetService = passwordResetService;
     }
 
     /**
@@ -120,4 +124,30 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(
+            @RequestBody ForgotPasswordRequest request
+    ) {
+        String token = passwordResetService.requestResetAndReturnTokenForDemo(request.email());
+
+        // 가입 안 된 이메일이면 token = null 로 내려가도록
+        return ResponseEntity.ok(
+                new ForgotPasswordResponse("비밀번호 재설정 토큰을 발급했습니다.", token)
+        );
+    }
+
+    // 2) 실제 비밀번호 재설정
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponse> resetPassword(
+            @RequestBody ResetPasswordRequest request
+    ) {
+        passwordResetService.resetPassword(request.token(), request.newPassword());
+        return ResponseEntity.ok(new MessageResponse("비밀번호가 변경되었습니다."));
+    }
+
+    // DTO들
+    public record ForgotPasswordRequest(String email) {}
+    public record ForgotPasswordResponse(String message, String token) {}
+    public record ResetPasswordRequest(String token, String newPassword) {}
+    public record MessageResponse(String message) {}
 }
