@@ -1,29 +1,44 @@
 package com.safe.backend.domain.community.service;
 
-import com.safe.backend.domain.community.entity.Comment;
-import com.safe.backend.domain.community.repository.CommentRepository;
 import com.safe.backend.domain.community.dto.CommentCreate;
 import com.safe.backend.domain.community.dto.CommentResponse;
+import com.safe.backend.domain.community.entity.Comment;
+import com.safe.backend.domain.community.entity.CommentLike;
+import com.safe.backend.domain.community.repository.CommentLikeRepository;
+import com.safe.backend.domain.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CommentService {
+
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public CommentResponse createCommentAndReturn(CommentCreate dto) {
+        if (dto == null) throw new RuntimeException("요청 데이터가 없습니다.");
+        if (dto.getPostId() == null) throw new RuntimeException("post_id가 없습니다.");
+        if (dto.getUserId() == null) throw new RuntimeException("user_id가 없습니다.");
+        if (dto.getContent() == null || dto.getContent().trim().isEmpty())
+            throw new RuntimeException("content가 없습니다.");
+
         Comment comment = Comment.create(
-            dto.getPost_id(), 
-            dto.getUser_id() != null ? dto.getUser_id() : 1L, 
-            dto.getContent()
+                dto.getPostId(),
+                dto.getUserId(),
+                dto.getContent()
         );
-        
+
+        if (dto.getParentCommentId() != null) {
+            comment.setParentCommentId(dto.getParentCommentId());
+        }
+
         Comment savedComment = commentRepository.save(comment);
         return CommentResponse.from(savedComment);
     }
@@ -37,27 +52,50 @@ public class CommentService {
     @Transactional
     public CommentResponse updateComment(Long commentId, String content, Long userId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new RuntimeException("댓글 없음"));
 
-        if (!comment.getUserId().equals(userId)) {
-            throw new RuntimeException("본인의 댓글만 수정할 수 있습니다");
+        if (userId == null || !comment.getUserId().equals(userId)) {
+            throw new RuntimeException("수정 권한이 없습니다.");
         }
 
-        comment.setContent(content);
-        comment.setUpdatedDate(LocalDateTime.now());
+        if (content == null || content.trim().isEmpty()) {
+            throw new RuntimeException("content가 없습니다.");
+        }
 
+        comment.updateContent(content);
         return CommentResponse.from(comment);
     }
 
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new RuntimeException("댓글 없음"));
 
-        if (!comment.getUserId().equals(userId)) {
-            throw new RuntimeException("본인의 댓글만 삭제할 수 있습니다");
+        if (userId == null || !comment.getUserId().equals(userId)) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
         }
 
         commentRepository.hardDeleteById(commentId);
+    }
+
+    @Transactional
+    public void likeComment(Long commentId, Long userId) {
+        if (userId == null) {
+            throw new RuntimeException("로그인 필요");
+        }
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("해당 댓글을 찾을 수 없습니다."));
+
+        Optional<CommentLike> existingLike =
+                commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
+
+        if (existingLike.isPresent()) {
+            commentLikeRepository.delete(existingLike.get());
+            comment.decreaseLikeCount();
+        } else {
+            commentLikeRepository.save(new CommentLike(commentId, userId));
+            comment.increaseLikeCount();
+        }
     }
 }

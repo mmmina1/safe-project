@@ -64,4 +64,9 @@ public class Product {
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetail detail;
+
+    public void changeMainImage(String mainImage) {
+        this.mainImage = mainImage;
+        this.updatedDate = LocalDateTime.now(); // 선택: 수정일도 같이 갱신하고 싶으면
+    }
 }

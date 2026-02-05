@@ -92,15 +92,7 @@ function App() {
 
         <main className="app-main">
           <div className="container">
-            {/* 네비게이션 */}
-            {!isAdminLike && (
-                <nav className="my-3 border-bottom pb-2">
-                  <Link to="/" className="me-3">🏠 홈</Link>
-                  <Link to="/chatbot">🤖 AI 챗봇</Link>
-                </nav>
-              )}
-
-                        {/* 라우팅 영역 */}
+            {/* 라우팅 영역 */}
             <Routes>
               {/* 메인/인증 */}
               <Route path="/" element={<MainPage />} />

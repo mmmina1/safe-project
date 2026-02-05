@@ -49,8 +49,8 @@ public class SecurityConfig {
                                 "/oauth2/callback/**",
                                 "/api/images/upload",
                                 "/api/ai/**",
-                                "/api/v1/payments/**"
-                                // "/api/comments/**" - test용
+                                "/api/v1/payments/**",
+                                "/api/comments/**"
                         ).permitAll()
 
                         //  관리자 전용 API

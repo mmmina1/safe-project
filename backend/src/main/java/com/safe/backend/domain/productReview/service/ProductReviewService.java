@@ -1,0 +1,89 @@
+package com.safe.backend.domain.productReview.service;
+
+import java.math.BigDecimal;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;  
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.safe.backend.domain.productReview.dto.*;
+import com.safe.backend.domain.productReview.entity.ProductReview;
+import com.safe.backend.domain.productReview.repository.ProductReviewRepository;
+import com.safe.backend.domain.serviceProduct.entity.Product;
+import com.safe.backend.domain.serviceProduct.repository.ProductRepository;
+import com.safe.backend.domain.user.entity.User;
+import com.safe.backend.domain.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ProductReviewService {
+
+    private final ProductReviewRepository reviewRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    public Page<ReviewResponse> getReviews(Long productId, Pageable pageable){
+        return reviewRepository
+                .findByProduct_ProductIdAndIsVisibleTrue(productId, pageable)
+                .map(ReviewResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewSummaryResponse getSummary(Long productId){
+        BigDecimal avg = reviewRepository.avgRating(productId);
+        long count = reviewRepository.countByProduct_ProductIdAndIsVisibleTrue(productId);
+        return new ReviewSummaryResponse(productId, avg, count);
+    }
+
+    @Transactional
+    public Long create(Long productId, Long writerUserId, ReviewCreateRequest req){ // ✅ 이름 통일
+        validateRating(req.rating());
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다. productId=" + productId));
+
+        User writer = userRepository.findById(writerUserId)
+                .orElseThrow(() -> new IllegalArgumentException("유저가 없습니다. userId=" + writerUserId));
+
+        ProductReview saved = reviewRepository.save(
+                ProductReview.create(product, writer, req.rating(), req.title(), req.content())
+        );
+        return saved.getReviewId();
+    }
+
+    @Transactional
+    public void update(Long reviewId, Long writerUserId, ReviewUpdateRequest req){
+        if(req.rating() != null) validateRating(req.rating());
+
+        ProductReview review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 없습니다. reviewId=" + reviewId));
+
+        if(!review.getWriter().getUserId().equals(writerUserId)){
+            throw new IllegalStateException("수정 권한이 없습니다.");
+        }
+        review.update(req.rating(), req.title(), req.content());
+    }
+
+    @Transactional
+    public void delete(Long reviewId, Long writerUserId) {
+        ProductReview review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 없습니다. reviewId=" + reviewId));
+
+        if (!review.getWriter().getUserId().equals(writerUserId)) {
+            throw new IllegalStateException("삭제 권한이 없습니다.");
+        }
+
+        review.hide();
+    }
+
+    private void validateRating(BigDecimal rating) {
+        if (rating == null) throw new IllegalArgumentException("rating은 필수입니다.");
+        if (rating.compareTo(new BigDecimal("1.0")) < 0 || rating.compareTo(new BigDecimal("5.0")) > 0) {
+            throw new IllegalArgumentException("rating은 1.0~5.0 범위여야 합니다.");
+        }
+    }
+}

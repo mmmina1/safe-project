@@ -9,12 +9,15 @@ function ProductIntroSection({description, detailDesc, features, imageUrl}) {
     <div className='sp-intro-content'>
       <div className='sp-intro-hero-improved'>
         {imageUrl ? (
-          <div className='sp-intro-heroImg-improved' style={{ backgroundImage: `url(${imageUrl})` }}
+          <div 
+            className='sp-intro-heroImg-improved' 
+            style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             aria-label='product visual'
           />
         ) : (
-          <div className='sp-intro-heroImg-improved sp-intro-heroImg--fallback' aria-label='product visual' >
-          <span className='sp-placeholder-icon'>🛡️</span>
+          /* 이미지가 없을 때 기본 아이콘 */
+          <div className='sp-intro-heroImg-improved sp-intro-heroImg--fallback'>
+            <span className='sp-placeholder-icon'>🛡️</span>
           </div>
         )}
 

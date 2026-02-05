@@ -30,9 +30,9 @@
 
 .sp-thumb {
   position: relative;
-  height: 180px;
+  height: 200px;
   background: linear-gradient(135deg, rgba(70,90,200,0.4), rgba(180,70,140,0.3));
-  border-radius: 16px 16px 0 0;
+  border-radius: 12px 12px 0 0;
   overflow: hidden;
 }
 
@@ -134,4 +134,14 @@
   color: #4CAF50;
   font-weight: 800;
   font-size: 18px;
+}
+
+.sp-thumbFallback{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: rgba(255,255,255,0.7);
+  font-weight:800;
 }
