@@ -20,13 +20,8 @@ export const communityApi = {
     return res.data;
   },
 
-  createPost: async ({ title, content, category, userId }) => {
-    const res = await axiosInstance.post("/api/community/posts", {
-      title,
-      content,
-      category,
-      userId,
-    });
+  createPost: async (postData) => {
+    const res = await axiosInstance.post("/api/community/posts", postData);
     return res.data;
   },
 
@@ -38,12 +33,44 @@ export const communityApi = {
   },
 
   createComment: async (commentData) => {
-    const res = await axiosInstance.post("/api/comments", commentData);
+    const payload = { ...commentData };
+
+    if (payload.post_id !== undefined) payload.post_id = Number(payload.post_id);
+    if (payload.user_id !== undefined) payload.user_id = Number(payload.user_id);
+
+    if (typeof payload.content === "string") payload.content = payload.content.trim();
+
+    if (
+      payload.parent_comment_id === "" ||
+      payload.parent_comment_id === undefined ||
+      payload.parent_comment_id === null
+    ) {
+      delete payload.parent_comment_id;
+    } else {
+      payload.parent_comment_id = Number(payload.parent_comment_id);
+    }
+
+    const res = await axiosInstance.post("/api/comments", payload);
     return res.data;
   },
 
   updateComment: async (commentId, data) => {
-    const res = await axiosInstance.put(`/api/comments/${commentId}`, data);
+    const payload = { ...data };
+
+    if (payload.user_id !== undefined) payload.user_id = Number(payload.user_id);
+    if (typeof payload.content === "string") payload.content = payload.content.trim();
+
+    if (
+      payload.parent_comment_id === "" ||
+      payload.parent_comment_id === undefined ||
+      payload.parent_comment_id === null
+    ) {
+      delete payload.parent_comment_id;
+    } else {
+      payload.parent_comment_id = Number(payload.parent_comment_id);
+    }
+
+    const res = await axiosInstance.put(`/api/comments/${commentId}`, payload);
     return res.data;
   },
 
@@ -51,6 +78,15 @@ export const communityApi = {
     const res = await axiosInstance.delete(`/api/comments/${commentId}`, {
       params: { user_id: userId },
     });
+    return res.data;
+  },
+
+  likeComment: async (commentId, userId) => {
+    const res = await axiosInstance.post(
+      `/api/comments/${commentId}/like`,
+      null,
+      { params: { user_id: userId } }
+    );
     return res.data;
   },
 };

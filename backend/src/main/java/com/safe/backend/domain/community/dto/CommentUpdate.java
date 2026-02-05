@@ -1,13 +1,15 @@
 package com.safe.backend.domain.community.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentUpdate {
-    
-    private String content;  // 수정할 내용
+
+    private String content;
+
+    @JsonProperty("user_id")
+    private Long userId;
 }

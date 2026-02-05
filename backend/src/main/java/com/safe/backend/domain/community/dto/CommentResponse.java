@@ -1,41 +1,42 @@
 package com.safe.backend.domain.community.dto;
 
+import com.safe.backend.domain.community.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-import com.safe.backend.domain.community.entity.Comment;
-import lombok.NoArgsConstructor;
-
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class CommentResponse {
-    
+
     private Long commentId;
     private Long postId;
     private Long userId;
-    private String name;             // username → name으로 변경
+    private String name;
     private Long parentCommentId;
+    private Integer commentLikeCount;
     private String content;
-    private Integer likeCount;
     private Boolean isDeleted;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    
 
-    // Entity -> DTO 변환
     public static CommentResponse from(Comment comment) {
-        return new CommentResponse(
-            comment.getCommentId(),
-            comment.getPostId(),
-            comment.getUserId(),
-            comment.getUser() != null ? comment.getUser().getName() : "Unknown",
-            null,
-            comment.getContent(),
-            0,                   // likeCount (엔티티에 없으면 일단 0)
-            false,
-            comment.getCreatedDate(),
-            comment.getUpdatedDate()
-        );
+        CommentResponse dto = new CommentResponse();
+        dto.setCommentId(comment.getCommentId());
+        dto.setPostId(comment.getPostId());
+        dto.setUserId(comment.getUserId());
+        dto.setName(comment.getUser() != null ? comment.getUser().getName() : "익명");
+        dto.setParentCommentId(comment.getParentCommentId());
+        dto.setCommentLikeCount(comment.getCommentLikeCount());
+        dto.setContent(comment.getContent());
+        dto.setIsDeleted(comment.getIsDeleted());
+        dto.setCreatedDate(comment.getCreatedDate());
+        dto.setUpdatedDate(comment.getUpdatedDate());
+        return dto;
     }
 }
