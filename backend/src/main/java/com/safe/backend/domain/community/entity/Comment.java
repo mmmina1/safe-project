@@ -70,7 +70,6 @@ public class Comment {
         this.updatedDate = LocalDateTime.now();
     }
 
-    // 🔥 여기 중괄호 안으로 잘 들어왔습니다!
     public void decreaseLikeCount() {
         if (this.commentLikeCount > 0) {
             this.commentLikeCount -= 1;
