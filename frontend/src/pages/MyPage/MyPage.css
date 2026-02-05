@@ -226,7 +226,50 @@
     height: 4px;
 }
 
+
 .sidebar-menu::-webkit-scrollbar-thumb {
     background: var(--border-color);
     border-radius: 10px;
+}
+
+/* =========================================
+   Bootstrap Overrides for Dark Theme
+   ========================================= */
+
+/* 1. 텍스트 가독성 개선 */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-main);
+}
+
+/* 2. 입력 폼 (Input) 스타일 개선 */
+.form-control {
+    background-color: rgba(255, 255, 255, 0.05); /* 반투명 배경 */
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-blue);
+    color: var(--text-main);
+    box-shadow: 0 0 0 0.25rem rgba(96, 165, 250, 0.25);
+}
+
+.form-control::placeholder {
+    color: #64748b; /* 조금 더 어두운 회색 */
+}
+
+/* 3. 버튼 텍스트 가독성 */
+.btn-outline-primary {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-blue);
+    color: #fff;
 }

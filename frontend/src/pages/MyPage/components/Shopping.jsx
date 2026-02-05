@@ -1,33 +1,45 @@
-// ============================================================
-// 1. 임포트 구역
-// ============================================================
 import React, { useState } from 'react';
 import { Package, ShoppingBag, Trash2, ChevronRight, CreditCard } from 'lucide-react';
+import { getMyCart, deleteCartItem } from '../../../api/cartApi';
 
-// ============================================================
-// 2. 쇼핑 및 장바구니 화면 부품
-// ============================================================
-// [리액트 기초] initialTab: 부모가 이 부품을 호출할 때 넘겨준 초기 탭 설정값입니다.
 const Shopping = ({ initialTab = 'orders' }) => {
-    // 내부적으로 '주문내역'을 보여줄지 '장바구니'를 보여줄지 관리하는 상태입니다.
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [cartItems, setCartItems] = useState([]); // 진짜 데이터 저장소
 
-    // [리액트 기초] useEffect: 컴포넌트가 태어나거나 설정값이 바뀔 때 실행되는 특수 함수입니다.
-    // 여기서는 사이드바에서 메뉴를 눌러 부모로부터 새로운 initialTab이 내려왔을 때 즉시 화면을 동기화합니다.
     React.useEffect(() => {
         setActiveTab(initialTab);
     }, [initialTab]);
 
-    // [샘플데이터] 화면 구성을 위한 가짜 데이터들
-    const orders = [
-        { id: '123456', date: '2023.10.20', items: '심화 진단 리포트 PDF 외 1건', price: '50,000', status: '결제완료' },
-        { id: '112233', date: '2023.09.10', items: '온라인 보안 강의 수강권', price: '120,000', status: '배송완료' },
-    ];
+    // [신규] 화면 켜지면 백엔드에서 장바구니 가져오기
+    React.useEffect(() => {
+        if (activeTab === 'cart') {
+            fetchCart();
+        }
+    }, [activeTab]);
 
-    const cartItems = [
-        { id: 1, name: '기업 특화 보안 진단 패키지', price: '250,000' },
-        { id: 2, name: '실시간 피싱 방지 솔루션 (1년)', price: '88,000' },
-    ];
+    const fetchCart = async () => {
+        try {
+            const data = await getMyCart();
+            setCartItems(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // [신규] 장바구니 삭제 핸들러
+    const handleDelete = async (cartId) => {
+        if (!window.confirm('정말 삭제하시겠습니까?')) return;
+        try {
+            await deleteCartItem(cartId);
+            // 화면에서도 즉시 제거 (다시 조회 안하고 빠르게 반영)
+            setCartItems(prev => prev.filter(item => item.cartId !== cartId));
+        } catch (error) {
+            console.error(error);
+            alert('삭제 실패했습니다.');
+        }
+    };
+
+    // ... items logic ...
 
     return (
         <div className="animate-fade-in">
@@ -107,21 +119,24 @@ const Shopping = ({ initialTab = 'orders' }) => {
                         </div>
                         {/* 장바구니에 담긴 아이템들을 보여줍니다. */}
                         {cartItems.map((item) => (
-                            <div key={item.id} className="p-4 border-bottom d-flex align-items-center">
+                            <div key={item.cartId} className="p-4 border-bottom d-flex align-items-center">
                                 <input className="form-check-input me-4" type="checkbox" defaultChecked readOnly />
                                 <div className="bg-light rounded p-3 me-4 text-center" style={{ width: '80px' }}>
                                     <ShoppingBag size={32} className="text-muted" />
                                 </div>
                                 <div className="flex-grow-1">
-                                    <h6 className="mb-1">{item.name}</h6>
-                                    <div className="fw-bold">{item.price}원</div>
+                                    <h6 className="mb-1">{item.productName}</h6>
+                                    <div className="fw-bold">{item.price ? item.price.toLocaleString() : 0}원</div>
                                 </div>
                                 <div className="d-flex align-items-center border rounded overflow-hidden me-4">
                                     <button className="btn btn-sm btn-light border-0 px-2">-</button>
-                                    <span className="px-3">1</span>
+                                    <span className="px-3">{item.quantity}</span>
                                     <button className="btn btn-sm btn-light border-0 px-2">+</button>
                                 </div>
-                                <button className="btn btn-link text-danger p-0">
+                                <button
+                                    className="btn btn-link text-danger p-0"
+                                    onClick={() => handleDelete(item.cartId)}
+                                >
                                     <Trash2 size={20} />
                                 </button>
                             </div>

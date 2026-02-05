@@ -30,6 +30,9 @@ ChartJS.register(
 // 2. 대시보드 화면 부품
 // ============================================================
 const Dashboard = () => {
+
+    const userName = localStorage.getItem('userName') || '게스트';
+
     // [차트 데이터] 그래프에 그려질 좌표와 라벨들을 정의합니다.
     const chartData = {
         labels: ['5월', '6월', '7월', '8월', '9월', '10월'],
@@ -53,13 +56,22 @@ const Dashboard = () => {
             legend: { display: false }, // 범례(보안 점수 글자) 숨김
         },
         scales: {
-            y: { beginAtZero: true, max: 100 }, // Y축은 0부터 100까지 표시
+            x: {
+                ticks: { color: '#94a3b8' }, // X축 글자색 (밝은 회색)
+                grid: { color: '#334155' }   // 그리드 라인색 (어두운 회색)
+            },
+            y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { color: '#94a3b8' }, // Y축 글자색
+                grid: { color: '#334155' }   // 그리드 라인색
+            },
         },
     };
 
     return (
         <div className="animate-fade-in">
-            <h2 className="page-title">홍길동님, 안녕하세요!</h2>
+            <h2 className="page-title">{userName}님, 안녕하세요!</h2>
             <p className="text-muted mb-4">오늘의 보안 리포트를 확인해보세요.</p>
 
             {/* 상단 레이아웃: 그래프 영역과 위험 상황 요약 */}

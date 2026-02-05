@@ -1,3 +1,4 @@
+import { addToCart } from '../../../api/cartApi'
 import '../../../assets/css/ServiceProduct/Planmodal.css'
 
 function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
@@ -47,6 +48,36 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
 
   // 체크 조건: 동의 + (유료면 가격 확정)
   const canSubmit = agreed && !!product && priceInfo.canPay
+
+  // [신규] 장바구니 담기 버튼 핸들러
+  const handleAddToCart = async () => {
+    if (!product) return
+    if (!product.plans || product.plans.length === 0) {
+      alert('준비된 플랜이 없습니다.')
+      return
+    }
+    if (!selectedPlan) {
+      alert('옵션(플랜)을 선택해주세요.')
+      return
+    }
+    if (!agreed) {
+      alert('약관에 동의해주세요.')
+      return
+    }
+
+    try {
+      await addToCart({
+        productId: product.productId,
+        planId: selectedPlan.planId,
+        quantity: 1
+      })
+      alert('장바구니에 쏙! 담겼습니다. 🛒')
+      onClose()
+    } catch (err) {
+      console.error(err)
+      alert('장바구니 담기 실패: ' + (err.response?.data || err.message))
+    }
+  }
 
   return (
     <div className='sp-modal-backdrop' onClick={onClose}>
@@ -175,6 +206,17 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
             <span>{primaryText}</span>
           </button>
 
+          {/* [신규] 장바구니 버튼 */}
+          <button
+            className={`sp-modal-btn sp-btn-cart ${!canSubmit ? 'disabled' : ''}`}
+            onClick={handleAddToCart}
+            disabled={!canSubmit}
+            style={{ backgroundColor: '#f0f0f0', color: '#333', marginRight: '8px' }}
+          >
+            <span className='sp-btn-icon'>🛒</span>
+            <span>담기</span>
+          </button>
+
           <button
             className='sp-modal-btn sp-btn-cancel sp-btn-cancel-improved'
             onClick={onClose}
@@ -182,7 +224,7 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
             <span className='sp-btn-icon'>✕</span>
             <span>취소</span>
           </button>
-          
+
         </div>
       </div>
     </div>
