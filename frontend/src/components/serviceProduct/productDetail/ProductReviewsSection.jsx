@@ -15,6 +15,7 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
 
   const userId = localStorage.getItem("userId")
   console.log("userId:", userId)
+  localStorage.getItem("userId")
 
 
   const fetchPage = async (page = 0) => {
