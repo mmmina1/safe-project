@@ -7,6 +7,7 @@ import com.safe.backend.domain.community.entity.CommentLike;
 import com.safe.backend.domain.community.repository.CommentLikeRepository;
 import com.safe.backend.domain.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,11 +79,13 @@ public class CommentService {
         commentRepository.hardDeleteById(commentId);
     }
 
+    // 좋아요 토글 결과를 프론트가 바로 쓰게 반환
+    public record CommentLikeToggleResult(boolean liked, long likeCount) {}
+
     @Transactional
-    public void likeComment(Long commentId, Long userId) {
-        if (userId == null) {
-            throw new RuntimeException("로그인 필요");
-        }
+    public CommentLikeToggleResult likeComment(Long commentId, Long userId) {
+        if (commentId == null) throw new RuntimeException("comment_id가 없습니다.");
+        if (userId == null) throw new RuntimeException("로그인 필요");
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("해당 댓글을 찾을 수 없습니다."));
@@ -90,12 +93,26 @@ public class CommentService {
         Optional<CommentLike> existingLike =
                 commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
 
+        boolean liked;
+
         if (existingLike.isPresent()) {
             commentLikeRepository.delete(existingLike.get());
             comment.decreaseLikeCount();
+            liked = false;
         } else {
-            commentLikeRepository.save(new CommentLike(commentId, userId));
-            comment.increaseLikeCount();
+            try {
+                commentLikeRepository.save(new CommentLike(commentId, userId));
+                comment.increaseLikeCount();
+                liked = true;
+            } catch (DataIntegrityViolationException e) {
+                // 유니크 충돌: 이미 좋아요가 들어간 상태로 간주
+                liked = true;
+            }
         }
+
+        // 해당 댓글의 좋아요 수만 계산
+        long likeCount = commentLikeRepository.countByCommentId(commentId);
+
+        return new CommentLikeToggleResult(liked, likeCount);
     }
 }

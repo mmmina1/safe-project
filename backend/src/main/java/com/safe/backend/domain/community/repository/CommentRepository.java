@@ -11,7 +11,7 @@ import com.safe.backend.domain.community.entity.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     
-    // ★ 핵심: 리액트가 전체 댓글을 가져올 때 사용하는 메서드
+    // 리액트가 전체 댓글을 가져올 때 사용하는 메서드
     @Query("SELECT c FROM Comment c " +
            "LEFT JOIN FETCH c.user " +
            "WHERE c.postId = :postId " +

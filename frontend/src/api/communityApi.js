@@ -81,12 +81,11 @@ export const communityApi = {
     return res.data;
   },
 
-  likeComment: async (commentId, userId) => {
-    const res = await axiosInstance.post(
-      `/api/comments/${commentId}/like`,
-      null,
-      { params: { user_id: userId } }
-    );
-    return res.data;
+  // 댓글 좋아요 토글 (백엔드: POST /api/comments/{commentId}/likes, body: { userId })
+  toggleCommentLike: async (commentId, userId) => {
+    const res = await axiosInstance.post(`/api/comments/${commentId}/likes`, {
+      userId: Number(userId),
+    });
+    return res.data; // { liked, likeCount }
   },
 };
