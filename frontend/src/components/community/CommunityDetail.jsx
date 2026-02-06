@@ -100,22 +100,46 @@ function CommunityDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
-  const handleLike = async (id) => {
+  useEffect(() => {
+    setLikedComments(new Set());
+  }, [currentUserId]);
+
+  useEffect(() => {
+    if (!postId) return;
+    fetchComments();
+}, [currentUserId, postId]);
+
+  const handleLike = async (commentId) => {
     if (!currentUserId) return;
 
     try {
-      await communityApi.likeComment(id, currentUserId);
+      const result = await communityApi.toggleCommentLike(commentId, currentUserId);
 
       setLikedComments((prev) => {
         const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
+        if (result.liked) next.add(commentId);
+        else next.delete(commentId);
         return next;
       });
 
-      await fetchComments();
+      setComments((prev) =>
+        prev.map((c) => {
+          const cId = c.commentId || c.comment_id;
+          if (cId !== commentId) return c;
+
+          return {
+            ...c,
+            commentLikeCount: result.likeCount,
+            comment_like_count: result.likeCount,
+          };
+        })
+      );
+
+      if (result.liked) alert("좋아요!");
+      else alert("좋아요 취소!");
     } catch (e) {
       console.error(e);
+      alert("좋아요 처리 실패");
     }
   };
 
@@ -237,7 +261,7 @@ function CommunityDetail() {
 
             const likeCount = c.commentLikeCount ?? c.comment_like_count ?? 0;
 
-            const hasLikes = likeCount > 0 || likedComments.has(cId);
+            const likedByMe = likedComments.has(cId);
 
             return (
               <div
@@ -308,10 +332,10 @@ function CommunityDetail() {
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "4px",
-                          color: hasLikes ? "#ff4d4f" : "#666",
+                          color: likedByMe ? "#ff4d4f" : "#666",
                         }}
                       >
-                        {hasLikes ? "❤️" : "🤍"} {likeCount}
+                        {likedByMe ? "❤️" : "🤍"} {likeCount}
                       </span>
                     </div>
 
