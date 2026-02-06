@@ -12,6 +12,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 import { ArrowUpRight, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
@@ -23,7 +24,8 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler,
 );
 
 // ============================================================

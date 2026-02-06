@@ -23,14 +23,7 @@ public class CartService {
     private final ProductRepository productRepository; // 상품 정보 조회용
 
     /**
-     * 장바구니 목록 조회
-     */
-    public List<Cart> getMyCart(User user) {
-        return cartRepository.findByUserOrderByCreatedDateDesc(user);
-    }
-
-    /**
-     * 장바구니 담기
+     * C. 장바구니 담기
      */
     @Transactional
     public void addToCart(User user, Long productId, Long planId, Integer quantity) {
@@ -53,7 +46,30 @@ public class CartService {
     }
 
     /**
-     * 장바구니 삭제
+     * R. 장바구니 목록 조회
+     */
+    public List<Cart> getMyCart(User user) {
+        return cartRepository.findByUserOrderByCreatedDateDesc(user);
+    }
+
+    /**
+     * U. 장바구니 수정
+     */
+    @Transactional
+    public void updateCartItem(User user, Long cartId, Integer quantity) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("장바구니 상품이 존재하지 않습니다."));
+
+        // 내 장바구니가 맞는지 보안 체크
+        if (!cart.getUser().getUserId().equals(user.getUserId())) {
+            throw new SecurityException("본인의 장바구니만 수정할 수 있습니다.");
+        }
+
+        cart.updateQuantity(quantity);
+    }
+
+    /**
+     * D. 장바구니 삭제
      */
     @Transactional
     public void deleteCartItem(User user, Long cartId) {

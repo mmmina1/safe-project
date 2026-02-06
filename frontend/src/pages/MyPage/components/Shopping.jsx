@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Package, ShoppingBag, Trash2, ChevronRight, CreditCard } from 'lucide-react';
-import { getMyCart, deleteCartItem } from '../../../api/cartApi';
+import { getMyCart, deleteCartItem, updateCartItem } from '../../../api/cartApi';
 
 const Shopping = ({ initialTab = 'orders' }) => {
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -17,6 +17,14 @@ const Shopping = ({ initialTab = 'orders' }) => {
         }
     }, [activeTab]);
 
+    // [샘플데이터] 화면 구성을 위한 가짜 데이터들
+    const orders = [
+        { id: '123456', date: '2023.10.20', items: '심화 진단 리포트 PDF 외 1건', price: '50,000', status: '결제완료' },
+        { id: '112233', date: '2023.09.10', items: '온라인 보안 강의 수강권', price: '120,000', status: '배송완료' },
+    ];
+
+    // Read
+    // 장바구니 목록 조회
     const fetchCart = async () => {
         try {
             const data = await getMyCart();
@@ -26,7 +34,26 @@ const Shopping = ({ initialTab = 'orders' }) => {
         }
     };
 
-    // [신규] 장바구니 삭제 핸들러
+    // Update
+    // 장바구니 수량 변경
+    const handleQuantityChange = async (cartId, currentQuantity, change) => {
+        const newQuantity = currentQuantity + change;
+        // 1개 미만으로 줄일 수 없음
+        if (newQuantity < 1) return;
+        try {
+            // 1. 서버에 변경 요청 (Update)
+            await updateCartItem(cartId, newQuantity);
+            // 2. 성공하면 화면(state)도 변경 (새로고침 없이 숫자 바뀜)
+            setCartItems(prev => prev.map(item =>
+                item.cartId === cartId ? { ...item, quantity: newQuantity } : item
+            ));
+        } catch (error) {
+            alert('수량 변경에 실패했습니다.');
+        }
+    };
+
+    // Delete
+    // 장바구니 삭제
     const handleDelete = async (cartId) => {
         if (!window.confirm('정말 삭제하시겠습니까?')) return;
         try {
@@ -38,8 +65,6 @@ const Shopping = ({ initialTab = 'orders' }) => {
             alert('삭제 실패했습니다.');
         }
     };
-
-    // ... items logic ...
 
     return (
         <div className="animate-fade-in">
@@ -129,9 +154,19 @@ const Shopping = ({ initialTab = 'orders' }) => {
                                     <div className="fw-bold">{item.price ? item.price.toLocaleString() : 0}원</div>
                                 </div>
                                 <div className="d-flex align-items-center border rounded overflow-hidden me-4">
-                                    <button className="btn btn-sm btn-light border-0 px-2">-</button>
+                                    <button
+                                        className="btn btn-sm btn-light border-0 px-2"
+                                        onClick={() => handleQuantityChange(item.cartId, item.quantity, -1)}
+                                    >
+                                        -
+                                    </button>
                                     <span className="px-3">{item.quantity}</span>
-                                    <button className="btn btn-sm btn-light border-0 px-2">+</button>
+                                    <button
+                                        className="btn btn-sm btn-light border-0 px-2"
+                                        onClick={() => handleQuantityChange(item.cartId, item.quantity, 1)}
+                                    >
+                                        +
+                                    </button>
                                 </div>
                                 <button
                                     className="btn btn-link text-danger p-0"

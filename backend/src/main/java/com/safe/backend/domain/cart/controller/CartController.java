@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,21 +28,7 @@ public class CartController {
 
     private final CartService cartService;
 
-    // 1. 내 장바구니 조회 (Response DTO 반환)
-    @GetMapping
-    public ResponseEntity<List<CartResponse>> getMyCart(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            return ResponseEntity.status(401).build();
-        }
-        // Entity List -> DTO List 변환
-        List<CartResponse> responses = cartService.getMyCart(user).stream()
-                .map(CartResponse::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(responses);
-    }
-
-    // 2. 장바구니 담기 (Request DTO 사용)
+    // C. 장바구니 담기 (Request DTO 사용)
     @PostMapping
     public ResponseEntity<String> addToCart(
             @AuthenticationPrincipal User user,
@@ -55,7 +42,36 @@ public class CartController {
         return ResponseEntity.ok("장바구니에 담겼습니다.");
     }
 
-    // 3. 장바구니 삭제
+    // R. 내 장바구니 조회 (Response DTO 반환)
+    @GetMapping
+    public ResponseEntity<List<CartResponse>> getMyCart(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        // Entity List -> DTO List 변환
+        List<CartResponse> responses = cartService.getMyCart(user).stream()
+                .map(CartResponse::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
+    }
+
+    // U. 장바구니 수정
+    @PutMapping("/{cartId}")
+    public ResponseEntity<String> updateCartItem(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long cartId,
+            @RequestBody CartRequest request) {
+
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        cartService.updateCartItem(user, cartId, request.getQuantity());
+        return ResponseEntity.ok("장바구니가 수정되었습니다.");
+    }
+
+    // D. 장바구니 삭제
     @DeleteMapping("/{cartId}")
     public ResponseEntity<String> deleteCartItem(
             @AuthenticationPrincipal User user,
