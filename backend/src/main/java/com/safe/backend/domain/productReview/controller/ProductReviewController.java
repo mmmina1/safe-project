@@ -78,6 +78,17 @@ public class ProductReviewController {
             throw new IllegalStateException("Authorization 헤더가 없습니다.");
         }
         String token = auth.substring(7);
-        return jwtTokenProvider.getUserId(token); // ✅ sub에서 userId 추출
+        return jwtTokenProvider.getUserId(token); // sub에서 userId 추출
     }
+
+    @PostMapping("/{reviewId}/like")
+    public ReviewLikeResponse toggleLike(
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
+            HttpServletRequest request
+    ) {
+        Long userId = extractUserId(request);
+        return reviewService.toggleLike(productId, reviewId, userId);
+    }
+
 }

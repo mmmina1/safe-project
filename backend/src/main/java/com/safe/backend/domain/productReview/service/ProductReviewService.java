@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safe.backend.domain.productReview.dto.*;
 import com.safe.backend.domain.productReview.entity.ProductReview;
+import com.safe.backend.domain.productReview.repository.ProductReviewLikeRepository;
 import com.safe.backend.domain.productReview.repository.ProductReviewRepository;
 import com.safe.backend.domain.serviceProduct.entity.Product;
 import com.safe.backend.domain.serviceProduct.repository.ProductRepository;
@@ -24,6 +25,8 @@ public class ProductReviewService {
     private final ProductReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ProductReviewLikeRepository reviewLikeRepository;
+
 
     @Transactional(readOnly = true)
     public Page<ReviewResponse> getReviews(Long productId, Pageable pageable){
@@ -86,4 +89,37 @@ public class ProductReviewService {
             throw new IllegalArgumentException("rating은 1.0~5.0 범위여야 합니다.");
         }
     }
+
+    @Transactional
+    public ReviewLikeResponse toggleLike(Long productId, Long reviewId, Long userId) {
+
+        // 1) (중요) 리뷰가 해당 상품에 속하는지 검증
+        ProductReview review = reviewRepository
+                .findByReviewIdAndProduct_ProductId(reviewId, productId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 없습니다. reviewId=" + reviewId));
+
+        var id = new com.safe.backend.domain.productReview.entity.ProductReviewLikeId(reviewId, userId);
+
+        boolean exists = reviewLikeRepository.existsById(id);
+
+        boolean likedByMe;
+        if (exists) {
+            reviewLikeRepository.deleteById(id);
+            reviewRepository.decreaseLikeCount(reviewId);
+            likedByMe = false;
+        } else {
+            reviewLikeRepository.save(com.safe.backend.domain.productReview.entity.ProductReviewLike.of(reviewId, userId));
+            reviewRepository.increaseLikeCount(reviewId);
+            likedByMe = true;
+        }
+
+        // 2) 최신 likeCount 구하기 (DB count를 써도 되고, like_count 컬럼을 다시 읽어도 됨)
+        // 여기서는 count로 정확히 가져가자
+        long likeCount = reviewLikeRepository.countById_ReviewId(reviewId);
+
+        return new ReviewLikeResponse(reviewId, likeCount, likedByMe);
+    }
+
+
+
 }

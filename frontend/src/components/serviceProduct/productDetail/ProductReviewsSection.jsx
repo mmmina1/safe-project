@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../../assets/css/ServiceProduct/ProductReview.css'
 // updateProductReview API가 필요합니다.
-import { getProductReviews, createProductReview, deleteProductReview, updateProductReview } from '../../../api/reviewApi'
+import { getProductReviews, createProductReview, deleteProductReview, updateProductReview, toggleReviewLike  } from '../../../api/reviewApi'
 
 function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [loading, setLoading] = useState(true)
@@ -14,6 +14,7 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [submitting, setSubmitting] = useState(false)
   const [showWriteForm, setShowWriteForm] = useState(false)
   const [editingReviewId, setEditingReviewId] = useState(null) // 현재 수정 중인 리뷰 ID (null이면 작성 모드)
+  const [likeBusy, setLikeBusy] = useState({})
 
   const userId = localStorage.getItem("userId")
 
@@ -130,6 +131,45 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
       fetchPage(pageInfo.page)
     } catch (e) {
       alert("리뷰 삭제 실패")
+    }
+  }
+
+  const onToggleLike = async(reviewId) => {
+    if(!userId){
+      alert("로그인 후 이용해주세요.")
+      return
+    }
+    if(likeBusy[reviewId]) return
+
+    try{
+      setLikeBusy(prev => ({...prev, [reviewId]: true}))
+
+      const res = await toggleReviewLike(productId,reviewId)
+
+      //서버가 최신
+    if (res && typeof res === 'object' && ('likeCount' in res || 'likedByMe' in res)) {
+      setReviews(prev =>
+        prev.map(r =>
+          r.reviewId === reviewId
+          ? {
+                ...r,
+                likeCount: (res.likeCount ?? r.likeCount),
+                likedByMe: (res.likedByMe ?? r.likedByMe),
+              }
+            : r
+        )
+      )  
+      return
+    
+    }
+
+    // 서버 응답 형태가 애매할 경우
+    await fetchPage(pageInfo.page)
+    } catch(e) {
+      console.error(e)
+      alert("좋아요 처리 실패 : " + (e?.response?.data?.message ?? e.message))
+    }finally{
+      setLikeBusy(prev => ({...prev, [reviewId]: false}))
     }
   }
 
@@ -262,9 +302,12 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                   <div className='sp-review-content-text'>{r.content}</div>
 
                   <div className='sp-review-footer'>
-                    <button className='sp-like-btn-small'>
+                    <button className={`sp-like-btn-small ${r.likedByMe ? 'active' : ''}`}
+                      onClick={() => onToggleLike(r.reviewId)} disabled={!!likeBusy[r.reviewId]} >
                       <span className='sp-like-icon'>👍</span>
-                      <span>도움돼요 {r.likeCount ?? 0}</span>
+                      <span>
+                        도움돼요 {r.likeCount ?? 0}
+                      </span>
                     </button>
 
                     {userId && String(r.writerUserId) === String(userId) && (
