@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,   "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,    "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
 
                         // 그 외는 토큰 필요
@@ -102,7 +103,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // 허용할 HTTP 메서드
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
 
         // 허용할 헤더
         config.setAllowedHeaders(List.of("*"));

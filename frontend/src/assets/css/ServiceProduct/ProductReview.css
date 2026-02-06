@@ -592,6 +592,50 @@
   font-size: 14px;
 }
 
+/* ===== 리뷰 수정/삭제 버튼 영역 ===== */
+.sp-review-actions {
+  display: flex;
+  gap: 8px;
+}
+/* 수정 버튼 */
+.sp-review-edit-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.15);
+  color: #c7d2fe;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-review-edit-btn:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+/* 삭제 버튼 */
+.sp-review-delete-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-review-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* 수정 모드일 때 상단 작성 버튼 */
+.sp-write-review-btn.editing {
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+}
+
 /* ===== 반응형 ===== */
 @media (max-width: 768px) {
   .sp-review-summary-card {

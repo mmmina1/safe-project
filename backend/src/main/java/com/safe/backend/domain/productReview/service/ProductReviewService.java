@@ -40,7 +40,7 @@ public class ProductReviewService {
     }
 
     @Transactional
-    public Long create(Long productId, Long writerUserId, ReviewCreateRequest req){ // ✅ 이름 통일
+    public Long create(Long productId, Long writerUserId, ReviewCreateRequest req){
         validateRating(req.rating());
 
         Product product = productRepository.findById(productId)
@@ -77,7 +77,7 @@ public class ProductReviewService {
             throw new IllegalStateException("삭제 권한이 없습니다.");
         }
 
-        review.hide();
+        reviewRepository.delete(review);
     }
 
     private void validateRating(BigDecimal rating) {

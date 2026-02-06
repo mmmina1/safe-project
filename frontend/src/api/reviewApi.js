@@ -13,7 +13,7 @@ export const createProductReview = (productId, body) =>
 
 export const updateProductReview = (productId, reviewId, payload) =>
   axiosInstance
-    .put(`/api/products/${productId}/reviews/${reviewId}`, payload)
+    .patch(`/api/products/${productId}/reviews/${reviewId}`, payload)
     .then((r) => r.data);
 
 export const deleteProductReview = (productId, reviewId) =>

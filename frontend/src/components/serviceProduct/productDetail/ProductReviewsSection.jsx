@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../../assets/css/ServiceProduct/ProductReview.css'
-import { getProductReviews, createProductReview, deleteProductReview } from '../../../api/reviewApi'
+// updateProductReview API가 필요합니다.
+import { getProductReviews, createProductReview, deleteProductReview, updateProductReview } from '../../../api/reviewApi'
 
 function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [loading, setLoading] = useState(true)
@@ -8,15 +9,13 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [pageInfo, setPageInfo] = useState({ page: 0, size: 10, totalPages: 0, totalElements: 0 })
   const [err, setErr] = useState(null)
 
-  // 작성 폼 상태
+  // 작성 및 수정 폼 상태
   const [form, setForm] = useState({ rating: 5.0, title: '', content: '' })
   const [submitting, setSubmitting] = useState(false)
   const [showWriteForm, setShowWriteForm] = useState(false)
+  const [editingReviewId, setEditingReviewId] = useState(null) // 현재 수정 중인 리뷰 ID (null이면 작성 모드)
 
   const userId = localStorage.getItem("userId")
-  console.log("userId:", userId)
-  localStorage.getItem("userId")
-
 
   const fetchPage = async (page = 0) => {
     try {
@@ -41,9 +40,16 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
   useEffect(() => {
     if (!productId) return
     fetchPage(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId])
 
+  // 폼 초기화 함수
+  const resetForm = () => {
+    setForm({ rating: 5.0, title: '', content: '' })
+    setEditingReviewId(null)
+    setShowWriteForm(false)
+  }
+
+  // 등록 및 수정 통합 제출
   const onSubmit = async () => {
     if (!form.content.trim()) {
       alert('리뷰 내용을 입력해주세요.')
@@ -54,26 +60,37 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
       alert('평점은 1~5 사이여야 합니다.')
       return
     }
+
     try {
       setSubmitting(true)
-      await createProductReview(productId, {
+      const reviewData = {
         rating: Number(r.toFixed(1)),
         title: form.title?.trim() || null,
         content: form.content.trim(),
-      })
-      alert('리뷰가 등록되었습니다!')
-      setForm({ rating: 5.0, title: '', content: '' })
-      setShowWriteForm(false)
-      await fetchPage(0)
+      }
+
+      if (editingReviewId) {
+        // [수정 요청]
+        await updateProductReview(productId, editingReviewId, reviewData)
+        alert('리뷰가 수정되었습니다!')
+      } else {
+        // [신규 등록 요청]
+        await createProductReview(productId, reviewData)
+        alert('리뷰가 등록되었습니다!')
+      }
+
+      resetForm()
+      // 수정일 경우 현재 페이지 유지, 새 글일 경우 1페이지로 이동
+      await fetchPage(editingReviewId ? pageInfo.page : 0)
     } catch (e) {
       console.error(e)
-      alert('리뷰 등록 실패: ' + (e?.response?.data?.message ?? e.message))
+      alert('요청 실패: ' + (e?.response?.data?.message ?? e.message))
     } finally {
       setSubmitting(false)
     }
   }
 
-  // 별점 렌더링 함수
+  // 별점 렌더링
   const renderStars = (ratingValue) => {
     const stars = []
     const fullStars = Math.floor(ratingValue)
@@ -92,18 +109,26 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
     return stars
   }
 
-  // 댓글 수정 삭제
+  // 수정 버튼 클릭 시: 데이터를 폼에 채우고 상단으로 이동
   const onEdit = (review) => {
-    console.log("수정할 리뷰: ", review)
+    setEditingReviewId(review.reviewId)
+    setForm({
+      rating: review.rating,
+      title: review.title || '',
+      content: review.content
+    })
+    setShowWriteForm(true)
+    // 폼이 있는 곳으로 부드럽게 스크롤
+    window.scrollTo({ top: 200, behavior: 'smooth' })
   }
 
-  const onDelete = async(reviewId)=> {
-    if(!window.confirm("정말 이 리뷰를 삭제할까요?")) return
-    try{
-      await deleteProductReview(productId,reviewId)
+  const onDelete = async (reviewId) => {
+    if (!window.confirm("정말 이 리뷰를 삭제할까요?")) return
+    try {
+      await deleteProductReview(productId, reviewId)
       alert("리뷰가 삭제 되었습니다.")
       fetchPage(pageInfo.page)
-    }catch(e){
+    } catch (e) {
       alert("리뷰 삭제 실패")
     }
   }
@@ -121,30 +146,29 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
         </div>
         
         <button 
-          className='sp-write-review-btn'
-          onClick={() => setShowWriteForm(!showWriteForm)}
+          className={`sp-write-review-btn ${editingReviewId ? 'editing' : ''}`}
+          onClick={() => {
+            if (editingReviewId) {
+              if (window.confirm("수정을 취소하시겠습니까?")) resetForm()
+            } else {
+              setShowWriteForm(!showWriteForm)
+            }
+          }}
         >
-          <span className='sp-btn-icon'>✍️</span>
-          <span>리뷰 작성하기</span>
+          <span className='sp-btn-icon'>{editingReviewId ? '✖' : '✍️'}</span>
+          <span>{editingReviewId ? '수정 취소' : '리뷰 작성하기'}</span>
         </button>
       </div>
 
-      {/* 작성 폼 (토글) */}
+      {/* 작성/수정 폼 통합 */}
       {showWriteForm && (
         <div className="sp-review-write-card">
           <div className='sp-write-header'>
-            <h4>리뷰 작성</h4>
-            <button 
-              className='sp-close-btn'
-              onClick={() => setShowWriteForm(false)}
-              aria-label='닫기'
-            >
-              ✕
-            </button>
+            <h4>{editingReviewId ? '리뷰 수정하기' : '리뷰 작성'}</h4>
+            <button className='sp-close-btn' onClick={resetForm} aria-label='닫기'>✕</button>
           </div>
 
           <div className='sp-write-body'>
-            {/* 별점 선택 */}
             <div className='sp-rating-input'>
               <label>평점</label>
               <div className='sp-star-buttons'>
@@ -162,7 +186,6 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
               <span className='sp-rating-text'>{Number(form.rating).toFixed(1)}</span>
             </div>
 
-            {/* 제목 */}
             <div className='sp-input-group'>
               <input
                 type='text'
@@ -173,7 +196,6 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
               />
             </div>
 
-            {/* 내용 */}
             <div className='sp-input-group'>
               <textarea
                 placeholder="리뷰 내용을 입력하세요"
@@ -185,20 +207,15 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
               <div className='sp-char-count'>{form.content.length} / 500</div>
             </div>
 
-            {/* 제출 버튼 */}
-            <button
-              className="sp-submit-btn"
-              onClick={onSubmit}
-              disabled={submitting}
-            >
+            <button className="sp-submit-btn" onClick={onSubmit} disabled={submitting} >
               {submitting ? (
                 <>
                   <span className='sp-spinner-sm'></span>
-                  <span>등록 중...</span>
+                  <span>처리 중...</span>
                 </>
               ) : (
                 <>
-                  <span>리뷰 등록</span>
+                  <span>{editingReviewId ? '수정 완료' : '리뷰 등록'}</span>
                   <span className='sp-btn-arrow'>→</span>
                 </>
               )}
@@ -215,21 +232,11 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
         </div>
 
         {loading ? (
-          <div className="sp-loading-state">
-            <div className="sp-spinner"></div>
-            <p>리뷰를 불러오는 중...</p>
-          </div>
+          <div className="sp-loading-state"><p>리뷰를 불러오는 중...</p></div>
         ) : err ? (
-          <div className="sp-error-state">
-            <div className='sp-error-icon'>⚠️</div>
-            <p>{err}</p>
-          </div>
+          <div className="sp-error-state"><p>{err}</p></div>
         ) : reviews.length === 0 ? (
-          <div className="sp-empty-state">
-            <div className='sp-empty-icon'>💬</div>
-            <p className='sp-empty-title'>아직 리뷰가 없습니다</p>
-            <p className='sp-empty-subtitle'>첫 번째 리뷰를 작성해보세요!</p>
-          </div>
+          <div className="sp-empty-state"><p>첫 번째 리뷰를 작성해보세요!</p></div>
         ) : (
           <>
             <div className='sp-review-grid'>
@@ -237,17 +244,11 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                 <div key={r.reviewId} className="sp-review-card">
                   <div className='sp-review-header'>
                     <div className='sp-reviewer-info'>
-                      <div className='sp-reviewer-avatar'>
-                        {(r.writerName ?? '익명')[0].toUpperCase()}
-                      </div>
+                      <div className='sp-reviewer-avatar'>{(r.writerName ?? '익명')[0].toUpperCase()}</div>
                       <div className='sp-reviewer-details'>
                         <div className='sp-reviewer-name'>{r.writerName ?? '익명'}</div>
                         <div className='sp-review-date'>
-                          {r.createdDate ? new Date(r.createdDate).toLocaleDateString('ko-KR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          }) : ''}
+                          {r.createdDate ? new Date(r.createdDate).toLocaleDateString() : ''}
                         </div>
                       </div>
                     </div>
@@ -258,7 +259,6 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                   </div>
 
                   {r.title && <div className='sp-review-title-text'>{r.title}</div>}
-                  
                   <div className='sp-review-content-text'>{r.content}</div>
 
                   <div className='sp-review-footer'>
@@ -267,10 +267,10 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                       <span>도움돼요 {r.likeCount ?? 0}</span>
                     </button>
 
-                    {userId && String(r.writerUserId) === String(userId) && ( 
-                      <div className='sp-review-actions'> 
-                      <button className='sp-review-edit-btn' onClick={() => onEdit(r)}>수정</button>
-                      <button className='sp-review-delete-btn' onClick={() => onDelete(r.reviewId)}>삭제</button>
+                    {userId && String(r.writerUserId) === String(userId) && (
+                      <div className='sp-review-actions'>
+                        <button className='sp-review-edit-btn' onClick={() => onEdit(r)}>수정</button>
+                        <button className='sp-review-delete-btn' onClick={() => onDelete(r.reviewId)}>삭제</button>
                       </div>
                     )}
                   </div>
@@ -278,32 +278,20 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
               ))}
             </div>
 
-            {/* 페이징 */}
+            {/* 페이징 생략 (기존과 동일) */}
             {pageInfo.totalPages > 1 && (
               <div className='sp-pagination'>
                 <button
                   className="sp-page-btn"
                   onClick={() => fetchPage(Math.max(0, pageInfo.page - 1))}
                   disabled={pageInfo.page <= 0}
-                >
-                  <span className='sp-page-arrow'>←</span>
-                  <span>이전</span>
-                </button>
-                
-                <div className='sp-page-info'>
-                  <span className='sp-current-page'>{pageInfo.page + 1}</span>
-                  <span className='sp-page-separator'>/</span>
-                  <span className='sp-total-pages'>{pageInfo.totalPages}</span>
-                </div>
-                
+                > 이전 </button>
+                <div className='sp-page-info'>{pageInfo.page + 1} / {pageInfo.totalPages}</div>
                 <button
                   className="sp-page-btn"
                   onClick={() => fetchPage(Math.min(pageInfo.totalPages - 1, pageInfo.page + 1))}
                   disabled={pageInfo.page >= pageInfo.totalPages - 1}
-                >
-                  <span>다음</span>
-                  <span className='sp-page-arrow'>→</span>
-                </button>
+                > 다음 </button>
               </div>
             )}
           </>

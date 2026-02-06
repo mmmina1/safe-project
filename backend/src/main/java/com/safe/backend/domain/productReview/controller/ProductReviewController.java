@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,6 +46,17 @@ public class ProductReviewController {
             @PathVariable Long reviewId,
             @RequestBody ReviewUpdateRequest req,
             HttpServletRequest request
+    ) {
+        Long writerUserId = extractUserId(request);
+        reviewService.update(reviewId, writerUserId, req);
+    }
+
+    @PutMapping("/{reviewId}")
+    public void updatePut(
+        @PathVariable Long productId,
+        @PathVariable Long reviewId,
+        @RequestBody ReviewUpdateRequest req,
+        HttpServletRequest request
     ) {
         Long writerUserId = extractUserId(request);
         reviewService.update(reviewId, writerUserId, req);
