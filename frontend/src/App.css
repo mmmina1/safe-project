@@ -41,6 +41,8 @@ html, body {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: visible;
+  position: relative;
 }
 
 /* container도 flex로 */
@@ -49,6 +51,86 @@ html, body {
   width: 100%;
 }
 
+/* Header가 항상 위에 표시되도록 */
+.navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  height: auto !important;
+  min-height: 80px !important;
+}
+
+/* Navbar 내부 Container가 너무 넓어지지 않도록 */
+.navbar .container-fluid {
+  max-width: 100% !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  height: 100% !important;
+  min-height: 80px !important;
+}
+
+/* Navbar Collapse가 텍스트를 잘리지 않도록 */
+.navbar-collapse {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Navbar 내부 링크들이 잘리지 않도록 */
+.navbar .nav-link {
+  line-height: 1.5 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  height: auto !important;
+  min-height: auto !important;
+  padding: 0.5rem 0.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Navbar Brand가 잘리지 않도록 */
+.navbar-brand {
+  line-height: 1.5 !important;
+  padding: 0.5rem 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Navbar Nav가 잘리지 않도록 */
+.navbar-nav {
+  overflow: visible !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+}
+
+/* 운영자 레이아웃 사이드바가 스크롤과 함께 움직이도록 */
+.operator-sidebar,
+.content-wrapper aside,
+.content-wrapper > div aside,
+[class*="operator"] aside,
+aside[style*="position"] {
+  position: static !important;
+  top: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  align-self: flex-start !important;
+}
 /* footer는 아래에 붙게 */
 footer {
   margin-top: auto;
