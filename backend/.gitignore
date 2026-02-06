@@ -44,8 +44,15 @@ backend/.venv/
 # OS / temp
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
+=======
 
 # Spring Boot config
 src/main/resources/application-local.properties
 src/main/resources/application-dev.properties
+<<<<<<< HEAD
 src/main/resources/application-prod.properties
+=======
+src/main/resources/application-prod.properties
+>>>>>>> d7630631fd65289dceb67dd7f149cbe8c6406b05
+>>>>>>> 02d8d77421eeaa2d28eae10267ba90767676b28e
