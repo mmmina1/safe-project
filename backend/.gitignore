@@ -1,28 +1,85 @@
-# Build
+# Python
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
 build/
-target/
-out/
-*.class
-*.jar
-*.war
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# QueryDSL generated
-build/generated/
-generated/
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# IDE
+# PyCharm
 .idea/
 *.iml
+*.iws
+.idea_modules/
+
+# VSCode
 .vscode/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # Logs
 *.log
 logs/
 
-# Environment
-application-local.properties
-application-dev.properties
-application-prod.properties
+# OS
+.DS_Store
+Thumbs.db
 
-# Uploaded files
-uploads/
+# Test coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data files (depending on your needs)
+# data/*.csv
+# data/*.json
+
+# Model files (if large)
+# *.pkl
+# *.h5
+# *.model
+
+# Gradle
+.gradle/
+**/.gradle/
+build/

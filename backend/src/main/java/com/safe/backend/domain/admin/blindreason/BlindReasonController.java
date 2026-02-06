@@ -1,6 +1,7 @@
 package com.safe.backend.domain.admin.blindreason;
 
 import com.safe.backend.domain.admin.blindreason.dto.BlindReasonCreateRequest;
+import com.safe.backend.domain.admin.blindreason.BlindReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
