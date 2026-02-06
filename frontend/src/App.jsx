@@ -64,8 +64,7 @@ import OperatorRoute from './OperatorRoute.jsx';
 
 function App() {
 
-function App() {
-  const toast = useToast();
+  const location = useLocation();
   
   // 팝업창인지 확인 (window.opener가 있으면 팝업창)
   const isPopup = window.opener !== null;

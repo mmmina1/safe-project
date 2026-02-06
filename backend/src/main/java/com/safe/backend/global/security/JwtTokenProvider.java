@@ -45,6 +45,12 @@ public class JwtTokenProvider {
         return Long.valueOf(claims.getSubject());
     }
 
+    // 토큰에서 role 추출 ("ADMIN", "OPERATOR" 등)
+    public String getRole(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get("role", String.class);
+    }
+
     // 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {

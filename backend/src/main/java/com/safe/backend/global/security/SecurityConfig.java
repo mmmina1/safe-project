@@ -54,9 +54,9 @@ public class SecurityConfig {
                         ).permitAll()
 
                         //  관리자 전용 API
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
 
-                        .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
 
                         //✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
@@ -85,6 +85,7 @@ public class SecurityConfig {
         http.addFilterBefore(
                 new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
                 UsernamePasswordAuthenticationFilter.class
+                
         );
 
         return http.build();

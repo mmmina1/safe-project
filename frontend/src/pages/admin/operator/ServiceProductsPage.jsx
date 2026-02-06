@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function ServiceProductsPage() {
   const queryClient = useQueryClient();
@@ -10,14 +10,14 @@ export default function ServiceProductsPage() {
   const { data: products = [], isLoading, isError, error } = useQuery({
     queryKey: ["adminProducts"],
     queryFn: async () => {
-      const res = await api.get("/admin/products");
+      const res = await api.get("/api/admin/products");
       return res.data;
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async (payload) => {
-      const res = await api.post("/admin/products", payload);
+      const res = await api.post("/api/admin/products", payload);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminProducts"] }),
@@ -25,7 +25,7 @@ export default function ServiceProductsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...payload }) => {
-      const res = await api.put(`/admin/products/${id}`, payload);
+      const res = await api.put(`/api/admin/products/${id}`, payload);
       return res.data;
     },
     onSuccess: () => {
@@ -36,7 +36,7 @@ export default function ServiceProductsPage() {
 
   const toggleMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/products/${id}/toggle`);
+      const res = await api.patch(`/api/admin/products/${id}/toggle`);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminProducts"] }),
@@ -44,7 +44,7 @@ export default function ServiceProductsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/admin/products/${id}`);
+      await api.delete(`/api/admin/products/${id}`);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminProducts"] }),
   });

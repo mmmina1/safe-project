@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function BlacklistPage() {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export default function BlacklistPage() {
     queryKey: ["adminBlacklist", keyword],
     queryFn: async () => {
       const params = keyword ? { keyword } : {};
-      const res = await api.get("/admin/blacklist", { params });
+      const res = await api.get("/api/admin/blacklist", { params });
       return res.data;
     },
   });
@@ -21,7 +21,7 @@ export default function BlacklistPage() {
   const { data: history = [] } = useQuery({
     queryKey: ["blacklistHistory", selectedId],
     queryFn: async () => {
-      const res = await api.get(`/admin/blacklist/${selectedId}/history`);
+      const res = await api.get(`/api/admin/blacklist/${selectedId}/history`);
       return res.data;
     },
     enabled: !!selectedId,
@@ -29,7 +29,7 @@ export default function BlacklistPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload) => {
-      const res = await api.post("/admin/blacklist", payload);
+      const res = await api.post("/api/admin/blacklist", payload);
       return res.data;
     },
     onSuccess: () => {
@@ -39,7 +39,7 @@ export default function BlacklistPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...payload }) => {
-      const res = await api.put(`/admin/blacklist/${id}`, payload);
+      const res = await api.put(`/api/admin/blacklist/${id}`, payload);
       return res.data;
     },
     onSuccess: () => {
@@ -50,7 +50,7 @@ export default function BlacklistPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/admin/blacklist/${id}`, { params: { adminId: 1 } });
+      await api.delete(`/api/admin/blacklist/${id}`, { params: { adminId: 1 } });
     },
     onSuccess: (_, deletedId) => {
       queryClient.invalidateQueries({ queryKey: ["adminBlacklist"] });
