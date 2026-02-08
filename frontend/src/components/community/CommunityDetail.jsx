@@ -310,13 +310,24 @@ function CommunityDetail() {
 
                 {isEditing ? (
                   <div className="comment-edit-box">
-                    <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
-                    <button className="btn-save-confirm" onClick={() => handleEditSubmit(cId)}>
-                      저장
-                    </button>
-                    <button className="btn-cancel-edit" onClick={() => setEditingCommentId(null)}>
-                      취소
-                    </button>
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      />
+                      <div className="edit-btn-group">
+                      <button
+                        className="btn-save-confirm"
+                        onClick={() => handleEditSubmit(cId)}
+                      >
+                          저장
+                      </button>
+                      <button
+                        className="btn-cancel-edit"
+                        onClick={() => setEditingCommentId(null)}
+                      >
+                        취소
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <>
