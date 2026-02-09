@@ -1,6 +1,6 @@
-package com.safe.backend.domain.aiservice.domain.usecase;
+package com.safe.backend.domain.aiservice.usecase;
 
-import com.safe.backend.domain.aiservice.domain.repository.AiRepository;
+import com.safe.backend.domain.aiservice.repository.AiRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

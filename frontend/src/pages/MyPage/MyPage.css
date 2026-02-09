@@ -241,13 +241,19 @@
     color: var(--text-muted) !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--text-main);
 }
 
 /* 2. 입력 폼 (Input) 스타일 개선 */
 .form-control {
-    background-color: rgba(255, 255, 255, 0.05); /* 반투명 배경 */
+    background-color: rgba(255, 255, 255, 0.05);
+    /* 반투명 배경 */
     border: 1px solid var(--border-color);
     color: var(--text-main);
 }
@@ -260,7 +266,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control::placeholder {
-    color: #64748b; /* 조금 더 어두운 회색 */
+    color: #64748b;
+    /* 조금 더 어두운 회색 */
+}
+
+.input-group-text {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.input-group .form-control {
+    border-left: none;
 }
 
 /* 3. 버튼 텍스트 가독성 */

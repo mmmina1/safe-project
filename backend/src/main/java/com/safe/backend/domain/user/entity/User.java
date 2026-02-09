@@ -7,17 +7,21 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
-    /* ===============================
-       PK
-    =============================== */
+    /*
+     * ===============================
+     * PK
+     * ===============================
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    /* ===============================
-       기본 정보
-    =============================== */
+    /*
+     * ===============================
+     * 기본 정보
+     * ===============================
+     */
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
@@ -27,9 +31,11 @@ public class User {
     @Column(name = "password_hash", nullable = true, length = 255)
     private String passwordHash;
 
-    /* ===============================
-       상태 / 권한
-    =============================== */
+    /*
+     * ===============================
+     * 상태 / 권한
+     * ===============================
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
@@ -38,9 +44,11 @@ public class User {
     @Column(nullable = false)
     private UserRole role = UserRole.USER;
 
-    /* ===============================
-       부가 정보
-    =============================== */
+    /*
+     * ===============================
+     * 부가 정보
+     * ===============================
+     */
     @Column(name = "profile_image", length = 255)
     private String profileImage;
 
@@ -50,18 +58,22 @@ public class User {
     @Column(name = "email_verified_at")
     private LocalDateTime emailVerifiedAt; // DB에는 email_vertified_at으로 오타가 있지만 email_verified_at 사용
 
-    /* ===============================
-       날짜 관리
-    =============================== */
+    /*
+     * ===============================
+     * 날짜 관리
+     * ===============================
+     */
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    /* ===============================
-       생성자
-    =============================== */
+    /*
+     * ===============================
+     * 생성자
+     * ===============================
+     */
 
     // JPA 기본 생성자 (필수)
     protected User() {
@@ -76,9 +88,11 @@ public class User {
         this.role = UserRole.USER;
     }
 
-    /* ===============================
-       JPA 라이프사이클
-    =============================== */
+    /*
+     * ===============================
+     * JPA 라이프사이클
+     * ===============================
+     */
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
@@ -90,9 +104,11 @@ public class User {
         this.updatedDate = LocalDateTime.now();
     }
 
-    /* ===============================
-       Getter (Setter는 최소화)
-    =============================== */
+    /*
+     * ===============================
+     * Getter (Setter는 최소화)
+     * ===============================
+     */
 
     public Long getUserId() {
         return userId;
@@ -137,5 +153,18 @@ public class User {
     // Setters for admin operations
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    /*
+     * ===============================
+     * 마이페이지 전용 비즈니스 로직
+     * ===============================
+     */
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePassword(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }

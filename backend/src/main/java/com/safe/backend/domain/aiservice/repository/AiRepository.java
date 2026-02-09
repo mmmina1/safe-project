@@ -1,7 +1,7 @@
-package com.safe.backend.domain.aiservice.domain.repository;
+package com.safe.backend.domain.aiservice.repository;
 
-import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
+import com.safe.backend.domain.aiservice.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.entity.ChatResultEntity;
 
 import java.util.List;
 

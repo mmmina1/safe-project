@@ -18,4 +18,31 @@ export const getDashboardData = async () => {
         console.error('대시보드 조회 실패:', error);
         throw error; // 화면에서 에러 처리를 위해 throw
     }
+
+
+};
+
+
+// 닉네임 수정
+export const updateNickname = async (nickname) => {
+    const token = localStorage.getItem('accessToken');
+    const response = await axiosInstance.patch('/api/mypage/nickname',
+        { nickname }, // 전송할 데이터
+        {
+            headers: token ? { Authorization: `Bearer ${token}` } : {} // 신분증!
+        }
+    );
+    return response.data;
+};
+
+// 비밀번호 수정
+export const updatePassword = async (currentPassword, newPassword) => {
+    const token = localStorage.getItem('accessToken');
+    const response = await axiosInstance.patch('/api/mypage/password',
+        { currentPassword, newPassword }, // 전송할 데이터
+        {
+            headers: token ? { Authorization: `Bearer ${token}` } : {} // 신분증!
+        }
+    );
+    return response.data;
 };

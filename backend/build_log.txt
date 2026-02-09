@@ -1,0 +1,69 @@
+
+> Task :compileJava
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:3: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+                                                      ^
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:4: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+import com.safe.backend.domain.aiservice.domain.entity.ChatRequestEntity;
+                                                      ^
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:5: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
+                                                      ^
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:30: error: cannot find symbol
+    public ChatResultEntity chat(@RequestBody ChatRequestEntity request,
+                                              ^
+  symbol:   class ChatRequestEntity
+  location: class AiServiceViewModel
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:30: error: cannot find symbol
+    public ChatResultEntity chat(@RequestBody ChatRequestEntity request,
+           ^
+  symbol:   class ChatResultEntity
+  location: class AiServiceViewModel
+E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:57: error: cannot find symbol
+    public List<ChatMessageEntity> getHistory(@AuthenticationPrincipal Object principal) {
+                ^
+  symbol:   class ChatMessageEntity
+  location: class AiServiceViewModel
+6 errors
+
+> Task :compileJava FAILED
+
+[Incubating] Problems report is available at: file:///E:/safe/safe-project/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler output below.
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:30: error: cannot find symbol
+      public ChatResultEntity chat(@RequestBody ChatRequestEntity request,
+                                                ^
+    symbol:   class ChatRequestEntity
+    location: class AiServiceViewModel
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:30: error: cannot find symbol
+      public ChatResultEntity chat(@RequestBody ChatRequestEntity request,
+             ^
+    symbol:   class ChatResultEntity
+    location: class AiServiceViewModel
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:57: error: cannot find symbol
+      public List<ChatMessageEntity> getHistory(@AuthenticationPrincipal Object principal) {
+                  ^
+    symbol:   class ChatMessageEntity
+    location: class AiServiceViewModel
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:3: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+  import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+                                                        ^
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:4: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+  import com.safe.backend.domain.aiservice.domain.entity.ChatRequestEntity;
+                                                        ^
+  E:\safe\safe-project\backend\src\main\java\com\safe\backend\domain\aiservice\presentation\viewmodel\AiServiceViewModel.java:5: error: package com.safe.backend.domain.aiservice.domain.entity does not exist
+  import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
+                                                        ^
+  6 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 4s
+1 actionable task: 1 executed

@@ -1,8 +1,9 @@
 // ============================================================
 // 1. 임포트 구역
 // ============================================================
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreditCard, Lock, User, ExternalLink, ShieldCheck, MapPin } from 'lucide-react';
+import { getDashboardData, updateNickname, updatePassword } from '../../../api/myPageApi';
 
 // ============================================================
 // 2. 설정 및 관리 화면 부품
@@ -10,6 +11,9 @@ import { CreditCard, Lock, User, ExternalLink, ShieldCheck, MapPin } from 'lucid
 const Settings = ({ initialTab = 'payment' }) => {
     // 결제수단 관리 탭과 프로필 관리 탭 중 하나를 선택한 상태를 갖습니다.
     const [activeTab, setActiveTab] = useState(initialTab);
+
+    // [New] 닉네임 상태
+    const [nickname, setNickname] = useState('익명유저123');
 
     // [New] 비밀번호 변경 모드 상태
     const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -24,9 +28,30 @@ const Settings = ({ initialTab = 'payment' }) => {
     const [isTossLinked, setIsTossLinked] = useState(false);
 
     // 부모로부터 내려오는 탭 설정이 바뀌면 화면도 즉시 변경해줍니다.
-    React.useEffect(() => {
+    useEffect(() => {
         setActiveTab(initialTab);
+
+        // 프로필 관리 탭이 활성화될 때 실제 유저 정보를 가져옵니다.
+        if (initialTab === 'profile') {
+            fetchUserProfile();
+        }
     }, [initialTab]);
+
+    const fetchUserProfile = async () => {
+        try {
+            const data = await getDashboardData();
+            if (data && data.userName) {
+                setNickname(data.userName);
+            }
+        } catch (error) {
+            console.error('프로필 정보를 불러오는데 실패했습니다:', error);
+        }
+    };
+
+    // 닉네임 변경 핸들러
+    const handleNicknameChange = (e) => {
+        setNickname(e.target.value);
+    };
 
     // 비밀번호 입력 핸들러
     const handlePasswordChange = (e) => {
@@ -34,8 +59,8 @@ const Settings = ({ initialTab = 'payment' }) => {
         setPasswordForm(prev => ({ ...prev, [name]: value }));
     };
 
-    // 비밀번호 저장 핸들러 (Mock)
-    const handleSavePassword = () => {
+    // 비밀번호 저장 핸들러
+    const handleSavePassword = async () => {
         if (!passwordForm.currentPassword || !passwordForm.newPassword) {
             alert('비밀번호를 입력해주세요.');
             return;
@@ -44,10 +69,32 @@ const Settings = ({ initialTab = 'payment' }) => {
             alert('새 비밀번호가 일치하지 않습니다.');
             return;
         }
-        // TODO: 백엔드 API 호출
-        alert('비밀번호가 성공적으로 변경되었습니다.');
-        setIsChangingPassword(false);
-        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+        try {
+            await updatePassword(passwordForm.currentPassword, passwordForm.newPassword);
+            alert('비밀번호가 성공적으로 변경되었습니다.');
+            setIsChangingPassword(false);
+            setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || '비밀번호 변경에 실패했습니다. 현재 비밀번호를 확인해주세요.';
+            alert(errorMessage);
+        }
+    };
+
+    // 프로필 전체 저장 (닉네임 등)
+    const handleSaveProfile = async () => {
+        if (!nickname.trim()) {
+            alert('닉네임을 입력해주세요.');
+            return;
+        }
+
+        try {
+            await updateNickname(nickname);
+            alert(`'${nickname}'(으)로 닉네임이 저장되었습니다.`);
+        } catch (error) {
+            console.error('닉네임 저장 실패:', error);
+            alert('닉네임 저장에 실패했습니다.');
+        }
     };
 
     // 토스 연동 핸들러 (Mock)
@@ -141,42 +188,70 @@ const Settings = ({ initialTab = 'payment' }) => {
             {activeTab === 'profile' && (
                 <div className="animate-fade-in">
                     <div className="dashboard-card p-4">
-                        {/* 회원 정보 수정 폼 영역 */}
+                        <h5 className="card-label mb-4">계정 정보 설정</h5>
+
+                        {/* 1. 닉네임 (수정 가능) */}
                         <div className="mb-4">
-                            <label className="form-label text-secondary small fw-bold">아이디(이메일)</label>
-                            <div className="input-group">
-                                <span className="input-group-text bg-transparent border-secondary text-secondary"><User size={18} /></span>
-                                <input type="text" className="form-control bg-transparent border-secondary text-white" value="chlalsdk5743@gmail.com" readOnly />
+                            <label className="form-label text-secondary small fw-bold mb-2">닉네임</label>
+                            <div className="d-flex gap-2">
+                                <div className="position-relative flex-grow-1">
+                                    <div className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+                                        <User size={18} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="form-control bg-transparent border-secondary text-white w-100"
+                                        style={{ paddingLeft: '45px', height: '48px' }}
+                                        value={nickname}
+                                        onChange={handleNicknameChange}
+                                        placeholder="닉네임을 입력하세요"
+                                    />
+                                </div>
+                                <button
+                                    className="btn btn-primary px-4 fw-bold"
+                                    style={{ height: '48px', minWidth: '100px' }}
+                                    onClick={handleSaveProfile}
+                                >
+                                    변경
+                                </button>
                             </div>
-                        </div>
-                        <div className="mb-4">
-                            <label className="form-label text-secondary small fw-bold">휴대폰 번호</label>
-                            <div className="input-group">
-                                <input type="text" className="form-control bg-transparent border-secondary text-white" defaultValue="010-1234-5678" />
-                                <button className="btn btn-outline-primary">번호 변경</button>
-                            </div>
+                            <div className="form-text text-muted mt-2 small">서비스 내에서 표시될 이름을 설정하세요.</div>
                         </div>
 
+                        {/* 3. 비밀번호 (수정 가능) */}
                         <div className="mb-5">
-                            <label className="form-label text-secondary small fw-bold">비밀번호</label>
+                            <label className="form-label text-secondary small fw-bold mb-2">비밀번호 보안</label>
                             <div>
                                 {!isChangingPassword ? (
-                                    <button
-                                        className="btn btn-outline-secondary d-flex align-items-center"
-                                        onClick={() => setIsChangingPassword(true)}
-                                    >
-                                        <Lock size={16} className="me-2" /> 비밀번호 변경하기
-                                    </button>
+                                    <div className="d-flex align-items-center justify-content-between p-3 rounded border border-secondary" style={{ background: 'rgba(255,255,255,0.02)', height: '56px' }}>
+                                        <div className="d-flex align-items-center">
+                                            <Lock size={20} className="text-secondary me-3" />
+                                            <span className="text-white">사용 중인 비밀번호</span>
+                                        </div>
+                                        <button
+                                            className="btn btn-sm btn-outline-secondary px-3"
+                                            onClick={() => setIsChangingPassword(true)}
+                                        >
+                                            비밀번호 변경
+                                        </button>
+                                    </div>
                                 ) : (
-                                    <div className="p-4 rounded border border-secondary" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                                    <div className="p-4 rounded border border-secondary" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                                        <div className="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary">
+                                            <Lock size={18} className="text-primary me-2" />
+                                            <h6 className="mb-0">비밀번호 변경</h6>
+                                        </div>
+
                                         <div className="mb-3">
                                             <label className="form-label small text-secondary">현재 비밀번호</label>
                                             <input
                                                 type="password"
                                                 name="currentPassword"
                                                 className="form-control bg-transparent border-secondary text-white"
+                                                style={{ height: '42px' }}
                                                 value={passwordForm.currentPassword}
                                                 onChange={handlePasswordChange}
+                                                placeholder="현재 비밀번호를 입력하세요"
                                             />
                                         </div>
                                         <div className="mb-3">
@@ -185,8 +260,10 @@ const Settings = ({ initialTab = 'payment' }) => {
                                                 type="password"
                                                 name="newPassword"
                                                 className="form-control bg-transparent border-secondary text-white"
+                                                style={{ height: '42px' }}
                                                 value={passwordForm.newPassword}
                                                 onChange={handlePasswordChange}
+                                                placeholder="새로운 비밀번호"
                                             />
                                         </div>
                                         <div className="mb-4">
@@ -195,19 +272,21 @@ const Settings = ({ initialTab = 'payment' }) => {
                                                 type="password"
                                                 name="confirmPassword"
                                                 className="form-control bg-transparent border-secondary text-white"
+                                                style={{ height: '42px' }}
                                                 value={passwordForm.confirmPassword}
                                                 onChange={handlePasswordChange}
+                                                placeholder="새 비밀번호 다시 입력"
                                             />
                                         </div>
                                         <div className="d-flex gap-2">
                                             <button
-                                                className="btn btn-primary btn-sm"
+                                                className="btn btn-primary w-100 py-2 fw-bold"
                                                 onClick={handleSavePassword}
                                             >
                                                 변경 완료
                                             </button>
                                             <button
-                                                className="btn btn-secondary btn-sm"
+                                                className="btn btn-outline-secondary w-100 py-2"
                                                 onClick={() => setIsChangingPassword(false)}
                                             >
                                                 취소
@@ -219,9 +298,9 @@ const Settings = ({ initialTab = 'payment' }) => {
                         </div>
 
                         {/* 폼 하단 작업 바 */}
-                        <div className="border-top pt-4 d-flex justify-content-between align-items-center">
-                            <button className="btn btn-primary px-5">저장하기</button>
-                            <button className="btn btn-link text-danger text-decoration-none small">회원탈퇴</button>
+                        <div className="border-top border-secondary pt-4 d-flex justify-content-between align-items-center">
+                            <span className="text-secondary small">회원님의 정보는 안전하게 보호됩니다.</span>
+                            <button className="btn btn-link text-danger text-decoration-none small p-0">회원탈퇴</button>
                         </div>
                     </div>
                 </div>
