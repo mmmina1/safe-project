@@ -38,7 +38,7 @@ public class VisitPost {
     @Column(name = "visit_count", nullable = false)
     private Integer visitCount = 0;
 
-    @Column(name = "Comment_like_count", nullable = false)
+    @Column(name = "comment_like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Column(name = "report_count", nullable = false)
@@ -57,12 +57,22 @@ public class VisitPost {
     @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
-    // 내부 Enum 정의 (외부 import 필요 없음)
     public enum Status {
         NORMAL, BLINDED, DELETED
     }
 
-    // 생성 전용 메서드
+    // --- 좋아요 카운트 관련 메서드 ---
+    public void incrementLikeCount() {
+        if (this.likeCount == null) this.likeCount = 0;
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if (this.likeCount != null && this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
+
     public static VisitPost create(Long userId, String category, String title, String content) {
         VisitPost p = new VisitPost();
         p.userId = userId;
@@ -82,7 +92,6 @@ public class VisitPost {
         return p;
     }
 
-    // 수정 시 시간 갱신
     public void touchUpdatedDate(){
         this.updatedDate = LocalDateTime.now();
     }

@@ -5,10 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -33,8 +29,12 @@ public class CommunityController {
 
     //상세
     @GetMapping("/posts/{postId}")
-    public VisitPostDetail getPostDetail(@PathVariable Long postId){
-        return communityService.getVisitPostDetail(postId);
+    public VisitPostDetail getPostDetail(
+        @PathVariable Long postId, 
+        @RequestParam(required = false) Long userId // 이거 추가해서 프론트에서 ID 받아야 함
+    ){
+        // 서비스 호출할 때 userId도 같이 던져줌
+        return communityService.getVisitPostDetail(postId, userId);
     }
 
     //작성
@@ -46,4 +46,3 @@ public class CommunityController {
     }
     
 }
-

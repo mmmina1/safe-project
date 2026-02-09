@@ -15,8 +15,11 @@ export const communityApi = {
     return res.data;
   },
 
-  getPostDetail: async (postId) => {
-    const res = await axiosInstance.get(`/api/community/posts/${postId}`);
+  // 수정: userId 추가하여 게시글 좋아요 상태 받아오기
+  getPostDetail: async (postId, userId) => {
+    const res = await axiosInstance.get(`/api/community/posts/${postId}`, {
+      params: { userId: userId }
+    });
     return res.data;
   },
 
@@ -25,9 +28,13 @@ export const communityApi = {
     return res.data;
   },
 
-  getComments: async (postId) => {
+  // 수정: userId 추가하여 댓글 좋아요 상태 받아오기
+  getComments: async (postId, userId) => {
     const res = await axiosInstance.get("/api/comments", {
-      params: { post_id: postId },
+      params: { 
+        post_id: postId,
+        userId: userId 
+      },
     });
     return res.data;
   },

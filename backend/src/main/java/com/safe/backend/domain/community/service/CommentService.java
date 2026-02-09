@@ -41,12 +41,20 @@ public class CommentService {
         }
 
         Comment savedComment = commentRepository.save(comment);
-        return CommentResponse.from(savedComment);
+        // 생성 시에는 본인이 누른 상태가 아니므로 false 처리 (혹은 필요시 체크 로직 추가)
+        return CommentResponse.from(savedComment, false);
     }
 
-    public List<CommentResponse> getCommentsByPostId(Long postId) {
+    // 게시글 ID로 댓글 목록 조회 (userId 파라미터 추가하여 좋아요 상태 반영)
+    public List<CommentResponse> getCommentsByPostId(Long postId, Long userId) {
         return commentRepository.findAllByPostIdWithUser(postId).stream()
-                .map(CommentResponse::from)
+                .map(comment -> {
+                    boolean isLiked = false;
+                    if (userId != null) {
+                        isLiked = commentLikeRepository.existsByCommentIdAndUserId(comment.getCommentId(), userId);
+                    }
+                    return CommentResponse.from(comment, isLiked);
+                })
                 .toList();
     }
 
@@ -64,7 +72,10 @@ public class CommentService {
         }
 
         comment.updateContent(content);
-        return CommentResponse.from(comment);
+        
+        // 업데이트 후 자신의 좋아요 상태 재확인
+        boolean isLiked = commentLikeRepository.existsByCommentIdAndUserId(commentId, userId);
+        return CommentResponse.from(comment, isLiked);
     }
 
     @Transactional
@@ -79,7 +90,6 @@ public class CommentService {
         commentRepository.hardDeleteById(commentId);
     }
 
-    // 좋아요 토글 결과를 프론트가 바로 쓰게 반환
     public record CommentLikeToggleResult(boolean liked, long likeCount) {}
 
     @Transactional
@@ -105,14 +115,11 @@ public class CommentService {
                 comment.increaseLikeCount();
                 liked = true;
             } catch (DataIntegrityViolationException e) {
-                // 유니크 충돌: 이미 좋아요가 들어간 상태로 간주
                 liked = true;
             }
         }
 
-        // 해당 댓글의 좋아요 수만 계산
         long likeCount = commentLikeRepository.countByCommentId(commentId);
-
         return new CommentLikeToggleResult(liked, likeCount);
     }
 }

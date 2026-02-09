@@ -2,7 +2,9 @@ package com.safe.backend.domain.community.service;
 
 import com.safe.backend.domain.community.dto.*;
 import com.safe.backend.domain.community.entity.VisitPost;
+import com.safe.backend.domain.community.entity.CommentLike;
 import com.safe.backend.domain.community.repository.PostRepository;
+import com.safe.backend.domain.community.repository.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,28 +17,26 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
 
     private final PostRepository postRepository;
+    // 1. 좋아요 확인을 위해 레포지토리 주입 추가
+    private final CommentLikeRepository commentLikeRepository;
 
-    //목록 조회
     @Transactional(readOnly = true)
     public VisitPostList getVisitPosts(String query, String category, String sort, int page, int size) {
-
-    //sort 정책
-    Sort springSort = "popular".equalsIgnoreCase(sort)
+        Sort springSort = "popular".equalsIgnoreCase(sort)
                 ? Sort.by(Sort.Direction.DESC, "likeCount").and(Sort.by(Sort.Direction.DESC, "createdDate"))
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
         Pageable pageable = PageRequest.of(page - 1, size, springSort);
 
-    Specification<VisitPost> spec = (root, cq, cb) -> {
+        Specification<VisitPost> spec = (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-
-            // 중요한 기본조건: 운영자 숨김 + 삭제/블라인드 제외(목록에서는 NORMAL만 노출)
             predicates.add(cb.equal(root.get("isHidden"), false));
             predicates.add(cb.equal(root.get("status"), VisitPost.Status.NORMAL));
 
@@ -53,11 +53,10 @@ public class CommunityService {
                         )
                 );
             }
-
             return cb.and(predicates.toArray(new Predicate[0]));
         };
-    Page<VisitPost> result = postRepository.findAll(spec, pageable);
 
+        Page<VisitPost> result = postRepository.findAll(spec, pageable);
         List<VisitPostItem> items = result.getContent().stream()
                 .map(VisitPostItem::from)
                 .toList();
@@ -65,20 +64,23 @@ public class CommunityService {
         return new VisitPostList(items, page, size, result.getTotalElements());
     }
     
-    //상세 조회
+    // 2. 상세 조회 시 로그인한 유저의 좋아요 여부 판단 로직 추가
     @Transactional(readOnly = true)
-    public VisitPostDetail getVisitPostDetail(long postId) {
+    public VisitPostDetail getVisitPostDetail(long postId, Long currentUserId) {
         VisitPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("VISIT_POST not found: " + postId));
 
-        return VisitPostDetail.from(post);
+        boolean isLiked = false;
+        if (currentUserId != null) {
+            isLiked = commentLikeRepository.existsByCommentIdAndUserId(postId, currentUserId);
+        }
+
+        // DTO의 from 메서드 인자 개수에 맞춰 호출
+        return VisitPostDetail.from(post, isLiked);
     }
 
-    //작성
     @Transactional
     public Long createVisitPost(VisitPostCreate req) {
-
-        // 🔥 중요한 검증(최소)
         if (req.getUserId() == null) throw new IllegalArgumentException("userId is required");
         if (req.getCategory() == null || req.getCategory().isBlank()) throw new IllegalArgumentException("category is required");
         if (req.getTitle() == null || req.getTitle().isBlank()) throw new IllegalArgumentException("title is required");
@@ -94,5 +96,25 @@ public class CommunityService {
         if (post == null) throw new IllegalStateException("post is null");
 
         return postRepository.save(post).getPostId();
+    }
+
+    // 3. 좋아요 토글 로직 포함 (기존 엔티티의 증감 메서드 호출)
+    @Transactional
+    public boolean togglePostLike(Long postId, Long userId) {
+        VisitPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+
+        Optional<CommentLike> existingLike = commentLikeRepository.findByCommentIdAndUserId(postId, userId);
+
+        if (existingLike.isPresent()) {
+            commentLikeRepository.delete(existingLike.get());
+            post.decrementLikeCount(); 
+            return false; 
+        } else {
+            CommentLike newLike = new CommentLike(postId, userId);
+            commentLikeRepository.save(newLike);
+            post.incrementLikeCount();
+            return true;
+        }
     }
 }
