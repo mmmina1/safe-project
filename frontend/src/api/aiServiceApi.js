@@ -26,23 +26,6 @@ export const phishService = {
         }
     },
 
-    submitDiagnosis: async (answers) => {
-        try {
-            const token = localStorage.getItem('accessToken');
-            const response = await axiosInstance.post('/api/ai/diagnosis/',
-                {
-                    answers
-                },
-                {
-                    headers: token ? { Authorization: `Bearer ${token}` } : {}
-                });
-            return response.data;
-        } catch (error) {
-            console.error('Diagnosis API Error:', error);
-            throw error;
-        }
-    },
-
     getChatHistory: async () => {
         try {
             const token = localStorage.getItem('accessToken');
@@ -58,5 +41,24 @@ export const phishService = {
             console.error('Get History API Error:', error);
             throw error;
         }
-    }
+    },
+
+    submitDiagnosis: async (score, answers, recommendations) => { // [변경] 인자 추가
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await axiosInstance.post('/api/ai/diagnosis/submit',
+                {
+                    score,
+                    answers,
+                    recommendations // [추가] 추천 항목 리스트
+                },
+                {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                });
+            return response.data;
+        } catch (error) {
+            console.error('Diagnosis API Error:', error);
+            throw error;
+        }
+    },
 };

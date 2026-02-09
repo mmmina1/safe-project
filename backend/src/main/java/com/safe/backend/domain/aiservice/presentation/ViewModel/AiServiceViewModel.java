@@ -1,10 +1,10 @@
-package com.safe.backend.domain.aiservice.presentation.ViewModel;
+package com.safe.backend.domain.aiservice.presentation.viewmodel;
 
 // import com.safe.backend.domain.aiservice.domain.Entity.ChatEntity;
 // import com.safe.backend.domain.aiservice.data.Model.ChatRequest;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatRequestEntity;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatResultEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatRequestEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
 import com.safe.backend.domain.aiservice.domain.usecase.ChatUseCase;
 import com.safe.backend.domain.aiservice.domain.usecase.DiagnosisUseCase;
 import com.safe.backend.domain.aiservice.domain.usecase.SimulationUseCase;
