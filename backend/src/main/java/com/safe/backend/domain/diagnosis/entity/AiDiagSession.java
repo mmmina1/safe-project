@@ -26,8 +26,14 @@ public class AiDiagSession {
     @Column(name = "overall_score")
     private Integer overallScore;
 
+    @Column(name = "diagnosis_name", length = 100)
+    private String diagnosisName;
+
     @Column(name = "top3_types", length = 100)
     private String top3Types;
+
+    @Column(name = "ai_comment", columnDefinition = "TEXT")
+    private String aiComment;
 
     @Column(length = 500)
     private String summary;

@@ -27,8 +27,14 @@ public class AiDiagAnswer {
     @Column(name = "question_key", length = 50)
     private String questionKey;
 
+    @Column(name = "question_text", columnDefinition = "TEXT")
+    private String questionText;
+
     @Column(name = "answer_value", length = 50)
     private String answerValue;
+
+    @Column(name = "answer_text", columnDefinition = "TEXT")
+    private String answerText;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;

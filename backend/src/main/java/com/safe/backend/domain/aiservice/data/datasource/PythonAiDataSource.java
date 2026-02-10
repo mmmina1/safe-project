@@ -9,11 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Map;
+
 import com.safe.backend.domain.aiservice.data.Model.ChatRequestModel;
 import com.safe.backend.domain.aiservice.data.Model.ChatResponseModel;
 import com.safe.backend.domain.aiservice.data.Model.SimEvaluateRequestModel;
 import com.safe.backend.domain.aiservice.data.Model.SimGeneralResponseModel;
 import com.safe.backend.domain.aiservice.data.Model.SimStartRequestModel;
+import com.safe.backend.domain.aiservice.data.Model.PythonDiagnosisRequest;
+import com.safe.backend.domain.aiservice.data.Model.PythonDiagnosisResponse;
 
 /**
  * PythonAiDataSource: 파이썬 AI 서버와 통신을 담당하는 데이터 소스 클래스 (Infrastructure Layer)
@@ -117,6 +122,34 @@ public class PythonAiDataSource {
         } catch (Exception e) {
             System.err.println("Python AI 시뮬레이션 평가 실패: " + e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * [신규] 사용자의 설문 답변을 기반으로 AI 분석 요청
+     * 
+     * @param answers 프론트에서 넘어온 질문/답변 텍스트 리스트
+     * @return AI 총평, 위험수법 TOP3, 맞춤 권장사항이 담긴 객체
+     */
+    public PythonDiagnosisResponse analyzeDiagnosis(List<Map<String, Object>> answers) {
+        String url = pythonBackendUrl + "/diagnosis/analyze";
+        PythonDiagnosisRequest request = new PythonDiagnosisRequest(answers);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<PythonDiagnosisRequest> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<PythonDiagnosisResponse> response = restTemplate.postForEntity(url, entity,
+                    PythonDiagnosisResponse.class);
+            return response.getBody();
+        } catch (Exception e) {
+            System.err.println("Python AI 진단 분석 호출 실패: " + e.getMessage());
+            // 실패 시 최소한의 정보를 담은 기본 객체 전달
+            return new PythonDiagnosisResponse(
+                    "AI 분석 서버와 통신하는 도중 오류가 발생했습니다. 기본적인 안전 수칙을 준수해 주세요.",
+                    new java.util.ArrayList<>(),
+                    new java.util.ArrayList<>());
         }
     }
 }

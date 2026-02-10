@@ -27,29 +27,33 @@ public class DiagnosisService {
     private final AiDiagAnswerRepository answerRepository;
     private final UserRepository userRepository;
 
-    // 점수는 이미 계산돼서 넘어옴 (int score)
-    public AiDiagSession saveDiagnosisResult(String email, int score, List<Map<String, Object>> answers,
-            List<String> recommendationTexts) {
+    // 점수는 이미 계산돼서 넘어옴 (int score), 분석은 파이썬에서 함
+    public AiDiagSession saveDiagnosisResult(String email, String diagnosisName, int score,
+            List<Map<String, Object>> answers,
+            String aiComment, List<String> top3Types, List<String> aiRecommendations) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 1. 세션 저장 (점수 계산 안 함)
+        // 1. 세션 저장 (점수 + AI 요약/TOP3 저장)
         AiDiagSession session = AiDiagSession.builder()
                 .userId(user.getUserId())
+                .diagnosisName(diagnosisName)
                 .overallScore(score)
+                .aiComment(aiComment)
+                .top3Types(top3Types != null ? String.join(",", top3Types) : null)
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())
                 .build();
 
         sessionRepository.save(session);
 
-        // 2. 프론트에서 받은 처방전 저장
+        // 2. AI가 생성한 맞춤형 권장사항 저장
         List<AiDiagRecommendation> recommendations = new ArrayList<>();
         int order = 1;
 
-        if (recommendationTexts != null) {
-            for (String recText : recommendationTexts) {
+        if (aiRecommendations != null) {
+            for (String recText : aiRecommendations) {
                 AiDiagRecommendation rec = AiDiagRecommendation.builder()
                         .diagSession(session)
                         .recText(recText)
@@ -66,12 +70,16 @@ public class DiagnosisService {
             List<AiDiagAnswer> aiDiagAnswers = new ArrayList<>();
             for (Map<String, Object> ans : answers) {
                 String qKey = (String) ans.get("question_key");
+                String qText = (String) ans.get("question_text");
+                String aVal = (String) ans.get("answer_value");
                 String aText = (String) ans.get("answer_text");
 
                 AiDiagAnswer diagAnswer = AiDiagAnswer.builder()
                         .diagSession(session)
                         .questionKey(qKey)
-                        .answerValue(aText)
+                        .questionText(qText)
+                        .answerValue(aVal)
+                        .answerText(aText)
                         .build();
                 aiDiagAnswers.add(diagAnswer);
             }
