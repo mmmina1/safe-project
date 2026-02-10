@@ -2,14 +2,19 @@ package com.safe.backend.domain.productQna.service;
 
 import com.safe.backend.domain.admin.product.ServiceProduct;
 import com.safe.backend.domain.admin.product.ServiceProductRepository;
+import com.safe.backend.domain.productQna.dto.ProductQnaAnswerRequest;
 import com.safe.backend.domain.productQna.dto.ProductQnaCreateRequest;
 import com.safe.backend.domain.productQna.dto.ProductQnaResponse;
+import com.safe.backend.domain.productQna.dto.ProductQnaUpdateRequest;
 import com.safe.backend.domain.productQna.entity.ProductQna;
 import com.safe.backend.domain.productQna.repository.ProductQnaRepository;
 import com.safe.backend.domain.user.entity.User;
 import com.safe.backend.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,4 +87,46 @@ public class ProductQnaService {
                 .updatedDate(qna.getUpdatedDate())
                 .build();
     }
+
+    //update는 작성자만 가능
+    public ProductQnaResponse update(Long productId, Long qnaId, Long userId, ProductQnaUpdateRequest req) {
+    ProductQna qna = productQnaRepository.findById(qnaId)
+            .orElseThrow(() -> new IllegalArgumentException("문의 없음"));
+
+    if (!qna.getProduct().getProductId().equals(productId)) {
+        throw new IllegalArgumentException("상품 불일치");
+    }
+    if (!qna.getWriter().getUserId().equals(userId)) {
+        throw new IllegalStateException("수정 권한 없음");
+    }
+
+    if (req.getTitle() != null) qna.setTitle(req.getTitle());
+    if (req.getContent() != null) qna.setContent(req.getContent());
+    if (req.getIsPrivate() != null) qna.setIsPrivate(req.getIsPrivate());
+
+    // JPA dirty checking
+    return toResponseWithMask(qna, userId, false);
+}
+
+    //답변은 관리자만 가능
+    public ProductQnaResponse answer(Long productId, Long qnaId, Long adminUserId, ProductQnaAnswerRequest req) {
+    ProductQna qna = productQnaRepository.findById(qnaId)
+            .orElseThrow(() -> new IllegalArgumentException("문의 없음"));
+
+    if (!qna.getProduct().getProductId().equals(productId)) {
+        throw new IllegalArgumentException("상품 불일치");
+    }
+
+    User admin = userRepository.findById(adminUserId)
+            .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+
+    qna.setAnswerUser(admin);
+    qna.setAnswerContent(req.getAnswerContent());
+    qna.setAnsweredAt(LocalDateTime.now());
+    qna.setStatus("ANSWERED");
+
+    return toResponseWithMask(qna, adminUserId, true);
+}
+
+
 }

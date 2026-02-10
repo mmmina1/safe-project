@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance";
+import api from "./axiosInstance";
 
 //목록 조회
 export const getProductQna = async(productId, {page=0,size=0} = {}) => {

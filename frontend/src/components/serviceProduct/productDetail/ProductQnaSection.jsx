@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../../../assets/css/ServiceProduct/ProductQna.css'
+import { getProductQna, createProductQna } from '../../../api/qnaApi'
 
 function ProductQnaSection({productId}) {
 
@@ -10,47 +11,74 @@ function ProductQnaSection({productId}) {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({title:'', content:'', isPrivate: false})
 
+  const fetchQna = async(pid) => {
+    try{
+      setLoading(true)
+      setErr(null)
+
+      if(!pid){
+        setItems([])
+        return
+      }
+
+      const data = await getProductQna(pid)
+      const list = data?.items ?? data?.data ?? data ?? []
+      setItems(Array.isArray(list) ? list : [])
+    }catch(e) {
+      console.error(e)
+      setErr("문의 정보를 불러오지 못했습니다.")
+      setItems([])
+    }finally{
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     let alive = true
 
-    const fetchQna = async() => {
-      try{
-        setLoading(true)
-        setErr(null)
+    ;(async () => {
+      if (!alive) return
+      await fetchQna(productId)
+    })()
 
-        if(!alive) return
-        setItems([])
-      }catch(e) {
-        console.error(e)
-        if(!alive) return
-        setErr('문의 정보를 불러오지 못했습니다.')
-      }finally{
-        if(!alive) return
-        setLoading(false)
-      }
+    return () => {
+      alive = false
     }
-    fetchQna()
-    return() => {alive = false}
-  },[productId])
+  }, [productId])
 
-  const onSubmit = async(e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    if(!form.title.trim() || !form.content.trim()){
+
+    const title = form.title.trim()
+    const content = form.content.trim()
+
+    if (!title || !content) {
       alert('제목과 내용을 입력해주세요.')
       return
     }
 
-    try{
-      alert('문의가 등록되었습니다.')
-      setForm({title:'', content:'', isPrivate: false})
-      setShowForm(false)
-    }catch(e) {
-      alert('문의 등록 실패')
-    }
-  }
+    try {
+          // API 호출
+          await createProductQna(productId, {
+            title,
+            content,
+            isPrivate: form.isPrivate,
+          })
 
-  if(loading) return <div className='sp-qna'>로딩 중...</div>
-  if(err) return <div className='sp-qna sp-qna-error'>{err}</div>
+          alert('문의가 등록되었습니다.')
+          setForm({ title: '', content: '', isPrivate: false })
+          setShowForm(false)
+
+          // 등록 후 목록 갱신
+          await fetchQna(productId)
+        } catch (e) {
+          console.error(e)
+          alert('문의 등록 실패')
+        }
+      }
+
+      if(loading) return <div className='sp-qna'>로딩 중...</div>
+      if(err) return <div className='sp-qna sp-qna-error'>{err}</div>
 
   return (
     <div className='sp-qna'>
@@ -84,7 +112,7 @@ function ProductQnaSection({productId}) {
               <div className='sp-qna-itemMeta'>
                 <span>{qna.status ?? 'WAITING'}</span>
                 <span className='sp-dot'>/</span>
-                <span>{qna.answerdAt ? '답변완료' : '대기중'}</span>
+                <span>{qna.answeredAt ? '답변완료' : '대기중'}</span>
               </div>
             </div>
           ))}

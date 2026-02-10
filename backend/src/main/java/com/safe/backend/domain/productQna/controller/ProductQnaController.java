@@ -1,7 +1,9 @@
 package com.safe.backend.domain.productQna.controller;
 
+import com.safe.backend.domain.productQna.dto.ProductQnaAnswerRequest;
 import com.safe.backend.domain.productQna.dto.ProductQnaCreateRequest;
 import com.safe.backend.domain.productQna.dto.ProductQnaResponse;
+import com.safe.backend.domain.productQna.dto.ProductQnaUpdateRequest;
 import com.safe.backend.domain.productQna.service.ProductQnaService;
 import lombok.RequiredArgsConstructor;
 
@@ -39,5 +41,25 @@ public class ProductQnaController {
     ) {
         Long userId = 1L;
         return ResponseEntity.ok(productQnaService.create(productId, userId, req));
+    }
+
+    @PostMapping("/{qnaId}")
+    public ResponseEntity<ProductQnaResponse> update(
+        @PathVariable Long productId,
+        @PathVariable Long qnaId,
+        @RequestBody ProductQnaUpdateRequest req
+    ){
+        Long userId = 1L;
+        return ResponseEntity.ok(productQnaService.update(productId,qnaId,userId,req));
+    }
+
+    @PostMapping("/{qnaId}/answer")
+    public ResponseEntity<ProductQnaResponse> answer(
+        @PathVariable Long productId,
+        @PathVariable Long qnaId,
+        @RequestBody ProductQnaAnswerRequest req 
+    ){
+        Long adminUserId = 1L;
+        return ResponseEntity.ok(productQnaService.answer(productId,qnaId,adminUserId,req));
     }
 }
