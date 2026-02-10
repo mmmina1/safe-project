@@ -3,8 +3,9 @@
 // ============================================================
 import React, { useState, useEffect } from 'react';
 import { CreditCard, Lock, User, ExternalLink, ShieldCheck, MapPin } from 'lucide-react';
-import { getDashboardData, updateNickname, updatePassword } from '../../../api/myPageApi';
-
+import { getDashboardData, updateNickname, updatePassword, withdrawAccount } from '../../../api/myPageApi';
+// 페이지 이동을 위해 useNavigate가 필요합니다.
+import { useNavigate } from 'react-router-dom';
 // ============================================================
 // 2. 설정 및 관리 화면 부품
 // ============================================================
@@ -107,6 +108,28 @@ const Settings = ({ initialTab = 'payment' }) => {
                 setIsTossLinked(true);
                 alert('토스페이먼츠 연동이 완료되었습니다!');
             }, 1000);
+        }
+    };
+
+    const navigate = useNavigate(); // 함수 컴포넌트 내부(상단)에 선언하세요
+
+    const handleWithdraw = async () => {
+        const confirmWithdraw = window.confirm("정말로 탈퇴하시겠습니까? 모든 정보가 사라집니다.");
+
+        if (confirmWithdraw) {
+            try {
+                await withdrawAccount(); // 서버에 탈퇴 알림
+
+                // 탈퇴 성공 시 브라우저에 남은 내 정보 싹 지우기
+                localStorage.clear();
+                alert("회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.");
+
+                // 메인 페이지로 이동
+                navigate('/');
+            } catch (error) {
+                console.error("탈퇴 실패:", error);
+                alert("탈퇴 처리 중 오류가 발생했습니다.");
+            }
         }
     };
 
@@ -301,7 +324,7 @@ const Settings = ({ initialTab = 'payment' }) => {
                         {/* 폼 하단 작업 바 */}
                         <div className="border-top border-secondary pt-4 d-flex justify-content-between align-items-center">
                             <span className="text-secondary small">회원님의 정보는 안전하게 보호됩니다.</span>
-                            <button className="btn btn-link text-danger text-decoration-none small p-0">회원탈퇴</button>
+                            <button className="btn btn-link text-danger text-decoration-none small p-0" onClick={handleWithdraw}>회원탈퇴</button>
                         </div>
                     </div>
                 </div>

@@ -46,3 +46,12 @@ export const updatePassword = async (currentPassword, newPassword) => {
     );
     return response.data;
 };
+
+// 회원 탈퇴
+export const withdrawAccount = async () => {
+    const token = localStorage.getItem('accessToken');
+    const response = await axiosInstance.delete('/api/mypage/withdraw', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+    return response.data;
+};

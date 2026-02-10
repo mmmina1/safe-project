@@ -41,4 +41,11 @@ public class MyPageController {
         myPageService.updatePassword(user.getEmail(), request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal Object principal) {
+        User user = (User) principal;
+        myPageService.withdraw(user.getEmail());
+        return ResponseEntity.ok().build();
+    }
 }
