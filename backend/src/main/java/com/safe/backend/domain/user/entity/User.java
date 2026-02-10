@@ -164,10 +164,6 @@ public class User {
         this.name = name;
     }
 
-    public void updatePassword(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-  
     public void changePassword(String encodedPassword) {
         this.passwordHash = encodedPassword;
     }
