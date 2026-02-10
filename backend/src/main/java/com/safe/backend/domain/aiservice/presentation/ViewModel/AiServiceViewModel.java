@@ -1,11 +1,11 @@
 package com.safe.backend.domain.aiservice.presentation.viewmodel;
 
-import com.safe.backend.domain.aiservice.entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.entity.ChatRequestEntity;
-import com.safe.backend.domain.aiservice.entity.ChatResultEntity;
-import com.safe.backend.domain.aiservice.usecase.ChatUseCase;
-import com.safe.backend.domain.aiservice.usecase.DiagnosisUseCase;
-import com.safe.backend.domain.aiservice.usecase.SimulationUseCase;
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatRequestEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
+import com.safe.backend.domain.aiservice.domain.usecase.ChatUseCase;
+import com.safe.backend.domain.aiservice.domain.usecase.DiagnosisUseCase;
+import com.safe.backend.domain.aiservice.domain.usecase.SimulationUseCase;
 import com.safe.backend.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

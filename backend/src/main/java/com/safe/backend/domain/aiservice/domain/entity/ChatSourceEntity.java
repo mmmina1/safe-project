@@ -1,4 +1,4 @@
-package com.safe.backend.domain.aiservice.entity;
+package com.safe.backend.domain.aiservice.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

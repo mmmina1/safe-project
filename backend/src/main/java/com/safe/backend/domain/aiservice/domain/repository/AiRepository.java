@@ -1,9 +1,9 @@
-package com.safe.backend.domain.aiservice.repository;
-
-import com.safe.backend.domain.aiservice.entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.entity.ChatResultEntity;
+package com.safe.backend.domain.aiservice.domain.repository;
 
 import java.util.List;
+
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
 
 public interface AiRepository {
     // ChatResult chat(String message, String userId);

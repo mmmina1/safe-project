@@ -90,6 +90,7 @@ const Settings = ({ initialTab = 'payment' }) => {
 
         try {
             await updateNickname(nickname);
+            localStorage.setItem('userName', nickname);
             alert(`'${nickname}'(으)로 닉네임이 저장되었습니다.`);
         } catch (error) {
             console.error('닉네임 저장 실패:', error);
