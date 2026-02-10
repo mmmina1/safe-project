@@ -56,7 +56,12 @@ public class ProductService {
         Product p = productRepository.findByProductIdAndStatus(productId, ProductStatus.ON_SALE)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
-        // 지금은 임시 데이터를 넣었지만, 실제로는 ProductDetailRepository 조회가 필요함
-        return ProductDetail.of(p, 10000, "상세 설명입니다", 4.5, 10);
+        // 실제 상품 데이터 사용
+        Integer price = 0; // price 필드가 없으므로 0으로 설정 (priceType으로 판단)
+        String description = p.getDescription() != null && !p.getDescription().isEmpty() 
+                ? p.getDescription() 
+                : (p.getSummary() != null ? p.getSummary() : "");
+        // 평점과 리뷰 수는 추후 실제 데이터로 교체 필요
+        return ProductDetail.of(p, price, description, 4.5, 10);
     }
 }

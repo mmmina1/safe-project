@@ -7,7 +7,22 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { TableSkeleton } from "../../components/Skeleton";
 
 const API_BASE = "http://localhost:8080";
-const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
+const imageFullUrl = (url) => {
+  if (!url || !url.trim()) return null;
+  const trimmedUrl = url.trim();
+  // 숫자만 있는 경우 무시
+  if (/^\d+$/.test(trimmedUrl)) return null;
+  // 이미 전체 URL인 경우
+  if (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) {
+    return trimmedUrl;
+  }
+  // 상대 경로인 경우
+  if (trimmedUrl.startsWith("/")) {
+    return `${API_BASE}${trimmedUrl}`;
+  }
+  // 그 외의 경우
+  return `${API_BASE}/${trimmedUrl}`;
+};
 
 export default function BannersPage() {
   const queryClient = useQueryClient();
@@ -183,14 +198,11 @@ export default function BannersPage() {
           form.requestSubmit();
         }
       }
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
+      // F5는 기본 새로고침 동작을 사용하도록 제거
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [editingId, refetch, onCancelEdit]);
+  }, [editingId, onCancelEdit]);
 
   // 정렬
   const handleSort = (field) => {
@@ -244,16 +256,30 @@ export default function BannersPage() {
 
   const handleMoveUp = (index) => {
     if (index === 0) return;
-    const newOrder = [...banners];
-    [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+    // displayOrder 기준으로 정렬된 배열 사용
+    const sortedBanners = [...banners].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+    const currentBanner = filteredAndSortedBanners[index];
+    const targetIndex = sortedBanners.findIndex(b => b.bannerId === currentBanner.bannerId);
+    
+    if (targetIndex === 0) return;
+    
+    const newOrder = [...sortedBanners];
+    [newOrder[targetIndex - 1], newOrder[targetIndex]] = [newOrder[targetIndex], newOrder[targetIndex - 1]];
     const bannerIds = newOrder.map((b) => b.bannerId);
     orderMutation.mutate(bannerIds);
   };
 
   const handleMoveDown = (index) => {
     if (index === filteredAndSortedBanners.length - 1) return;
-    const newOrder = [...banners];
-    [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+    // displayOrder 기준으로 정렬된 배열 사용
+    const sortedBanners = [...banners].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+    const currentBanner = filteredAndSortedBanners[index];
+    const targetIndex = sortedBanners.findIndex(b => b.bannerId === currentBanner.bannerId);
+    
+    if (targetIndex === sortedBanners.length - 1) return;
+    
+    const newOrder = [...sortedBanners];
+    [newOrder[targetIndex], newOrder[targetIndex + 1]] = [newOrder[targetIndex + 1], newOrder[targetIndex]];
     const bannerIds = newOrder.map((b) => b.bannerId);
     orderMutation.mutate(bannerIds);
   };
@@ -424,24 +450,30 @@ export default function BannersPage() {
                   background: "#2C2F40",
                   padding: "8px",
                 }}>
-                  <img 
-                    src={imageFullUrl(currentImageUrl)} 
-                    alt="배너 미리보기" 
-                    style={{ 
-                      width: "100%", 
-                      maxWidth: "600px",
-                      height: "auto", 
-                      display: "block",
-                      borderRadius: "8px",
-                    }} 
-                    onError={(e) => { 
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "block";
-                    }} 
-                  />
-                  <div style={{ display: "none", padding: "20px", textAlign: "center", color: TEXT_MUTED }}>
-                    이미지를 불러올 수 없습니다.
-                  </div>
+                  {currentImageUrl && imageFullUrl(currentImageUrl) ? (
+                    <img 
+                      src={imageFullUrl(currentImageUrl)} 
+                      alt="배너 미리보기" 
+                      style={{ 
+                        width: "100%", 
+                        maxWidth: "600px",
+                        height: "auto",
+                        display: "block"
+                      }} 
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div style={{ 
+                      padding: "20px", 
+                      textAlign: "center", 
+                      color: TEXT_MUTED,
+                      fontSize: "0.875rem"
+                    }}>
+                      유효한 이미지 URL을 입력하세요
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -449,10 +481,10 @@ export default function BannersPage() {
 
           <div>
             <label style={{ display: "block", marginBottom: "10px", color: TEXT_MUTED, fontSize: "0.875rem", fontWeight: 600 }}>
-              링크 URL (선택)
+              링크 URL
             </label>
             <input 
-              placeholder="클릭 시 이동할 URL을 입력하세요" 
+              placeholder="클릭 시 이동할 URL (선택사항)" 
               style={{
                 ...inputStyle,
                 width: "100%",
@@ -466,8 +498,8 @@ export default function BannersPage() {
               표시 순서 (선택)
             </label>
             <input 
-              type="number" 
-              placeholder="숫자가 작을수록 먼저 표시됩니다 (비워두면 자동)" 
+              type="number"
+              placeholder="숫자가 작을수록 앞에 표시됩니다" 
               style={{
                 ...inputStyle,
                 width: "100%",
@@ -476,15 +508,22 @@ export default function BannersPage() {
             />
           </div>
 
-          <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: "16px" }}>
+          <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
             <button 
               type="submit" 
-              disabled={createMutation.isPending || updateMutation.isPending} 
-              style={{ 
-                ...btnStyle, 
-                opacity: createMutation.isPending || updateMutation.isPending ? 0.6 : 1,
-                cursor: createMutation.isPending || updateMutation.isPending ? "not-allowed" : "pointer",
+              disabled={createMutation.isPending || updateMutation.isPending}
+              style={{
+                padding: "12px 24px",
+                borderRadius: "10px",
+                border: "none",
+                background: ACCENT,
+                color: TEXT_WHITE,
+                fontWeight: 700,
+                fontSize: "0.9375rem",
+                cursor: (createMutation.isPending || updateMutation.isPending) ? "not-allowed" : "pointer",
+                opacity: (createMutation.isPending || updateMutation.isPending) ? 0.6 : 1,
                 transition: "all 0.2s",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
               }}
               onMouseEnter={(e) => {
                 if (!createMutation.isPending && !updateMutation.isPending) {
@@ -529,169 +568,81 @@ export default function BannersPage() {
           </div>
         </form>
       </div>
+
       {/* 배너 목록 */}
-      <div style={{
-        background: CARD_BG,
-        borderRadius: "12px",
-        border: `1px solid ${BORDER}`,
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        animation: "fadeIn 0.4s ease-in 0.2s both",
-      }}>
-        <div style={{
-          padding: "16px 20px",
-          borderBottom: `1px solid ${BORDER}`,
-          background: "rgba(0,0,0,0.2)",
-          display: "flex",
-          justifyContent: "space-between",
+      <div style={{ marginTop: "32px" }}>
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
           alignItems: "center",
+          marginBottom: "16px"
         }}>
           <h3 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 700 }}>배너 목록</h3>
-          <span style={{ color: TEXT_MUTED, fontSize: "0.875rem" }}>
+          <div style={{ color: TEXT_MUTED, fontSize: "0.875rem" }}>
             총 <strong style={{ color: TEXT_WHITE }}>{filteredAndSortedBanners.length}</strong>개
-            {searchKeyword && banners.length !== filteredAndSortedBanners.length && (
-              <span style={{ marginLeft: "8px" }}>(전체 {banners.length}개 중)</span>
-            )}
-          </span>
+          </div>
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th 
-                style={{ ...thStyle, padding: "14px 20px", cursor: "pointer", userSelect: "none" }}
-                onClick={() => handleSort('displayOrder')}
-                onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
-                onMouseLeave={(e) => e.currentTarget.style.color = TEXT_MUTED}
-              >
-                순서 {sortField === 'displayOrder' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th 
-                style={{ ...thStyle, padding: "14px 20px", cursor: "pointer", userSelect: "none" }}
-                onClick={() => handleSort('title')}
-                onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
-                onMouseLeave={(e) => e.currentTarget.style.color = TEXT_MUTED}
-              >
-                제목 {sortField === 'title' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th style={{ ...thStyle, padding: "14px 20px" }}>이미지</th>
-              <th style={{ ...thStyle, padding: "14px 20px" }}>링크</th>
-              <th 
-                style={{ ...thStyle, padding: "14px 20px", cursor: "pointer", userSelect: "none" }}
-                onClick={() => handleSort('isActive')}
-                onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
-                onMouseLeave={(e) => e.currentTarget.style.color = TEXT_MUTED}
-              >
-                상태 {sortField === 'isActive' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th style={{ ...thStyle, padding: "14px 20px" }}>관리</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAndSortedBanners.map((banner, index) => (
-                <tr 
-                  key={banner.bannerId}
-                  style={{
-                    backgroundColor: index % 2 === 0 ? "transparent" : "rgba(0,0,0,0.05)",
-                    transition: "background-color 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = index % 2 === 0 ? "transparent" : "rgba(0,0,0,0.05)";
-                  }}
-                >
-                  <td style={{ ...tdStyle, padding: "14px 20px" }}>
-                    <div style={{ display: "flex", gap: "6px", alignItems: "center", justifyContent: "center" }}>
-                      <button 
-                        onClick={() => handleMoveUp(index)} 
-                        disabled={index === 0 || orderMutation.isPending} 
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "6px",
-                          border: `1px solid ${BORDER}`,
-                          background: "transparent",
-                          color: TEXT_WHITE,
-                          fontSize: "0.875rem",
-                          cursor: index === 0 ? "not-allowed" : "pointer",
-                          opacity: index === 0 ? 0.4 : 1,
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (index !== 0) {
-                            e.currentTarget.style.borderColor = ACCENT;
-                            e.currentTarget.style.backgroundColor = "rgba(71, 85, 105, 0.1)";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = BORDER;
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        }}
-                      >
-                        ↑
-                      </button>
-                      <span style={{ fontWeight: 600, minWidth: "24px", textAlign: "center" }}>{banner.displayOrder}</span>
-                      <button 
-                        onClick={() => handleMoveDown(index)} 
-                        disabled={index === filteredAndSortedBanners.length - 1 || orderMutation.isPending} 
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "6px",
-                          border: `1px solid ${BORDER}`,
-                          background: "transparent",
-                          color: TEXT_WHITE,
-                          fontSize: "0.875rem",
-                          cursor: index === filteredAndSortedBanners.length - 1 ? "not-allowed" : "pointer",
-                          opacity: index === filteredAndSortedBanners.length - 1 ? 0.4 : 1,
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (index !== filteredAndSortedBanners.length - 1) {
-                            e.currentTarget.style.borderColor = ACCENT;
-                            e.currentTarget.style.backgroundColor = "rgba(71, 85, 105, 0.1)";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = BORDER;
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        }}
-                      >
-                        ↓
-                      </button>
-                    </div>
-                  </td>
-                  <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 500 }}>{banner.title}</td>
-                  <td style={{ ...tdStyle, padding: "14px 20px" }}>
-                    <div style={{
-                      width: "120px",
-                      height: "60px",
-                      borderRadius: "8px",
-                      overflow: "hidden",
-                      border: `1px solid ${BORDER}`,
-                      background: "#2C2F40",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
-                    }}>
-                      {banner.imageUrl ? (
-                        <>
-                          <img 
-                            src={imageFullUrl(banner.imageUrl)} 
-                            alt={banner.title} 
-                            style={{ 
-                              maxWidth: "100%", 
-                              maxHeight: "100%", 
-                              objectFit: "contain",
-                              display: "block",
-                            }} 
-                            onError={(e) => { 
-                              e.target.style.display = "none";
-                              if (e.target.nextSibling) {
-                                e.target.nextSibling.style.display = "flex";
+        <div style={{
+          background: CARD_BG,
+          borderRadius: "12px",
+          border: `1px solid ${BORDER}`,
+          overflow: "hidden",
+        }}>
+          <div style={{ overflowX: "auto", width: "100%" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1120px" }}>
+              <thead>
+                <tr style={{ background: "rgba(0,0,0,0.2)" }}>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "80px" }}>순서</th>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "120px" }}>이미지</th>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "200px" }}>제목</th>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "300px" }}>링크</th>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "100px" }}>상태</th>
+                  <th style={{ ...thStyle, padding: "14px 16px", width: "320px" }}>작업</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAndSortedBanners.map((banner, index) => (
+                  <tr
+                    key={banner.bannerId}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? "transparent" : "rgba(0,0,0,0.05)",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <td style={{ ...tdStyle, padding: "14px 16px", textAlign: "center", fontWeight: 600 }}>
+                      {index + 1}
+                    </td>
+                    <td style={{ ...tdStyle, padding: "14px 20px" }}>
+                      <div style={{
+                        width: "120px",
+                        height: "60px",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        border: `1px solid ${BORDER}`,
+                        background: "linear-gradient(135deg, rgba(71,85,105,0.3), rgba(44,47,64,0.5))",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "relative",
+                      }}>
+                        {banner.imageUrl && imageFullUrl(banner.imageUrl) ? (
+                          <>
+                            <img 
+                              src={imageFullUrl(banner.imageUrl)} 
+                              alt={banner.title} 
+                              style={{ 
+                                width: "100%",
+                                height: "100%", 
+                                objectFit: "cover",
+                                display: "block",
+                              }} 
+                              onError={(e) => { 
+                                e.target.style.display = "none";
+                                if (e.target.nextSibling) {
+                                  e.target.nextSibling.style.display = "flex";
                               }
-                            }} 
+                            }}
                           />
                           <div style={{ 
                             display: "none",
@@ -703,8 +654,9 @@ export default function BannersPage() {
                             alignItems: "center",
                             justifyContent: "center",
                             color: TEXT_MUTED,
-                            fontSize: "0.75rem",
+                            fontSize: "0.7rem",
                             fontWeight: 500,
+                            background: "linear-gradient(135deg, rgba(71,85,105,0.3), rgba(44,47,64,0.5))",
                           }}>
                             이미지 없음
                           </div>
@@ -715,116 +667,243 @@ export default function BannersPage() {
                           alignItems: "center",
                           justifyContent: "center",
                           color: TEXT_MUTED,
-                          fontSize: "0.75rem",
+                          fontSize: "0.7rem",
                           fontWeight: 500,
+                          opacity: 0.6,
                         }}>
-                          이미지 없음
+                          없음
                         </div>
                       )}
                     </div>
                   </td>
-                  <td style={{ ...tdStyle, padding: "14px 20px" }}>
+                  <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 500, maxWidth: "200px" }}>
+                    <div style={{ 
+                      overflow: "hidden", 
+                      textOverflow: "ellipsis", 
+                      whiteSpace: "nowrap",
+                      title: banner.title
+                    }}>
+                      {banner.title}
+                    </div>
+                  </td>
+                  <td style={{ ...tdStyle, padding: "14px 20px", maxWidth: "300px" }}>
                     {banner.linkUrl ? (
                       <a 
                         href={banner.linkUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        style={{
-                          color: ACCENT,
+                        style={{ 
+                          color: ACCENT, 
                           textDecoration: "none",
-                          fontWeight: 600,
                           fontSize: "0.875rem",
+                          display: "block",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.textDecoration = "underline";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.textDecoration = "none";
-                        }}
+                        title={banner.linkUrl}
+                        onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
+                        onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
                       >
-                        링크 열기 →
+                        {banner.linkUrl}
                       </a>
                     ) : (
-                      <span style={{ color: TEXT_MUTED }}>-</span>
+                      <span style={{ color: TEXT_MUTED, fontSize: "0.875rem" }}>-</span>
                     )}
                   </td>
-                  <td style={{ ...tdStyle, padding: "14px 20px" }}>
-                    <button 
-                      onClick={() => toggleMutation.mutate(banner.bannerId)} 
-                      disabled={toggleMutation.isPending} 
-                      style={{
-                        padding: "6px 14px",
-                        borderRadius: "999px",
-                        border: "none",
-                        background: banner.isActive ? "rgba(34,197,94,0.2)" : "rgba(148,163,184,0.2)",
-                        color: banner.isActive ? "#86efac" : "#94a3b8",
-                        fontWeight: 700,
-                        fontSize: "0.8125rem",
-                        cursor: toggleMutation.isPending ? "not-allowed" : "pointer",
-                        opacity: toggleMutation.isPending ? 0.6 : 1,
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!toggleMutation.isPending) {
-                          e.currentTarget.style.transform = "scale(1.05)";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      {banner.isActive ? "ON" : "OFF"}
-                    </button>
+                  <td style={{ ...tdStyle, padding: "14px 20px", textAlign: "center" }}>
+                    <span style={{
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      display: "inline-block",
+                      background: banner.isActive === 1 
+                        ? "rgba(34,197,94,0.2)" 
+                        : "rgba(148,163,184,0.2)",
+                      color: banner.isActive === 1 
+                        ? "#86efac" 
+                        : "#94a3b8",
+                    }}>
+                      {banner.isActive === 1 ? "활성" : "비활성"}
+                    </span>
                   </td>
-                  <td style={{ ...tdStyle, padding: "14px 20px" }}>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button 
-                        type="button" 
-                        onClick={() => onEdit(banner)} 
+                  <td style={{ ...tdStyle, padding: "14px 16px" }}>
+                    <div style={{ 
+                      display: "flex", 
+                      gap: "4px", 
+                      flexWrap: "nowrap",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}>
+                      <button
+                        onClick={() => handleMoveUp(index)}
+                        disabled={index === 0 || orderMutation.isPending}
                         style={{
-                          padding: "6px 12px",
-                          borderRadius: "8px",
+                          padding: "6px 10px",
+                          borderRadius: "6px",
                           border: `1px solid ${BORDER}`,
-                          background: "transparent",
+                          background: "rgba(84, 87, 99, 0.1)",
                           color: TEXT_WHITE,
+                          fontSize: "0.85rem",
                           fontWeight: 600,
-                          fontSize: "0.8125rem",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
+                          cursor: (index === 0 || orderMutation.isPending) ? "not-allowed" : "pointer",
+                          opacity: (index === 0 || orderMutation.isPending) ? 0.4 : 0.9,
+                          transition: "all 0.2s ease",
+                          minWidth: "36px",
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = ACCENT;
-                          e.currentTarget.style.backgroundColor = "rgba(71, 85, 105, 0.1)";
+                          if (index !== 0 && !orderMutation.isPending) {
+                            e.currentTarget.style.background = ACCENT;
+                            e.currentTarget.style.borderColor = ACCENT;
+                            e.currentTarget.style.opacity = "1";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = "0 2px 8px rgba(71, 85, 105, 0.3)";
+                          }
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = BORDER;
-                          e.currentTarget.style.backgroundColor = "transparent";
+                          if (index !== 0 && !orderMutation.isPending) {
+                            e.currentTarget.style.background = "rgba(84, 87, 99, 0.1)";
+                            e.currentTarget.style.borderColor = BORDER;
+                            e.currentTarget.style.opacity = "0.9";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }
+                        }}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        onClick={() => handleMoveDown(index)}
+                        disabled={index === filteredAndSortedBanners.length - 1 || orderMutation.isPending}
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: "6px",
+                          border: `1px solid ${BORDER}`,
+                          background: "rgba(84, 87, 99, 0.1)",
+                          color: TEXT_WHITE,
+                          fontSize: "0.85rem",
+                          fontWeight: 600,
+                          cursor: (index === filteredAndSortedBanners.length - 1 || orderMutation.isPending) ? "not-allowed" : "pointer",
+                          opacity: (index === filteredAndSortedBanners.length - 1 || orderMutation.isPending) ? 0.4 : 0.9,
+                          transition: "all 0.2s ease",
+                          minWidth: "36px",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (index !== filteredAndSortedBanners.length - 1 && !orderMutation.isPending) {
+                            e.currentTarget.style.background = ACCENT;
+                            e.currentTarget.style.borderColor = ACCENT;
+                            e.currentTarget.style.opacity = "1";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = "0 2px 8px rgba(71, 85, 105, 0.3)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (index !== filteredAndSortedBanners.length - 1 && !orderMutation.isPending) {
+                            e.currentTarget.style.background = "rgba(84, 87, 99, 0.1)";
+                            e.currentTarget.style.borderColor = BORDER;
+                            e.currentTarget.style.opacity = "0.9";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }
+                        }}
+                      >
+                        ↓
+                      </button>
+                      <button
+                        onClick={() => onEdit(banner)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "6px",
+                          border: `1px solid ${ACCENT}`,
+                          background: "rgba(71, 85, 105, 0.1)",
+                          color: ACCENT,
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          whiteSpace: "nowrap",
+                          minWidth: "60px",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = ACCENT;
+                          e.currentTarget.style.color = "#ffffff";
+                          e.currentTarget.style.transform = "translateY(-1px)";
+                          e.currentTarget.style.boxShadow = "0 2px 8px rgba(71, 85, 105, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "rgba(71, 85, 105, 0.1)";
+                          e.currentTarget.style.color = ACCENT;
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = "none";
                         }}
                       >
                         수정
                       </button>
-                      <button 
-                        onClick={() => setDeleteConfirmId(banner.bannerId)} 
-                        disabled={deleteMutation.isPending} 
+                      <button
+                        onClick={() => toggleMutation.mutate(banner.bannerId)}
+                        disabled={toggleMutation.isPending}
                         style={{
-                          padding: "6px 12px",
-                          borderRadius: "8px",
-                          border: `1px solid ${DANGER}`,
-                          background: "transparent",
-                          color: DANGER,
+                          padding: "6px 14px",
+                          borderRadius: "6px",
+                          border: `1px solid ${banner.isActive === 1 ? "#94a3b8" : "#22c55e"}`,
+                          background: banner.isActive === 1 ? "rgba(148, 163, 184, 0.1)" : "rgba(34, 197, 94, 0.1)",
+                          color: banner.isActive === 1 ? "#94a3b8" : "#22c55e",
+                          fontSize: "0.8rem",
                           fontWeight: 600,
-                          fontSize: "0.8125rem",
-                          cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
-                          opacity: deleteMutation.isPending ? 0.6 : 1,
-                          transition: "all 0.2s",
+                          cursor: toggleMutation.isPending ? "not-allowed" : "pointer",
+                          transition: "all 0.2s ease",
+                          whiteSpace: "nowrap",
+                          minWidth: "60px",
+                          opacity: toggleMutation.isPending ? 0.5 : 1,
                         }}
                         onMouseEnter={(e) => {
-                          if (!deleteMutation.isPending) {
-                            e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.1)";
+                          if (!toggleMutation.isPending) {
+                            e.currentTarget.style.background = banner.isActive === 1 ? "#94a3b8" : "#22c55e";
+                            e.currentTarget.style.color = "#ffffff";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = banner.isActive === 1 
+                              ? "0 2px 8px rgba(148, 163, 184, 0.3)" 
+                              : "0 2px 8px rgba(34, 197, 94, 0.3)";
                           }
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
+                          if (!toggleMutation.isPending) {
+                            e.currentTarget.style.background = banner.isActive === 1 ? "rgba(148, 163, 184, 0.1)" : "rgba(34, 197, 94, 0.1)";
+                            e.currentTarget.style.color = banner.isActive === 1 ? "#94a3b8" : "#22c55e";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }
+                        }}
+                      >
+                        {banner.isActive === 1 ? "비활성" : "활성"}
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirmId(banner.bannerId)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "6px",
+                          border: "1px solid #ef4444",
+                          background: "rgba(239, 68, 68, 0.1)",
+                          color: "#ef4444",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          whiteSpace: "nowrap",
+                          minWidth: "60px",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#ef4444";
+                          e.currentTarget.style.color = "#ffffff";
+                          e.currentTarget.style.transform = "translateY(-1px)";
+                          e.currentTarget.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                          e.currentTarget.style.color = "#ef4444";
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = "none";
                         }}
                       >
                         삭제
@@ -836,31 +915,22 @@ export default function BannersPage() {
               {filteredAndSortedBanners.length === 0 && (
                 <tr>
                   <td style={{ ...tdStyle, padding: "48px 24px", textAlign: "center", color: TEXT_MUTED }} colSpan={6}>
-                    <div style={{ marginBottom: "12px", fontWeight: 600 }}>
-                      {searchKeyword ? "검색 결과 없음" : "배너 없음"}
-                    </div>
-                    <div>
-                      {searchKeyword 
-                        ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
-                        : "등록된 배너가 없습니다."}
-                    </div>
-                    {!searchKeyword && (
-                      <div style={{ marginTop: "8px", fontSize: "0.875rem" }}>
-                        위 폼을 사용하여 배너를 추가하세요.
-                      </div>
-                    )}
+                    <div style={{ marginBottom: "12px", fontWeight: 600 }}>배너 없음</div>
+                    <div>등록된 배너가 없습니다. 위 폼을 사용하여 배너를 추가하세요.</div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+          </div>
+        </div>
       </div>
 
       {/* 삭제 확인 다이얼로그 */}
       <ConfirmDialog
         isOpen={deleteConfirmId !== null}
         title="배너 삭제"
-        message="정말로 이 배너를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        message="정말로 이 배너를 삭제하시겠습니까?"
         onConfirm={() => {
           if (deleteConfirmId) {
             deleteMutation.mutate(deleteConfirmId);
@@ -869,6 +939,7 @@ export default function BannersPage() {
         onCancel={() => setDeleteConfirmId(null)}
         confirmText="삭제"
         cancelText="취소"
+        confirmButtonStyle={{ background: "#ef4444", color: "#ffffff" }}
       />
     </div>
   );

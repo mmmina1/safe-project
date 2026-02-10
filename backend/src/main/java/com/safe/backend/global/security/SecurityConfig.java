@@ -58,6 +58,9 @@ public class SecurityConfig {
                                 "/api/product/**"        // 혹시 이 경로면 이것도!
                         ).permitAll()
 
+                        // 업로드된 이미지 파일 접근 허용
+                        .requestMatchers("/uploads/**").permitAll()
+
                         // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
                         .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
@@ -95,7 +98,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // 허용할 HTTP 메서드
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         // 허용할 헤더
         config.setAllowedHeaders(List.of("*"));

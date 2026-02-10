@@ -100,17 +100,7 @@ export default function CommunityReportsPage() {
     setBlindConfirmId(postId);
   };
 
-  // F5 키로 새로고침
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [refetch]);
+  // F5는 기본 새로고침 동작을 사용하도록 제거
 
   const CARD_BG = "#363a4d";
   const BORDER = "#545763";
@@ -301,7 +291,7 @@ export default function CommunityReportsPage() {
                       }
                     }}
                   >
-                    <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 600 }}>{report.reportId}</td>
+                    <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 600 }}>{index + 1}</td>
                     <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 600 }}>{report.postId}</td>
                     <td style={{ ...tdStyle, padding: "14px 20px" }}>{report.reporterId || <span style={{ color: TEXT_MUTED }}>-</span>}</td>
                     <td style={{ ...tdStyle, padding: "14px 20px", maxWidth: "250px" }}>

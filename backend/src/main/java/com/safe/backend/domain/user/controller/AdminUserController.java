@@ -35,6 +35,11 @@ public class AdminUserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/agents")
+    public ResponseEntity<List<UserResponse>> getAgents() {
+        return ResponseEntity.ok(adminUserService.getAgents());
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long userId) {
         return ResponseEntity.ok(adminUserService.getUserById(userId));
@@ -59,5 +64,22 @@ public class AdminUserController {
             @RequestParam(defaultValue = "1") Long adminId
     ) {
         return ResponseEntity.ok(adminUserService.releaseUser(userId, adminId));
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Long adminId
+    ) {
+        adminUserService.deleteUser(userId, adminId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{userId}/restore")
+    public ResponseEntity<UserResponse> restoreUser(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Long adminId
+    ) {
+        return ResponseEntity.ok(adminUserService.restoreUser(userId, adminId));
     }
 }

@@ -49,12 +49,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage() != null ? e.getMessage() : "DB 처리 중 오류가 발생했습니다."));
     }
 
+    // RuntimeException 처리
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        log.log(Level.SEVERE, "RuntimeException", e);
+        String message = e.getMessage() != null ? e.getMessage() : "처리 중 오류가 발생했습니다.";
+        return ResponseEntity
+                .internalServerError()
+                .body(new ErrorResponse(message));
+    }
+
     // (선택) 예상 못 한 서버 에러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.log(Level.SEVERE, "Unhandled exception", e);
+        e.printStackTrace(); // 스택 트레이스 출력
         return ResponseEntity
                 .internalServerError()
-                .body(new ErrorResponse("서버 오류가 발생했습니다."));
+                .body(new ErrorResponse("서버 오류가 발생했습니다: " + (e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName())));
     }
 }

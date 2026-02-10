@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //라우터 전용
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Chatbot from './pages/AiService/Chatbot/Chatbot';
 import './App.css';
 
@@ -46,14 +46,175 @@ import NoticesPage from './pages/operator/NoticesPage.jsx';
 import BannersPage from './pages/operator/BannersPage.jsx';
 import BlacklistPage from './pages/operator/BlacklistPage.jsx';
 
-function App() {
-  const toast = useToast();
+function AppContent() {
+  const location = useLocation();
   
   // 팝업창인지 확인 (window.opener가 있으면 팝업창)
   const isPopup = window.opener !== null;
   
-  // 팝업창이거나 terms/privacy 페이지면 헤더와 푸터 숨김
+  // 운영자 영역인지 확인
+  const isOperatorArea = location.pathname.startsWith('/operator');
+  
+  // 팝업창이면 헤더와 푸터 숨김
   const showHeaderFooter = !isPopup;
+  
+  return (
+    <>
+      <ScrollToTop/>
+      {/* 헤더는 항상 표시 (팝업 제외) */}
+      {showHeaderFooter && <Header />}
+    
+      <main className="app-main">
+        <Routes>
+          {/* 운영자 영역 - 완전히 독립된 레이아웃 (Header/Footer 없음) */}
+          <Route path="/operator" element={<OperatorLayout />}>
+            <Route index element={<OperatorDashboard />} />
+            <Route path="users" element={<UserSearchPage />} />
+            <Route path="cs" element={<CsDashboardPage />} />
+            <Route path="products" element={<ServiceProductsPage />} />
+            <Route path="community-reports" element={<CommunityReportsPage />} />
+            <Route path="blind-reasons" element={<BlindReasonsPage />} />
+            <Route path="notices" element={<NoticesPage />} />
+            <Route path="banners" element={<BannersPage />} />
+            <Route path="blacklist" element={<BlacklistPage />} />
+          </Route>
+
+          {/* 일반 사용자 영역 */}
+          <Route path="/" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <MainPage />
+            </div>
+          } />
+          <Route path="/login" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <LoginPage />
+            </div>
+          } />
+          <Route path="/signup" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <SignupPage />
+            </div>
+          } />
+
+          <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/monitoring" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <MainPage />
+            </div>
+          } />
+          <Route path="/ai" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <MainPage />
+            </div>
+          } />
+          
+          {/* 커뮤니티 페이지 */}
+          <Route path="/community" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <CommunityList />
+            </div>
+          } />
+          <Route path='/community/new' element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <CommunityPost/>
+            </div>
+          }/>
+          <Route path='/community/:postId' element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <CommunityDetail/>
+            </div>
+          }/>
+
+          {/* 서비스 상품 페이지 */}
+          <Route path="/product" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <ProductPage />
+            </div>
+          } />
+          <Route path='/product/:productId' element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <ProductDetailPage/>
+            </div>
+          }/>
+
+          {/* 이용약관 페이지 */}
+          <Route path="/terms" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <Terms />
+            </div>
+          } />
+          
+          {/* 개인정보처리방침 페이지 */}
+          <Route path="/privacy" element={
+            <div className="container">
+              <nav className="my-3 border-bottom pb-2">
+                <Link to="/" className="me-3">🏠 홈</Link>
+                <Link to="/chatbot">🤖 AI 챗봇</Link>
+              </nav>
+              <Privacy />
+            </div>
+          } />
+
+          {/* 관리자 영역 */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="manage" element={<UserManagement />} />
+            <Route path="policy" element={<DataPolicy />} />
+          </Route>
+        </Routes>
+      </main>
+      {/* 푸터는 운영자 영역 제외하고 표시 */}
+      {showHeaderFooter && !isOperatorArea && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  const toast = useToast();
   
   return (
     <ToastContext.Provider value={toast}>
@@ -62,71 +223,11 @@ function App() {
           display: 'flex', 
           flexDirection: 'column', 
           minHeight: '100vh',
-          overflow: isPopup ? 'auto' : 'visible'
+          overflow: window.opener !== null ? 'auto' : 'visible'
         }}
       >
         <div className="app-root">
-          <ScrollToTop/>
-          {/* 헤더는 메인 페이지에서만 표시 */}
-          {showHeaderFooter && <Header />}
-        
-          <main className="app-main">
-            <div className="container">
-              {/* 네비/Routes는 container 안에 */}
-              <nav className="my-3 border-bottom pb-2">
-                <Link to="/" className="me-3">🏠 홈</Link>
-                <Link to="/chatbot">🤖 AI 챗봇</Link>
-              </nav>
-
-              {/* 2. 화면 표시 영역 */}
-              <Routes>
-                <Route path="/" element={<MainPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-
-                <Route path="/chatbot" element={<Chatbot />} />
-                <Route path="/monitoring" element={<MainPage />} />
-                <Route path="/ai" element={<MainPage />} />
-                
-                {/* 커뮤니티 페이지 */}
-                <Route path="/community" element={<CommunityList />} />
-                <Route path='/community/new' element={<CommunityPost/>}/>
-                <Route path='/community/:postId' element={<CommunityDetail/>}/>
-
-                {/* 서비스 상품 페이지 */}
-                <Route path="/product" element={<ProductPage />} />
-                <Route path='/product/:productId' element={<ProductDetailPage/>}/>
-
-                {/* 이용약관 페이지 */}
-                <Route path="/terms" element={<Terms />} />
-                
-                {/* 개인정보처리방침 페이지 */}
-                <Route path="/privacy" element={<Privacy />} />
-
-                {/* 운영자 영역 */}
-                <Route path="/operator" element={<OperatorLayout />}>
-                  <Route index element={<OperatorDashboard />} />
-                  <Route path="users" element={<UserSearchPage />} />
-                  <Route path="cs" element={<CsDashboardPage />} />
-                  <Route path="products" element={<ServiceProductsPage />} />
-                  <Route path="community-reports" element={<CommunityReportsPage />} />
-                  <Route path="blind-reasons" element={<BlindReasonsPage />} />
-                  <Route path="notices" element={<NoticesPage />} />
-                  <Route path="banners" element={<BannersPage />} />
-                  <Route path="blacklist" element={<BlacklistPage />} />
-                </Route>
-
-                {/* 관리자 영역 */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="manage" element={<UserManagement />} />
-                  <Route path="policy" element={<DataPolicy />} />
-                </Route>
-              </Routes>
-            </div>
-            {/* 푸터는 메인 페이지에서만 표시 */}
-            {showHeaderFooter && <Footer />}
-          </main>
+          <AppContent />
         </div>
       </div>
       <ToastContainer toasts={toast.toasts} onRemove={toast.removeToast} />

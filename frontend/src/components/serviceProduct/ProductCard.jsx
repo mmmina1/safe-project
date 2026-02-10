@@ -18,8 +18,11 @@ function ProductCard({item}) {
     const rating = item.rating ?? 0;
     const reviewCount = item.reviewCount ?? 0;
 
+    const API_BASE = "http://localhost:8080";
+    const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
+    
     const imageStyle = item.mainImage
-        ? { backgroundImage: `url(${item.mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        ? { backgroundImage: `url(${imageFullUrl(item.mainImage)})`, backgroundSize: 'cover', backgroundPosition: 'center' }
         : { backgroundColor: '#2a2f3a' };
 
   return (

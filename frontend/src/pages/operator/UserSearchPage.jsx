@@ -18,6 +18,8 @@ export default function UserSearchPage() {
   const [sortDirection, setSortDirection] = useState('asc');
   const [suspendConfirmId, setSuspendConfirmId] = useState(null);
   const [releaseConfirmId, setReleaseConfirmId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [restoreConfirmId, setRestoreConfirmId] = useState(null);
   const toast = useContext(ToastContext);
   const queryClient = useQueryClient();
 
@@ -68,17 +70,53 @@ export default function UserSearchPage() {
     },
   });
 
-  // F5 키로 새로고침
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [refetch]);
+  const deleteMutation = useMutation({
+    mutationFn: async (userId) => {
+      const res = await api.delete(`/admin/users/${userId}`, {
+        params: { adminId: 1 }, // TODO: 실제 관리자 ID로 변경
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers", keyword] });
+      toast?.success("회원이 삭제되었습니다.");
+      setDeleteConfirmId(null);
+    },
+    onError: (error) => {
+      console.error("회원 삭제 에러:", error);
+      const errorMessage = error?.response?.data?.message 
+        || error?.response?.data?.error 
+        || error?.message 
+        || "삭제 처리에 실패했습니다.";
+      toast?.error(errorMessage);
+      setDeleteConfirmId(null);
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async (userId) => {
+      const res = await api.patch(`/admin/users/${userId}/restore`, null, {
+        params: { adminId: 1 }, // TODO: 실제 관리자 ID로 변경
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers", keyword] });
+      toast?.success("회원이 복구되었습니다.");
+      setRestoreConfirmId(null);
+    },
+    onError: (error) => {
+      console.error("회원 복구 에러:", error);
+      const errorMessage = error?.response?.data?.message 
+        || error?.response?.data?.error 
+        || error?.message 
+        || "복구 처리에 실패했습니다.";
+      toast?.error(errorMessage);
+      setRestoreConfirmId(null);
+    },
+  });
+
+  // F5는 기본 새로고침 동작을 사용하도록 제거
 
   // 정렬
   const handleSort = (field) => {
@@ -261,6 +299,9 @@ export default function UserSearchPage() {
                 >
                   가입일 {sortField === 'createdDate' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
+                <th style={{ ...thStyle, padding: "14px 16px" }}>
+                  작업
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -291,101 +332,249 @@ export default function UserSearchPage() {
                     }
                   }}
                 >
-                  <td style={{ ...tdStyle, padding: "14px 16px", fontWeight: 600 }}>{user.userId}</td>
+                  <td style={{ ...tdStyle, padding: "14px 16px", fontWeight: 600 }}>{index + 1}</td>
                   <td style={{ ...tdStyle, padding: "14px 16px" }}>{user.email}</td>
                   <td style={{ ...tdStyle, padding: "14px 16px" }}>{user.name || <span style={{ color: TEXT_MUTED }}>-</span>}</td>
                   <td style={{ ...tdStyle, padding: "14px 16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span style={{
-                        padding: "6px 12px",
-                        borderRadius: "8px",
-                        fontSize: "0.8125rem",
-                        fontWeight: 600,
-                        display: "inline-block",
-                        background: user.status === "ACTIVE" 
-                          ? "rgba(34,197,94,0.2)" 
-                          : user.status === "SUSPENDED" 
-                            ? "rgba(148,163,184,0.2)" 
+                    <span style={{
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      fontSize: "0.8125rem",
+                      fontWeight: 600,
+                      display: "inline-block",
+                      background: user.status === "ACTIVE" 
+                        ? "rgba(34,197,94,0.2)" 
+                        : user.status === "SUSPENDED" 
+                          ? "rgba(148,163,184,0.2)" 
+                          : user.status === "DELETED"
+                            ? "rgba(239,68,68,0.2)"
                             : "rgba(148,163,184,0.15)",
-                        color: user.status === "ACTIVE" 
-                          ? "#86efac" 
-                          : user.status === "SUSPENDED" 
-                            ? "#94a3b8" 
+                      color: user.status === "ACTIVE" 
+                        ? "#86efac" 
+                        : user.status === "SUSPENDED" 
+                          ? "#94a3b8" 
+                          : user.status === "DELETED"
+                            ? "#f87171"
                             : TEXT_MUTED,
-                      }}>
-                        {user.status === "ACTIVE" ? "활성" : user.status === "SUSPENDED" ? "비활성" : user.status}
-                      </span>
-                      {user.status === "ACTIVE" ? (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSuspendConfirmId(user.userId);
-                          }}
-                          disabled={suspendMutation.isPending}
-                          style={{
-                            padding: "4px 10px",
-                            borderRadius: "6px",
-                            border: "1px solid rgba(148,163,184,0.5)",
-                            background: "transparent",
-                            color: "#94a3b8",
-                            fontSize: "0.75rem",
-                            fontWeight: 600,
-                            cursor: suspendMutation.isPending ? "not-allowed" : "pointer",
-                            opacity: suspendMutation.isPending ? 0.6 : 1,
-                            transition: "all 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!suspendMutation.isPending) {
-                              e.currentTarget.style.backgroundColor = "rgba(148,163,184,0.1)";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent";
-                          }}
-                        >
-                          비활성화
-                        </button>
-                      ) : user.status === "SUSPENDED" ? (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setReleaseConfirmId(user.userId);
-                          }}
-                          disabled={releaseMutation.isPending}
-                          style={{
-                            padding: "4px 10px",
-                            borderRadius: "6px",
-                            border: "1px solid rgba(34,197,94,0.5)",
-                            background: "transparent",
-                            color: "#86efac",
-                            fontSize: "0.75rem",
-                            fontWeight: 600,
-                            cursor: releaseMutation.isPending ? "not-allowed" : "pointer",
-                            opacity: releaseMutation.isPending ? 0.6 : 1,
-                            transition: "all 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!releaseMutation.isPending) {
-                              e.currentTarget.style.backgroundColor = "rgba(34,197,94,0.1)";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent";
-                          }}
-                        >
-                          활성화
-                        </button>
-                      ) : null}
-                    </div>
+                    }}>
+                      {user.status === "ACTIVE" ? "활성" : user.status === "SUSPENDED" ? "비활성" : user.status === "DELETED" ? "삭제됨" : user.status}
+                    </span>
                   </td>
                   <td style={{ ...tdStyle, padding: "14px 16px", color: TEXT_MUTED }}>
                     {user.createdDate ? new Date(user.createdDate).toLocaleDateString("ko-KR") : "-"}
+                  </td>
+                  <td style={{ ...tdStyle, padding: "14px 16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                      {user.status === "ACTIVE" ? (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSuspendConfirmId(user.userId);
+                            }}
+                            disabled={suspendMutation.isPending}
+                            style={{
+                              padding: "6px 14px",
+                              borderRadius: "6px",
+                              border: "1px solid #94a3b8",
+                              background: "rgba(148, 163, 184, 0.1)",
+                              color: "#94a3b8",
+                              fontSize: "0.8rem",
+                              fontWeight: 600,
+                              cursor: suspendMutation.isPending ? "not-allowed" : "pointer",
+                              opacity: suspendMutation.isPending ? 0.5 : 1,
+                              transition: "all 0.2s ease",
+                              whiteSpace: "nowrap",
+                              minWidth: "60px",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!suspendMutation.isPending) {
+                                e.currentTarget.style.background = "#94a3b8";
+                                e.currentTarget.style.color = "#ffffff";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                                e.currentTarget.style.boxShadow = "0 2px 8px rgba(148, 163, 184, 0.3)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!suspendMutation.isPending) {
+                                e.currentTarget.style.background = "rgba(148, 163, 184, 0.1)";
+                                e.currentTarget.style.color = "#94a3b8";
+                                e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "none";
+                              }
+                            }}
+                          >
+                            비활성화
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirmId(user.userId);
+                            }}
+                            disabled={deleteMutation.isPending}
+                            style={{
+                              padding: "6px 14px",
+                              borderRadius: "6px",
+                              border: "1px solid #ef4444",
+                              background: "rgba(239, 68, 68, 0.1)",
+                              color: "#ef4444",
+                              fontSize: "0.8rem",
+                              fontWeight: 600,
+                              cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
+                              opacity: deleteMutation.isPending ? 0.5 : 1,
+                              transition: "all 0.2s ease",
+                              whiteSpace: "nowrap",
+                              minWidth: "60px",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!deleteMutation.isPending) {
+                                e.currentTarget.style.background = "#ef4444";
+                                e.currentTarget.style.color = "#ffffff";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                                e.currentTarget.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.3)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!deleteMutation.isPending) {
+                                e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                                e.currentTarget.style.color = "#ef4444";
+                                e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "none";
+                              }
+                            }}
+                          >
+                            삭제
+                          </button>
+                        </>
+                      ) : user.status === "SUSPENDED" ? (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setReleaseConfirmId(user.userId);
+                            }}
+                            disabled={releaseMutation.isPending}
+                            style={{
+                              padding: "6px 14px",
+                              borderRadius: "6px",
+                              border: "1px solid #22c55e",
+                              background: "rgba(34, 197, 94, 0.1)",
+                              color: "#22c55e",
+                              fontSize: "0.8rem",
+                              fontWeight: 600,
+                              cursor: releaseMutation.isPending ? "not-allowed" : "pointer",
+                              opacity: releaseMutation.isPending ? 0.5 : 1,
+                              transition: "all 0.2s ease",
+                              whiteSpace: "nowrap",
+                              minWidth: "60px",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!releaseMutation.isPending) {
+                                e.currentTarget.style.background = "#22c55e";
+                                e.currentTarget.style.color = "#ffffff";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                                e.currentTarget.style.boxShadow = "0 2px 8px rgba(34, 197, 94, 0.3)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!releaseMutation.isPending) {
+                                e.currentTarget.style.background = "rgba(34, 197, 94, 0.1)";
+                                e.currentTarget.style.color = "#22c55e";
+                                e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "none";
+                              }
+                            }}
+                          >
+                            활성화
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirmId(user.userId);
+                            }}
+                            disabled={deleteMutation.isPending}
+                            style={{
+                              padding: "6px 14px",
+                              borderRadius: "6px",
+                              border: "1px solid #ef4444",
+                              background: "rgba(239, 68, 68, 0.1)",
+                              color: "#ef4444",
+                              fontSize: "0.8rem",
+                              fontWeight: 600,
+                              cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
+                              opacity: deleteMutation.isPending ? 0.5 : 1,
+                              transition: "all 0.2s ease",
+                              whiteSpace: "nowrap",
+                              minWidth: "60px",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!deleteMutation.isPending) {
+                                e.currentTarget.style.background = "#ef4444";
+                                e.currentTarget.style.color = "#ffffff";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                                e.currentTarget.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.3)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!deleteMutation.isPending) {
+                                e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                                e.currentTarget.style.color = "#ef4444";
+                                e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "none";
+                              }
+                            }}
+                          >
+                            삭제
+                          </button>
+                        </>
+                      ) : user.status === "DELETED" ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRestoreConfirmId(user.userId);
+                          }}
+                          disabled={restoreMutation.isPending}
+                          style={{
+                            padding: "6px 14px",
+                            borderRadius: "6px",
+                            border: "1px solid #22c55e",
+                            background: "rgba(34, 197, 94, 0.1)",
+                            color: "#22c55e",
+                            fontSize: "0.8rem",
+                            fontWeight: 600,
+                            cursor: restoreMutation.isPending ? "not-allowed" : "pointer",
+                            opacity: restoreMutation.isPending ? 0.5 : 1,
+                            transition: "all 0.2s ease",
+                            whiteSpace: "nowrap",
+                            minWidth: "60px",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!restoreMutation.isPending) {
+                              e.currentTarget.style.background = "#22c55e";
+                              e.currentTarget.style.color = "#ffffff";
+                              e.currentTarget.style.transform = "translateY(-1px)";
+                              e.currentTarget.style.boxShadow = "0 2px 8px rgba(34, 197, 94, 0.3)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!restoreMutation.isPending) {
+                              e.currentTarget.style.background = "rgba(34, 197, 94, 0.1)";
+                              e.currentTarget.style.color = "#22c55e";
+                              e.currentTarget.style.transform = "translateY(0)";
+                              e.currentTarget.style.boxShadow = "none";
+                            }
+                          }}
+                        >
+                          복구
+                        </button>
+                      ) : null}
+                    </div>
                   </td>
                 </tr>
               ))}
               {sortedUsers.length === 0 && (
                 <tr>
-                  <td style={{ ...tdStyle, padding: "48px 24px", textAlign: "center", color: TEXT_MUTED }} colSpan={5}>
+                  <td style={{ ...tdStyle, padding: "48px 24px", textAlign: "center", color: TEXT_MUTED }} colSpan={6}>
                     <div style={{ marginBottom: "12px", fontWeight: 600 }}>검색 결과 없음</div>
                     <div>검색 결과가 없습니다.</div>
                     {keyword && (
@@ -429,6 +618,38 @@ export default function UserSearchPage() {
         onCancel={() => setReleaseConfirmId(null)}
         confirmText="활성화"
         cancelText="취소"
+      />
+
+      {/* 삭제 확인 다이얼로그 */}
+      <ConfirmDialog
+        isOpen={deleteConfirmId !== null}
+        title="회원 삭제"
+        message="정말로 이 회원을 삭제하시겠습니까? 삭제된 회원은 복구할 수 있으며, 모든 데이터가 삭제 상태로 변경됩니다."
+        onConfirm={() => {
+          if (deleteConfirmId) {
+            deleteMutation.mutate(deleteConfirmId);
+          }
+        }}
+        onCancel={() => setDeleteConfirmId(null)}
+        confirmText="삭제"
+        cancelText="취소"
+        confirmButtonStyle={{ background: "#ef4444", color: "#ffffff" }}
+      />
+
+      {/* 복구 확인 다이얼로그 */}
+      <ConfirmDialog
+        isOpen={restoreConfirmId !== null}
+        title="회원 복구"
+        message="정말로 이 회원을 복구하시겠습니까? 복구된 회원은 활성 상태로 변경되며, 다시 서비스를 이용할 수 있습니다."
+        onConfirm={() => {
+          if (restoreConfirmId) {
+            restoreMutation.mutate(restoreConfirmId);
+          }
+        }}
+        onCancel={() => setRestoreConfirmId(null)}
+        confirmText="복구"
+        cancelText="취소"
+        confirmButtonStyle={{ background: "#22c55e", color: "#ffffff" }}
       />
     </div>
   );

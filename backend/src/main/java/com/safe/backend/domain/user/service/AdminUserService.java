@@ -34,6 +34,17 @@ public class AdminUserService {
     }
 
     @Transactional(readOnly = true)
+    public List<UserResponse> getAgents() {
+        List<User> agents = userRepository.findByRoleIn(
+                List.of(com.safe.backend.domain.user.entity.UserRole.ADMIN, 
+                        com.safe.backend.domain.user.entity.UserRole.OPERATOR)
+        );
+        return agents.stream()
+                .map(UserResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -87,6 +98,51 @@ public class AdminUserService {
         }
         
         user.setStatus(UserStatus.ACTIVE);
+        return new UserResponse(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, Long adminId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        
+        // 이미 삭제된 회원인지 확인
+        if (user.getStatus() == UserStatus.DELETED) {
+            throw new IllegalArgumentException("이미 삭제된 회원입니다.");
+        }
+        
+        // 삭제 이력 기록
+        UserState state = UserState.of(
+                userId,
+                adminId,
+                StateType.DELETED,
+                "운영자에 의한 회원 삭제"
+        );
+        userStateRepository.save(state);
+        
+        // 상태를 DELETED로 변경 (소프트 삭제)
+        user.setStatus(UserStatus.DELETED);
+    }
+
+    @Transactional
+    public UserResponse restoreUser(Long userId, Long adminId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        
+        // 삭제된 회원이 아닌지 확인
+        if (user.getStatus() != UserStatus.DELETED) {
+            throw new IllegalArgumentException("삭제된 회원이 아닙니다.");
+        }
+        
+        // 삭제 이력 종료 처리
+        List<UserState> deletedStates = userStateRepository.findByUserIdAndTypeAndEndDateIsNull(userId, StateType.DELETED);
+        for (UserState state : deletedStates) {
+            state.release();
+        }
+        
+        // 상태를 ACTIVE로 복구 (이전 상태를 알 수 없으므로 ACTIVE로 설정)
+        user.setStatus(UserStatus.ACTIVE);
+        
         return new UserResponse(user);
     }
 }

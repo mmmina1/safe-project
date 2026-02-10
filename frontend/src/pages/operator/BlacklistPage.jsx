@@ -36,17 +36,25 @@ export default function BlacklistPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload) => {
-      const res = await api.post("/admin/blacklist", payload);
+      const res = await api.post("/admin/blacklist", payload, {
+        params: { adminId: 1 }
+      });
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminBlacklist"] });
+      toast?.success("블랙리스트 항목이 추가되었습니다.");
+    },
+    onError: (error) => {
+      toast?.error(error?.response?.data?.message || "블랙리스트 추가에 실패했습니다.");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...payload }) => {
-      const res = await api.put(`/admin/blacklist/${id}`, payload);
+      const res = await api.put(`/admin/blacklist/${id}`, payload, {
+        params: { adminId: 1 }
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -66,6 +74,10 @@ export default function BlacklistPage() {
     onSuccess: (_, deletedId) => {
       queryClient.invalidateQueries({ queryKey: ["adminBlacklist"] });
       if (selectedId === deletedId) setSelectedId(null);
+      toast?.success("블랙리스트 항목이 삭제되었습니다.");
+    },
+    onError: (error) => {
+      toast?.error(error?.response?.data?.message || "삭제에 실패했습니다.");
     },
   });
 
@@ -119,14 +131,11 @@ export default function BlacklistPage() {
           form.requestSubmit();
         }
       }
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
+      // F5는 기본 새로고침 동작을 사용하도록 제거
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [editingId, refetch, onCancelEdit]);
+  }, [editingId, onCancelEdit]);
 
   // 정렬
   const handleSort = (field) => {
@@ -202,9 +211,9 @@ export default function BlacklistPage() {
   }
 
   return (
-    <div style={{ color: TEXT_WHITE, animation: "fadeIn 0.3s ease-in" }}>
-      <div style={{ marginBottom: "24px" }}>
-        <h2 style={{ margin: "0 0 8px 0", fontSize: "1.5rem", fontWeight: 800, letterSpacing: "-0.02em" }}>블랙리스트 관리</h2>
+    <div style={{ color: TEXT_WHITE, animation: "fadeIn 0.3s ease-in", width: "100%", maxWidth: "100%" }}>
+      <div style={{ marginBottom: "32px", marginTop: "0" }}>
+        <h2 style={{ margin: "0 0 12px 0", fontSize: "1.5rem", fontWeight: 800, letterSpacing: "-0.02em" }}>블랙리스트 관리</h2>
         <p style={{ margin: 0, color: TEXT_MUTED, fontSize: "0.875rem", lineHeight: 1.6 }}>
           차단할 전화번호나 URL을 관리합니다. 항목을 클릭하면 등록 히스토리를 확인할 수 있습니다.
         </p>
@@ -397,6 +406,7 @@ export default function BlacklistPage() {
         overflow: "hidden",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         animation: "fadeIn 0.4s ease-in 0.2s both",
+        marginRight: "0",
       }}>
         <div style={{
           padding: "16px 20px",
@@ -415,8 +425,12 @@ export default function BlacklistPage() {
           </span>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1000px" }}>
+        <div style={{ 
+          overflowX: "auto", 
+          WebkitOverflowScrolling: "touch",
+          width: "100%",
+        }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1200px" }}>
             <thead>
               <tr>
                 <th 
@@ -476,7 +490,7 @@ export default function BlacklistPage() {
                       }
                     }}
                   >
-                    <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 600 }}>{item.blacklistId}</td>
+                    <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 600 }}>{index + 1}</td>
                     <td style={{ ...tdStyle, padding: "14px 20px", maxWidth: "200px" }}>
                       {item.type === "URL" ? (
                         <a 
@@ -544,23 +558,29 @@ export default function BlacklistPage() {
                           type="button"
                           onClick={() => onEdit(item)}
                           style={{
-                            padding: "6px 12px",
-                            borderRadius: "8px",
-                            border: `1px solid ${BORDER}`,
-                            background: "transparent",
-                            color: TEXT_WHITE,
+                            padding: "6px 14px",
+                            borderRadius: "6px",
+                            border: `1px solid ${ACCENT}`,
+                            background: "rgba(71, 85, 105, 0.1)",
+                            color: ACCENT,
                             fontWeight: 600,
-                            fontSize: "0.8125rem",
+                            fontSize: "0.8rem",
                             cursor: "pointer",
-                            transition: "all 0.2s",
+                            transition: "all 0.2s ease",
+                            whiteSpace: "nowrap",
+                            minWidth: "60px",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = ACCENT;
-                            e.currentTarget.style.backgroundColor = "rgba(71, 85, 105, 0.1)";
+                            e.currentTarget.style.background = ACCENT;
+                            e.currentTarget.style.color = "#ffffff";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = "0 2px 8px rgba(71, 85, 105, 0.3)";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = BORDER;
-                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.background = "rgba(71, 85, 105, 0.1)";
+                            e.currentTarget.style.color = ACCENT;
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
                           }}
                         >
                           수정
@@ -569,24 +589,34 @@ export default function BlacklistPage() {
                           onClick={() => setDeleteConfirmId(item.blacklistId)}
                           disabled={deleteMutation.isPending}
                           style={{
-                            padding: "6px 12px",
-                            borderRadius: "8px",
-                            border: `1px solid ${DANGER}`,
-                            background: "transparent",
-                            color: DANGER,
+                            padding: "6px 14px",
+                            borderRadius: "6px",
+                            border: "1px solid #ef4444",
+                            background: "rgba(239, 68, 68, 0.1)",
+                            color: "#ef4444",
                             fontWeight: 600,
-                            fontSize: "0.8125rem",
+                            fontSize: "0.8rem",
                             cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
-                            opacity: deleteMutation.isPending ? 0.6 : 1,
-                            transition: "all 0.2s",
+                            opacity: deleteMutation.isPending ? 0.5 : 1,
+                            transition: "all 0.2s ease",
+                            whiteSpace: "nowrap",
+                            minWidth: "60px",
                           }}
                           onMouseEnter={(e) => {
                             if (!deleteMutation.isPending) {
-                              e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.1)";
+                              e.currentTarget.style.background = "#ef4444";
+                              e.currentTarget.style.color = "#ffffff";
+                              e.currentTarget.style.transform = "translateY(-1px)";
+                              e.currentTarget.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.3)";
                             }
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent";
+                            if (!deleteMutation.isPending) {
+                              e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.transform = "translateY(0)";
+                              e.currentTarget.style.boxShadow = "none";
+                            }
                           }}
                         >
                           삭제

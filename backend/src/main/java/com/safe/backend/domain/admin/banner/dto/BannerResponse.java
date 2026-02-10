@@ -19,15 +19,24 @@ public class BannerResponse {
     private LocalDateTime endAt;
 
     public BannerResponse(Banner banner) {
-        this.bannerId = banner.getBannerId();
-        this.title = banner.getTitle();
-        this.imageUrl = banner.getImageUrl();
-        this.linkUrl = banner.getLinkUrl();
-        this.displayOrder = banner.getDisplayOrder();
-        this.isActive = banner.getIsActive();
-        this.createdAt = banner.getCreatedAt();
-        this.updatedAt = banner.getUpdatedAt();
-        this.startAt = banner.getStartAt();
-        this.endAt = banner.getEndAt();
+        if (banner == null) {
+            throw new IllegalArgumentException("Banner cannot be null");
+        }
+        try {
+            this.bannerId = banner.getBannerId();
+            this.title = banner.getTitle();
+            this.imageUrl = banner.getImageUrl();
+            this.linkUrl = banner.getLinkUrl();
+            this.displayOrder = banner.getDisplayOrder();
+            this.isActive = banner.getIsActive();
+            this.createdAt = banner.getCreatedAt();
+            this.updatedAt = banner.getUpdatedAt();
+            this.startAt = banner.getStartAt();
+            this.endAt = banner.getEndAt();
+        } catch (Exception e) {
+            System.err.println("BannerResponse 생성 중 오류 - bannerId: " + banner.getBannerId());
+            e.printStackTrace();
+            throw new RuntimeException("배너 응답 생성 실패: " + e.getMessage(), e);
+        }
     }
 }

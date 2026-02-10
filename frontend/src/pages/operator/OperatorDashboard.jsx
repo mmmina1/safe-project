@@ -100,12 +100,12 @@ export default function OperatorDashboard() {
   const barChartData = [
     { name: "회원", value: stats?.userCount ?? 0 },
     { name: "대기 CS", value: stats?.pendingCsCount ?? 0 },
-    { name: "접수 신고", value: stats?.pendingReportCount ?? 0 },
-    { name: "공지사항", value: stats?.noticeCount ?? 0 },
+    { name: "신고", value: stats?.pendingReportCount ?? 0 },
+    { name: "공지", value: stats?.noticeCount ?? 0 },
     { name: "배너", value: stats?.bannerCount ?? 0 },
-    { name: "블랙리스트", value: stats?.blacklistCount ?? 0 },
-    { name: "서비스 상품", value: stats?.productCount ?? 0 },
-    { name: "블라인드 사유", value: stats?.blindReasonCount ?? 0 },
+    { name: "블랙", value: stats?.blacklistCount ?? 0 },
+    { name: "상품", value: stats?.productCount ?? 0 },
+    { name: "블라인드", value: stats?.blindReasonCount ?? 0 },
   ];
 
   // CS 상담 상태별 분포 계산
@@ -220,19 +220,25 @@ export default function OperatorDashboard() {
       {/* 그래프 섹션 */}
       <div style={{ 
         display: "grid", 
-        gridTemplateColumns: "1fr 1fr", 
-        gap: "32px", 
+        gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))", 
+        gap: "24px", 
         marginTop: "64px",
-        animation: "fadeIn 0.5s ease-in 0.2s both"
+        marginBottom: "32px",
+        animation: "fadeIn 0.5s ease-in 0.2s both",
+        width: "100%",
+        boxSizing: "border-box",
+        overflowX: "auto",
       }}>
         {/* 막대 그래프 */}
         <div style={{ 
           background: CARD_BG, 
-          padding: "28px", 
+          padding: "24px", 
           borderRadius: "12px", 
           border: `1px solid ${BORDER}`,
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           transition: "box-shadow 0.2s ease",
+          minWidth: "0",
+          overflow: "hidden",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)";
@@ -240,84 +246,99 @@ export default function OperatorDashboard() {
         onMouseLeave={(e) => {
           e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
         }}>
-          <h2 style={{ margin: "0 0 24px 0", fontSize: "1.25rem", fontWeight: 700, color: TEXT_WHITE }}>
+          <h2 style={{ margin: "0 0 20px 0", fontSize: "1.125rem", fontWeight: 700, color: TEXT_WHITE }}>
             통계 현황
           </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: TEXT_MUTED, fontSize: 12 }}
-                stroke={BORDER}
-              />
-              <YAxis 
-                tick={{ fill: TEXT_MUTED, fontSize: 12 }}
-                stroke={BORDER}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: CARD_BG, 
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: "8px",
-                  color: TEXT_WHITE
-                }}
-              />
-              <Bar dataKey="value" fill="#475569" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* 파이 차트 */}
-        <div style={{ 
-          background: CARD_BG, 
-          padding: "28px", 
-          borderRadius: "12px", 
-          border: `1px solid ${BORDER}`,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          transition: "box-shadow 0.2s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-        }}>
-          <h2 style={{ margin: "0 0 24px 0", fontSize: "1.25rem", fontWeight: 700, color: TEXT_WHITE }}>
-            {pieChartTitle}
-          </h2>
-          {pieChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieChartData.map((entry) => (
-                    <Cell key={`cell-${entry.name}`} fill={pieChartColors[entry.name] || "#475569"} />
-                  ))}
-                </Pie>
+          <div style={{ width: "100%", height: "400px", minWidth: "0", overflow: "hidden" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barChartData} margin={{ top: 20, right: 20, left: 10, bottom: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fill: TEXT_WHITE, fontSize: 12, fontWeight: 500 }}
+                  stroke={BORDER}
+                  angle={0}
+                  textAnchor="middle"
+                  height={40}
+                  interval={0}
+                />
+                <YAxis 
+                  tick={{ fill: TEXT_WHITE, fontSize: 12, fontWeight: 500 }}
+                  stroke={BORDER}
+                  width={45}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: CARD_BG, 
                     border: `1px solid ${BORDER}`,
                     borderRadius: "8px",
-                    color: TEXT_WHITE
+                    color: TEXT_WHITE,
+                    fontSize: "12px"
                   }}
                 />
-                <Legend 
-                  wrapperStyle={{ color: TEXT_MUTED, fontSize: "12px" }}
-                />
-              </PieChart>
+                <Bar dataKey="value" fill="#475569" radius={[6, 6, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* 파이 차트 */}
+        <div style={{ 
+          background: CARD_BG, 
+          padding: "24px", 
+          borderRadius: "12px", 
+          border: `1px solid ${BORDER}`,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          transition: "box-shadow 0.2s ease",
+          minWidth: "0",
+          overflow: "hidden",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+        }}>
+          <h2 style={{ margin: "0 0 20px 0", fontSize: "1.125rem", fontWeight: 700, color: TEXT_WHITE }}>
+            {pieChartTitle}
+          </h2>
+          {pieChartData.length > 0 ? (
+            <div style={{ width: "100%", height: "320px", minWidth: "0", overflow: "hidden" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={115}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {pieChartData.map((entry) => (
+                      <Cell key={`cell-${entry.name}`} fill={pieChartColors[entry.name] || "#475569"} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: CARD_BG, 
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: "8px",
+                      color: TEXT_WHITE,
+                      fontSize: "13px",
+                      fontWeight: 500
+                    }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ color: TEXT_WHITE, fontSize: "13px", fontWeight: 500 }}
+                    iconSize={14}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div style={{ height: 300, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: TEXT_MUTED, gap: "8px" }}>
+            <div style={{ height: 320, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: TEXT_MUTED, gap: "8px" }}>
               <div style={{ fontSize: "2rem", opacity: 0.5 }}>📊</div>
               <div>표시할 데이터가 없습니다.</div>
               <div style={{ fontSize: "0.875rem", marginTop: "8px", opacity: 0.7 }}>

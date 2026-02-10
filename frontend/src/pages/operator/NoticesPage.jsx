@@ -147,14 +147,11 @@ export default function NoticesPage() {
           form.requestSubmit();
         }
       }
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
+      // F5는 기본 새로고침 동작을 사용하도록 제거
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [editingId, refetch, onCancelEdit]);
+  }, [editingId, onCancelEdit]);
 
   // 정렬
   const handleSort = (field) => {
@@ -481,26 +478,38 @@ export default function NoticesPage() {
                         disabled={toggleMutation.isPending}
                         style={{
                           padding: "6px 14px",
-                          borderRadius: "999px",
-                          border: "none",
-                          background: n.isActive ? "rgba(34,197,94,0.2)" : "rgba(148,163,184,0.2)",
-                          color: n.isActive ? "#86efac" : "#94a3b8",
-                          fontWeight: 700,
-                          fontSize: "0.8125rem",
+                          borderRadius: "6px",
+                          border: `1px solid ${n.isActive ? "#22c55e" : "#94a3b8"}`,
+                          background: n.isActive ? "rgba(34, 197, 94, 0.1)" : "rgba(148, 163, 184, 0.1)",
+                          color: n.isActive ? "#22c55e" : "#94a3b8",
+                          fontWeight: 600,
+                          fontSize: "0.8rem",
                           cursor: toggleMutation.isPending ? "not-allowed" : "pointer",
-                          opacity: toggleMutation.isPending ? 0.6 : 1,
-                          transition: "all 0.2s",
+                          opacity: toggleMutation.isPending ? 0.5 : 1,
+                          transition: "all 0.2s ease",
+                          whiteSpace: "nowrap",
+                          minWidth: "60px",
                         }}
                         onMouseEnter={(e) => {
                           if (!toggleMutation.isPending) {
-                            e.currentTarget.style.transform = "scale(1.05)";
+                            e.currentTarget.style.background = n.isActive ? "#22c55e" : "#94a3b8";
+                            e.currentTarget.style.color = "#ffffff";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = n.isActive 
+                              ? "0 2px 8px rgba(34, 197, 94, 0.3)" 
+                              : "0 2px 8px rgba(148, 163, 184, 0.3)";
                           }
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = "scale(1)";
+                          if (!toggleMutation.isPending) {
+                            e.currentTarget.style.background = n.isActive ? "rgba(34, 197, 94, 0.1)" : "rgba(148, 163, 184, 0.1)";
+                            e.currentTarget.style.color = n.isActive ? "#22c55e" : "#94a3b8";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }
                         }}
                       >
-                        {n.isActive ? "ON" : "OFF"}
+                        {n.isActive ? "활성" : "비활성"}
                       </button>
                     </td>
                     <td style={{ ...tdStyle, padding: "14px 20px" }}>
@@ -509,23 +518,29 @@ export default function NoticesPage() {
                           type="button" 
                           onClick={() => onEdit(n)} 
                           style={{
-                            padding: "6px 12px",
-                            borderRadius: "8px",
-                            border: `1px solid ${theme.border}`,
-                            background: "transparent",
-                            color: theme.text,
+                            padding: "6px 14px",
+                            borderRadius: "6px",
+                            border: `1px solid ${theme.accent}`,
+                            background: "rgba(71, 85, 105, 0.1)",
+                            color: theme.accent,
                             fontWeight: 600,
-                            fontSize: "0.8125rem",
+                            fontSize: "0.8rem",
                             cursor: "pointer",
-                            transition: "all 0.2s",
+                            transition: "all 0.2s ease",
+                            whiteSpace: "nowrap",
+                            minWidth: "60px",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = theme.accent;
-                            e.currentTarget.style.backgroundColor = "rgba(71, 85, 105, 0.1)";
+                            e.currentTarget.style.background = theme.accent;
+                            e.currentTarget.style.color = "#ffffff";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = "0 2px 8px rgba(71, 85, 105, 0.3)";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = theme.border;
-                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.background = "rgba(71, 85, 105, 0.1)";
+                            e.currentTarget.style.color = theme.accent;
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
                           }}
                         >
                           수정
@@ -535,24 +550,34 @@ export default function NoticesPage() {
                           onClick={() => handleDeleteClick(id)} 
                           disabled={deleteMutation.isPending} 
                           style={{
-                            padding: "6px 12px",
-                            borderRadius: "8px",
-                            border: `1px solid ${theme.danger}`,
-                            background: "transparent",
-                            color: theme.danger,
+                            padding: "6px 14px",
+                            borderRadius: "6px",
+                            border: "1px solid #ef4444",
+                            background: "rgba(239, 68, 68, 0.1)",
+                            color: "#ef4444",
                             fontWeight: 600,
-                            fontSize: "0.8125rem",
+                            fontSize: "0.8rem",
                             cursor: deleteMutation.isPending ? "not-allowed" : "pointer",
-                            opacity: deleteMutation.isPending ? 0.6 : 1,
-                            transition: "all 0.2s",
+                            opacity: deleteMutation.isPending ? 0.5 : 1,
+                            transition: "all 0.2s ease",
+                            whiteSpace: "nowrap",
+                            minWidth: "60px",
                           }}
                           onMouseEnter={(e) => {
                             if (!deleteMutation.isPending) {
-                              e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.1)";
+                              e.currentTarget.style.background = "#ef4444";
+                              e.currentTarget.style.color = "#ffffff";
+                              e.currentTarget.style.transform = "translateY(-1px)";
+                              e.currentTarget.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.3)";
                             }
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent";
+                            if (!deleteMutation.isPending) {
+                              e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.transform = "translateY(0)";
+                              e.currentTarget.style.boxShadow = "none";
+                            }
                           }}
                         >
                           삭제

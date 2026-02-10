@@ -17,9 +17,24 @@ public class BannerService {
 
     @Transactional(readOnly = true)
     public List<BannerResponse> findAll() {
-        return bannerRepository.findAll().stream()
-                .map(BannerResponse::new)
-                .collect(Collectors.toList());
+        try {
+            List<Banner> banners = bannerRepository.findAll();
+            return banners.stream()
+                    .map(banner -> {
+                        try {
+                            return new BannerResponse(banner);
+                        } catch (Exception e) {
+                            System.err.println("BannerResponse 생성 실패 - bannerId: " + (banner != null ? banner.getBannerId() : "null"));
+                            e.printStackTrace();
+                            throw new RuntimeException("배너 응답 생성 중 오류: " + e.getMessage(), e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("배너 목록 조회 실패:");
+            e.printStackTrace();
+            throw new RuntimeException("배너 목록을 불러오는 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
     }
 
     @Transactional(readOnly = true)

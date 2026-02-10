@@ -46,6 +46,9 @@ public class Product {
     @Column(length = 500)
     private String summary;
 
+    @Column(length = 1000)
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name= "status", length = 20)
     private ProductStatus status;

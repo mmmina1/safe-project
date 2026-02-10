@@ -150,14 +150,11 @@ export default function BlindReasonsPage() {
           form.requestSubmit();
         }
       }
-      if (e.key === 'F5') {
-        e.preventDefault();
-        refetch();
-      }
+      // F5는 기본 새로고침 동작을 사용하도록 제거
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [editingId, refetch, onCancelEdit]);
+  }, [editingId, onCancelEdit]);
 
   // 정렬 및 필터링
   const handleSort = (field) => {

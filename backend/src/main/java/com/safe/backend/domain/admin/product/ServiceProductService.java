@@ -36,16 +36,18 @@ public class ServiceProductService {
         if (request.getMainImage() != null) {
             product.setMainImage(request.getMainImage());
         }
-        if (request.getStatus() != null) {
-            product.update(
-                    product.getName(),
-                    product.getPriceType(),
-                    product.getSummary(),
-                    product.getDescription(),
-                    product.getMainImage(),
-                    request.getStatus()
-            );
-        }
+        // status가 없으면 기본값으로 "ON_SALE" 설정 (사용자 페이지에 표시되도록)
+        String status = request.getStatus() != null && !request.getStatus().isEmpty() 
+                ? request.getStatus() 
+                : "ON_SALE";
+        product.update(
+                product.getName(),
+                product.getPriceType(),
+                product.getSummary(),
+                product.getDescription(),
+                product.getMainImage(),
+                status
+        );
         return new ServiceProductResponse(productRepository.save(product));
     }
 
@@ -53,13 +55,17 @@ public class ServiceProductService {
     public ServiceProductResponse update(Long id, ServiceProductRequest request) {
         ServiceProduct product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        // status가 없으면 기존 값 유지, 있으면 업데이트
+        String status = request.getStatus() != null && !request.getStatus().isEmpty() 
+                ? request.getStatus() 
+                : (product.getStatus() != null ? product.getStatus() : "ON_SALE");
         product.update(
                 request.getName(),
                 request.getPriceType() != null ? request.getPriceType() : com.safe.backend.domain.admin.product.PriceType.FREE,
                 request.getSummary(),
                 request.getDescription(),
                 request.getMainImage(),
-                request.getStatus()
+                status
         );
         return new ServiceProductResponse(product);
     }

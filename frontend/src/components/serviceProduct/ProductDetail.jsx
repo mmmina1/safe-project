@@ -74,9 +74,12 @@ function ProductDetail() {
         )
     }
 
+    const API_BASE = "http://localhost:8080";
+    const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
+    
     const imageStyle = product.mainImage
         ? {
-        backgroundImage: `url(${product.mainImage})`,
+        backgroundImage: `url(${imageFullUrl(product.mainImage)})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         }
@@ -147,7 +150,11 @@ function ProductDetail() {
                     <div className='sp-tab-content'>
                         {activeTab === 'intro' ? (
                             <div className='sp-intro-content'>
-                                <p>서비스 소개 내용이 여기에 표시됩니다.</p>
+                                {product.description ? (
+                                    <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.8" }}>{product.description}</p>
+                                ) : (
+                                    <p>서비스 소개 내용이 없습니다.</p>
+                                )}
                                 {product.features && product.features.length > 0 && (
                                     <ul className='sp-features-list'>
                                         {product.features.map((feature, idx) => (
