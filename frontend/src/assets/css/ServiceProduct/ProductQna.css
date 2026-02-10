@@ -1,0 +1,16 @@
+.sp-qna { padding: 18px; }
+.sp-qna-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.sp-qna-title { font-size:18px; font-weight:800; }
+.sp-qna-writeBtn { padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+.sp-qna-form { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.sp-qna-input, .sp-qna-textarea { width:100%; padding:12px; border-radius:10px; }
+.sp-qna-textarea { min-height:120px; resize:vertical; }
+.sp-qna-private { display:flex; align-items:center; gap:8px; }
+.sp-qna-submit { padding:10px 12px; border-radius:10px; cursor:pointer; }
+
+.sp-qna-empty { opacity:0.8; padding:10px 0; }
+.sp-qna-list { display:flex; flex-direction:column; gap:10px; }
+.sp-qna-item { padding:12px; border-radius:12px; }
+.sp-qna-itemTitle { font-weight:700; margin-bottom:6px; }
+.sp-qna-itemMeta { font-size:12px; opacity:0.8; }

@@ -4,50 +4,29 @@ import '../../../assets/css/ServiceProduct/Planmodal.css'
 function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
   if (!open) return null
 
-  // 1) 기간 추출: service_level의 "기간=..." 규칙을 최우선으로 사용
-  const extractPeriod = () => {
-    const serviceLevel = product?.detail?.service_level ?? ''
-    const m = serviceLevel.match(/기간\s*=\s*([^;,\n]+)/)
-    if (m && m[1]) return m[1].trim()
-
-    // fallback: 텍스트에서 간단 파싱(단기용)
-    const text = `${product?.name ?? ''} ${product?.summary ?? ''} ${serviceLevel} ${product?.detail?.detail_desc ?? ''}`
-
-    if (text.includes('1년') || text.toLowerCase().includes('annual')) return '1년'
-    if (text.includes('12개월')) return '12개월'
-    if (text.includes('6개월')) return '6개월'
-    if (text.includes('3개월')) return '3개월'
-    if (text.includes('1개월')) return '1개월'
-
-    return '기간 정보 없음'
-  }
-
-  // 2) 가격/결제 상태 정리
-  const resolvePrice = () => {
-    const priceType = product?.price_type // 'FREE' | 'PAID'
-    const price = product?.detail?.price
-
-    if (priceType === 'FREE') return { label: '무료', amount: 0, canPay: true }
-    if (typeof price === 'number') return { label: `${price.toLocaleString()}원`, amount: price, canPay: true }
-
-    // PAID인데 가격이 없으면 결제 진행 막는게 UX상 안전
-    return { label: '가격 미정(문의 필요)', amount: null, canPay: false }
-  }
-
-  const period = extractPeriod()
-  const priceInfo = resolvePrice()
-
   const title = product?.name ?? '상품'
   const summary = product?.summary ?? ''
-  const detailText = product?.description ?? product?.detail?.detail_desc ?? ''
-  const serviceLevel = product?.detail?.service_level ?? ''
+  const detailText = product?.description ?? ''
 
-  // 버튼 문구
-  const primaryText =
-    product?.price_type === 'FREE' ? '신청하기' : '결제하기'
+  const isFree = product?.priceType === 'FREE'
 
-  // 체크 조건: 동의 + (유료면 가격 확정)
-  const canSubmit = agreed && !!product && priceInfo.canPay
+  // DB에서 내려준 plan 값 사용
+  const period =
+    product?.plan?.periodText ??
+    (isFree ? '무료 · 즉시 적용' : '기간 정보 없음')
+
+  const finalPrice = product?.plan?.finalPrice
+
+  const priceLabel = isFree
+    ? '무료'
+    : (typeof finalPrice === 'number'
+        ? `${finalPrice.toLocaleString()}원`
+        : '가격 미정(문의 필요)')
+
+  const canPay = isFree || typeof finalPrice === 'number'
+  const canSubmit = agreed && canPay
+
+  const primaryText = isFree ? '바로 적용하기' : '결제하기'
 
   // [신규] 장바구니 담기 버튼 핸들러
   const handleAddToCart = async () => {
@@ -82,7 +61,6 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
   return (
     <div className='sp-modal-backdrop' onClick={onClose}>
       <div className='sp-modal sp-modal-improved' onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className='sp-modal-header sp-modal-header-improved'>
           <h3>
             <span className='sp-modal-icon'>🧾</span>
@@ -97,24 +75,25 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
           </button>
         </div>
 
-        {/* Body */}
         <div className='sp-modal-body sp-modal-body-improved'>
           {!product ? (
             <div className='sp-detail-error sp-empty-state'>
               <div className='sp-empty-icon'>📭</div>
               <p className='sp-empty-text'>상품 정보를 불러오지 못했습니다.</p>
-              <p className='sp-empty-subtext'>잠시 후 다시 시도해주세요.</p>
             </div>
           ) : (
             <>
-              {/* 안내 배너 */}
               <div className='sp-plan-intro'>
                 <p className='sp-plan-intro-text'>
-                  아래 내용을 확인한 뒤 {product?.price_type === 'FREE' ? '신청' : '결제'}를 진행해주세요.
+                  아래 내용을 확인한 뒤 {isFree ? '신청' : '결제'}를 진행해주세요.
                 </p>
+                {isFree && (
+                  <p className='sp-plan-intro-text' style={{ opacity: 0.85, marginTop: 6 }}>
+                    무료 상품이라 결제 없이 즉시 적용 가능합니다.
+                  </p>
+                )}
               </div>
 
-              {/* 핵심 요약 카드 */}
               <div className='sp-summary-card'>
                 <div className='sp-summary-row'>
                   <span className='sp-summary-label'>상품</span>
@@ -130,20 +109,11 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
 
                 <div className='sp-summary-row'>
                   <span className='sp-summary-label'>가격</span>
-                  <span className={`sp-summary-value ${!priceInfo.canPay ? 'is-warn' : ''}`}>
-                    {priceInfo.label}
+                  <span className={`sp-summary-value ${!canPay ? 'is-warn' : ''}`}>
+                    {priceLabel}
                   </span>
                 </div>
 
-                {/* 서비스 레벨/적용 방식(있으면 짧게 보여주기) */}
-                {serviceLevel && (
-                  <div className='sp-summary-desc'>
-                    <div className='sp-summary-desc-title'>적용 방식</div>
-                    <div className='sp-summary-desc-text'>{serviceLevel}</div>
-                  </div>
-                )}
-
-                {/* 요약 */}
                 {summary && (
                   <div className='sp-summary-desc'>
                     <div className='sp-summary-desc-title'>요약</div>
@@ -151,7 +121,6 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
                   </div>
                 )}
 
-                {/* 상세는 길어지면 접기(HTML details 사용) */}
                 {detailText && (
                   <details className='sp-details'>
                     <summary className='sp-details-summary'>상세 안내 보기</summary>
@@ -159,23 +128,15 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
                   </details>
                 )}
 
-                {/* 가격/기간 미정 안내 */}
-                {!priceInfo.canPay && (
+                {!canPay && (
                   <div className='sp-alert sp-alert-warn'>
-                    유료 상품인데 가격 정보가 없습니다. 결제 진행 대신 문의/가격 등록 후 진행을 권장합니다.
-                  </div>
-                )}
-
-                {period === '기간 정보 없음' && (
-                  <div className='sp-alert sp-alert-warn'>
-                    적용기간이 명확하지 않습니다. 상품 설명(요약/상세 또는 service_level)에 기간을 명시해주세요.
+                    유료 상품인데 가격 정보가 없습니다. 플랜 가격 또는 상세 가격을 등록해주세요.
                   </div>
                 )}
               </div>
             </>
           )}
 
-          {/* 동의 */}
           <div className='sp-agreement-section'>
             <label className='sp-checkbox-label sp-checkbox-label-improved'>
               <input
@@ -192,7 +153,6 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
           </div>
         </div>
 
-        {/* Footer */}
         <div className='sp-modal-footer sp-modal-footer-improved'>
           <button
             className={`sp-modal-btn sp-btn-subscribe sp-btn-subscribe-improved ${!canSubmit ? 'disabled' : ''}`}
@@ -202,7 +162,7 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
             }}
             disabled={!canSubmit}
           >
-            <span className='sp-btn-icon'>{product?.price_type === 'FREE' ? '✅' : '💳'}</span>
+            <span className='sp-btn-icon'>{isFree ? '✅' : '💳'}</span>
             <span>{primaryText}</span>
           </button>
 

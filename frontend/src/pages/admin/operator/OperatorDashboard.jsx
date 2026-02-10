@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
+
 
 const CARD_BG = "#363a4d";
 const BORDER = "#545763";
@@ -28,7 +29,7 @@ export default function OperatorDashboard() {
   const { data: stats, isLoading, isError, error } = useQuery({
     queryKey: ["operatorDashboardStats"],
     queryFn: async () => {
-      const res = await api.get("/admin/dashboard/stats");
+      const res = await api.get("/api/admin/dashboard/stats");
       return res.data;
     },
   });

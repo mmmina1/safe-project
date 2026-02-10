@@ -167,4 +167,8 @@ public class User {
     public void updatePassword(String passwordHash) {
         this.passwordHash = passwordHash;
     }
+  
+    public void changePassword(String encodedPassword) {
+        this.passwordHash = encodedPassword;
+    }
 }

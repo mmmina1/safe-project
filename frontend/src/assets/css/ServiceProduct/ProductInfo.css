@@ -76,7 +76,7 @@
 
 .sp-section-desc-improved {
   color: rgba(234,240,255,0.90);
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.8;
   margin: 0;
   font-weight: 500;
@@ -93,10 +93,10 @@
 .sp-pill-improved {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 17px;
+  gap: 5px;
+  padding: 8px 15px;
   border-radius: 15px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 900;
   color: rgba(234,240,255,0.95);
   background: rgba(255,70,140,0.15);

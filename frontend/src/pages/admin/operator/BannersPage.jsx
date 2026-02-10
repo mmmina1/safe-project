@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 const API_BASE = "http://localhost:8080";
 const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
@@ -14,7 +14,7 @@ export default function BannersPage() {
   const { data: banners = [], isLoading, isError, error } = useQuery({
     queryKey: ["adminBanners"],
     queryFn: async () => {
-      const res = await api.get("/admin/banners");
+      const res = await api.get("api/admin/banners");
       return res.data;
     },
   });
@@ -23,7 +23,7 @@ export default function BannersPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload) => {
-      const res = await api.post("/admin/banners", payload);
+      const res = await api.post("api//admin/banners", payload);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminBanners"] }),
@@ -31,7 +31,7 @@ export default function BannersPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...payload }) => {
-      const res = await api.put(`/admin/banners/${id}`, payload);
+      const res = await api.put(`api//admin/banners/${id}`, payload);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminBanners"] }),
@@ -39,7 +39,7 @@ export default function BannersPage() {
 
   const toggleMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/banners/${id}/toggle`);
+      const res = await api.patch(`api//admin/banners/${id}/toggle`);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminBanners"] }),
@@ -47,7 +47,7 @@ export default function BannersPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/admin/banners/${id}`);
+      await api.delete(`api//admin/banners/${id}`);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminBanners"] }),
   });
@@ -64,7 +64,7 @@ export default function BannersPage() {
     mutationFn: async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await api.post("/admin/banners/upload", formData, {
+      const res = await api.post("api//admin/banners/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return res.data;

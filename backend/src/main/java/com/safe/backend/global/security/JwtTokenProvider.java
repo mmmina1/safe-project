@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    private final Key key;
+    private final SecretKey key;
     private final long accessTokenValidityInMillis;
 
     public JwtTokenProvider(
@@ -30,12 +30,12 @@ public class JwtTokenProvider {
         Date expiry = new Date(now.getTime() + accessTokenValidityInMillis);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getUserId()))       // sub = user_id
+                .subject(String.valueOf(user.getUserId()))       // sub = user_id
                 .claim("email", user.getEmail())
                 .claim("role", user.getRole().name())               // enum이면 .name()
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .issuedAt(now)
+                .expiration(expiry)
+                .signWith(key)
                 .compact();
     }
 
@@ -43,6 +43,12 @@ public class JwtTokenProvider {
     public Long getUserId(String token) {
         Claims claims = parseClaims(token);
         return Long.valueOf(claims.getSubject());
+    }
+
+    // 토큰에서 role 추출 ("ADMIN", "OPERATOR" 등)
+    public String getRole(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get("role", String.class);
     }
 
     // 토큰 유효성 검증
@@ -56,8 +62,8 @@ public class JwtTokenProvider {
     }
 
     private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
+        return Jwts.parser()
+                .verifyWith(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

@@ -18,7 +18,7 @@ public class BlacklistHistory {
     private Long historyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blacklist_id", nullable = false)
+    @JoinColumn(name = "blacklist_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Blacklist blacklist;
 
     @Column(name = "action_type", nullable = false, length = 20)

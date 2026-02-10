@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getReviewSummary } from '../../api/reviewApi';
 import "../../assets/css/ServiceProduct/ProductCard.css";
 
 function ProductCard({item}) {
@@ -16,23 +17,32 @@ function ProductCard({item}) {
     const priceType = item.priceType ?? item.price_type;
     const price = item.price ?? item.monthlyPrice ?? 0;
 
-    const rating = item.rating ?? item.avgRating ?? 0;
-    const reviewCount = item.reviewCount ?? item.review_count ?? item.reviewsCount ?? 0;
-
     const mainImage = item.mainImage ?? item.main_image ?? null;
+    const [ summary, setSummary ] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+        getReviewSummary(id)
+            .then(setSummary)
+            .catch(() => {});
+        }, [id]);
+
+    const rating = summary?.avgRating ?? 0;
+    const reviewCount = summary?.reviewCount ?? 0;
 
     const imageStyle = mainImage
-        ? { backgroundImage: `url(${mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        ? { 
+            backgroundImage: `url("${mainImage}")`,
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center' 
+          }
         : { backgroundColor: '#2a2f3a' };
 
   return (
     <div className='sp-card sp-glass' onClick={() => navigate(`/product/${id}`)} role='button' tabIndex={0}>
-        <div className='sp-thumb' style={imageStyle}>
-            {/* 찜하기 버튼 */}
-            <div className="sp-likeFab" onClick={(e) => {
-                e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
-                // 찜하기
-            }}>♡</div>
+        <div className="sp-thumb" style={imageStyle}>
+            {!mainImage && <div className="sp-thumbFallback">이미지 없음</div>}
+            <div className="sp-likeFab" onClick={(e)=>{e.stopPropagation()}}>♡</div>
             </div>
 
             {/* 상품명 */}
@@ -42,7 +52,7 @@ function ProductCard({item}) {
                 {/* 평점, 리뷰 */}
                 <div className='sp-cardMeta'>
                     <span className="sp-star">★ {Number(rating).toFixed(1)}</span>
-                    <span className="sp-dot">·</span>
+                    <span className="sp-dot">/</span>
                     <span className="sp-review">리뷰 {reviewCount}</span>
                 </div>
 

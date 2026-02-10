@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function BlindReasonsPage() {
   const [editingId, setEditingId] = useState(null);
@@ -10,7 +10,7 @@ export default function BlindReasonsPage() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["blindReasons"],
     queryFn: async () => {
-      const res = await api.get("/admin/blind-reasons");
+      const res = await api.get("/api/admin/blind-reasons");
       return res.data;
     },
   });
@@ -23,7 +23,7 @@ export default function BlindReasonsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (name) => {
-      const res = await api.post("/admin/blind-reasons", { reasonName: name });
+      const res = await api.post("/api/admin/blind-reasons", { reasonName: name });
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blindReasons"] }),
@@ -31,7 +31,7 @@ export default function BlindReasonsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, reasonName }) => {
-      const res = await api.put(`/admin/blind-reasons/${id}`, { reasonName });
+      const res = await api.put(`/api/admin/blind-reasons/${id}`, { reasonName });
       return res.data;
     },
     onSuccess: () => {
@@ -42,7 +42,7 @@ export default function BlindReasonsPage() {
 
   const toggleMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/blind-reasons/${id}/toggle`);
+      const res = await api.patch(`/api/admin/blind-reasons/${id}/toggle`);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blindReasons"] }),
@@ -50,7 +50,7 @@ export default function BlindReasonsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/admin/blind-reasons/${id}`);
+      await api.delete(`/api/admin/blind-reasons/${id}`);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blindReasons"] }),
   });
