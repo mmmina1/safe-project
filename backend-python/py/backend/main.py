@@ -7,9 +7,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-# Feature Routers: 각 기능을 독립된 모듈로 관리
-from app.features.diagnosis.presentation.router import router as diagnosis_router
-from app.features.chat.presentation.router import router as chat_router
+# Feature Routers: 각 기능을 독립된 모듈로 관리 (Layered Grouping)
+from app.features.a_presentation.diagnosis.router import router as diagnosis_router
+from app.features.a_presentation.chat.router import router as chat_router
+from app.features.a_presentation.sim.router import router as simulator_router
 # 이 아래에 모듈들을 더 추가할수 있음 추가시에 저 아래에 라우터 등록도 해야함
 
 # ============================================================
@@ -65,6 +66,7 @@ app.add_middleware(
 # 기능별 라우터 등록
 app.include_router(diagnosis_router)  # /diagnosis 경로 활성화
 app.include_router(chat_router)       # /chat 경로 활성화
+app.include_router(simulator_router)  # /simulator 경로 활성화
 # 이 아래에 라우터 등록을 더 추가할 수 있음
 
 

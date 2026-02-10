@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import com.safe.backend.domain.serviceProduct.dto.ProductDetail;
+import com.safe.backend.domain.serviceProduct.dto.ProductDetailResponse;
 import com.safe.backend.domain.serviceProduct.dto.ProductListItem;
 import com.safe.backend.domain.serviceProduct.service.ProductService;
 
@@ -39,7 +39,7 @@ public class ProductController {
 
     //상품 상세 정보 
     @GetMapping("/{productId}")
-    public ProductDetail getProductDetail(@PathVariable Long productId){
+    public ProductDetailResponse getProductDetail(@PathVariable Long productId){
         return productService.getProductDetail(productId);
     }
 

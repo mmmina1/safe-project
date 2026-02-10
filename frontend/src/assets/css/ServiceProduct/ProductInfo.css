@@ -1,0 +1,422 @@
+/* ===== 탭 컨텐츠 ===== */
+.sp-tab-content {
+  padding: 36px 28px;
+  min-height: 300px;
+}
+
+.sp-intro-content,
+.sp-reviews-content {
+  color: rgba(234,240,255,0.85);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* ===== 개선된 서비스 소개 히어로 ===== */
+.sp-intro-hero-improved {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.12);
+  margin-bottom: 32px;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 860px) {
+  .sp-intro-hero-improved {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sp-intro-heroImg-improved {
+  width: 100%;
+  height: 200px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid rgba(255,255,255,0.15);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.30);
+}
+
+.sp-intro-heroImg--fallback {
+  background: linear-gradient(135deg, rgba(100,120,255,0.15), rgba(200,80,160,0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-placeholder-icon {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.sp-intro-heroBody-improved {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ===== 개선된 섹션 타이틀 ===== */
+.sp-section-title-improved {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-title-icon {
+  font-size: 32px;
+}
+
+.sp-section-desc-improved {
+  color: rgba(234,240,255,0.90);
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ===== 개선된 Pills (더 크고 명확하게) ===== */
+.sp-pillRow-improved {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sp-pill-improved {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(234,240,255,0.95);
+  background: rgba(255,70,140,0.15);
+  border: 2px solid rgba(255,70,140,0.30);
+  transition: all 0.3s ease;
+}
+
+
+.sp-pill-icon {
+  font-size: 20px;
+}
+
+/* ===== 개선된 서비스 이용 안내 ===== */
+.sp-common-info-improved {
+  padding: 28px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.15);
+  border: 2px solid rgba(255,255,255,0.12);
+  margin-top: 24px;
+}
+
+.sp-common-head-improved {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.sp-common-head-improved h4 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-head-icon {
+  font-size: 28px;
+}
+
+.sp-common-badge-improved {
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 900;
+  color: rgba(234,240,255,0.95);
+  background: rgba(100,120,255,0.20);
+  border: 2px solid rgba(100,120,255,0.35);
+}
+
+/* ===== 알림 박스 (중요 안내사항) ===== */
+.sp-notice-box {
+  display: flex;
+  gap: 18px;
+  padding: 24px;
+  background: rgba(100,150,255,0.12);
+  border: 2px solid rgba(100,150,255,0.25);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.sp-notice-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+}
+
+.sp-notice-content {
+  flex: 1;
+}
+
+.sp-notice-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0 0 10px 0;
+}
+
+.sp-notice-text {
+  color: rgba(234,240,255,0.90);
+  font-size: 17px;
+  line-height: 1.7;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ===== 가이드 카드 그리드 ===== */
+.sp-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .sp-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sp-guide-card {
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.12);
+  transition: all 0.3s ease;
+}
+
+.sp-guide-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sp-guide-icon {
+  font-size: 32px;
+}
+
+.sp-guide-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.sp-guide-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sp-guide-list li {
+  color: rgba(234,240,255,0.85);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-left: 28px;
+  position: relative;
+  font-weight: 500;
+}
+
+.sp-guide-list li::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: #4CAF50;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+/* ===== 개선된 주요 기능 섹션 ===== */
+.sp-features-section {
+  margin-top: 32px;
+  padding: 28px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.10);
+}
+
+.sp-features-title {
+  margin: 0 0 24px 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-features-icon {
+  font-size: 28px;
+}
+
+.sp-features-list-improved {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.sp-feature-item-improved {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  color: rgba(234,240,255,0.95);
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.10);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.sp-feature-item-improved:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+  transform: translateX(4px);
+}
+
+.sp-check-icon {
+  flex-shrink: 0;
+  color: #4CAF50;
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.sp-feature-text {
+  flex: 1;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ===== 이전 스타일 (호환성 유지) ===== */
+.sp-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  gap: 14px;
+}
+
+.sp-features-list li {
+  padding: 16px;
+  padding-left: 48px;
+  position: relative;
+  color: rgba(234,240,255,0.95);
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.sp-features-list li:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+  transform: translateX(4px);
+}
+
+.sp-features-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 16px;
+  color: #4CAF50;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+/* 긴 설명 줄 수 제한(보기 좋게) */
+.sp-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sp-subtitle {
+  margin-top: 22px;
+  color: rgba(234,240,255,0.9);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .sp-section-title-improved {
+    font-size: 22px;
+  }
+
+  .sp-section-desc-improved {
+    font-size: 16px;
+  }
+
+  .sp-pill-improved {
+    font-size: 15px;
+    padding: 10px 16px;
+  }
+
+  .sp-notice-title {
+    font-size: 18px;
+  }
+
+  .sp-notice-text {
+    font-size: 16px;
+  }
+
+  .sp-guide-title {
+    font-size: 18px;
+  }
+
+  .sp-guide-list li {
+    font-size: 16px;
+  }
+
+  .sp-feature-text {
+    font-size: 17px;
+  }
+}
+
+/* ===== 접근성 향상 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .sp-pill-improved:hover,
+  .sp-guide-card:hover,
+  .sp-feature-item-improved:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .sp-intro-hero-improved,
+  .sp-common-info-improved,
+  .sp-guide-card,
+  .sp-feature-item-improved {
+    border-width: 3px;
+  }
+}

@@ -37,13 +37,13 @@ public class Product {
     private ProductCategory baseCategory;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "price_type")
+    @Column(name = "price_type", nullable = false, length = 10)
     private PriceType priceType;
 
     @Column(name = "main_image", length = 300)
     private String mainImage;
 
-    @Column(length = 500)
+    @Column(name= "summary", length = 500)
     private String summary;
 
     @Column(length = 1000)
@@ -59,7 +59,17 @@ public class Product {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @Column(name = "description", length = 1000)
+    private String description;
+
+    @Column(name = "is_active")
+    private Integer isActive;
+
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetail detail;
-    
+
+    public void changeMainImage(String mainImage) {
+        this.mainImage = mainImage;
+        this.updatedDate = LocalDateTime.now(); // 선택: 수정일도 같이 갱신하고 싶으면
+    }
 }

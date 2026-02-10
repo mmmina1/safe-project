@@ -58,29 +58,26 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Test coverage
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-coverage.xml
-*.cover
+# Uploaded files
+uploads/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Data files (depending on your needs)
-# data/*.csv
-# data/*.json
-
-# Model files (if large)
-# *.pkl
-# *.h5
-# *.model
-
-# Gradle
+# Gradle (❗필수)
 .gradle/
 **/.gradle/
 build/
- 
+**/build/
+
+# Java / Backend build outputs
+bin/
+backend/bin/
+
+# Python virtualenv (❗필수)
+.venv/
+backend/.venv/
+
+# OS / temp
+.DS_Store
+Thumbs.db
+
+# Spring Boot config
+src/main/resources/application.properties

@@ -1,0 +1,32 @@
+.stats-card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stats-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.stats-card h4 {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.stats-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+}
+
+.stats-value.up {
+  color: #2e7d32;
+}
+
+.stats-value.down {
+  color: #c62828;
+}

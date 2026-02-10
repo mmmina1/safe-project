@@ -75,7 +75,7 @@ cd backend
 # 또는 IDE에서 BackendApplication 실행
 ```
 
-백엔드는 `http://localhost:8081`에서 실행됩니다.
+백엔드는 `http://localhost:8080`에서 실행됩니다.
 
 ### 3. 프론트엔드 실행
 

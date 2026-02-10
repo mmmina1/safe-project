@@ -13,11 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.http.HttpMethod;
-
-
 
 import java.util.List;
 
@@ -46,10 +43,20 @@ public class SecurityConfig {
                         // 회원가입 / 로그인 / 테스트 API 등은 모두 허용
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/monitoring/**",
                                 "/api/test",
                                 "/oauth2/**",
-                                "/oauth2/callback/**"
+                                "/oauth2/callback/**",
+                                "/api/images/upload",
+                                "/api/ai/**",
+                                "/api/v1/payments/**",
+                                "/api/comments/**"
                         ).permitAll()
+
+                        //  관리자 전용 API
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
 
                         //✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
@@ -70,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,   "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,    "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
 
                         // 그 외는 토큰 필요
@@ -98,7 +106,11 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // 허용할 HTTP 메서드
+<<<<<<< HEAD
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+=======
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+>>>>>>> b7ecbb4e9b81c1a0582d7bc172551f8e0bb8bc1f
 
         // 허용할 헤더
         config.setAllowedHeaders(List.of("*"));
@@ -112,3 +124,4 @@ public class SecurityConfig {
     }
 
 }
+

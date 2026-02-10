@@ -19,7 +19,7 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    //목록
+    //목록 
     @GetMapping("/posts")
     public VisitPostList getPosts(
         @RequestParam(required = false) String query,
@@ -46,3 +46,4 @@ public class CommunityController {
     }
     
 }
+

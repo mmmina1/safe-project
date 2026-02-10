@@ -7,6 +7,7 @@ import com.safe.backend.domain.aiservice.domain.Entity.ChatRequestEntity;
 import com.safe.backend.domain.aiservice.domain.Entity.ChatResultEntity;
 import com.safe.backend.domain.aiservice.domain.usecase.ChatUseCase;
 import com.safe.backend.domain.aiservice.domain.usecase.DiagnosisUseCase;
+import com.safe.backend.domain.aiservice.domain.usecase.SimulationUseCase;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class AiServiceViewModel {
 
     private final ChatUseCase chatUseCase;
     private final DiagnosisUseCase diagnosisUseCase;
+    private final SimulationUseCase simulationUseCase;
 
     // 채팅으로 ai에게 질문을 하는 루트
     @PostMapping("/chat")
@@ -31,6 +33,20 @@ public class AiServiceViewModel {
 
         ChatResultEntity chatResultEntity = chatUseCase.execute(request.getMessage(), request.getSession_id());
         return chatResultEntity;
+    }
+
+    // 시뮬레이션 시작 (AI 첫 대사 생성)
+    @GetMapping("/simulator/start")
+    public Object startSimulation(@RequestParam String scenarioType) {
+        return simulationUseCase.start(scenarioType);
+    }
+
+    // 시뮬레이션 평가 (사용자 응답 채점)
+    @PostMapping("/simulator/evaluate")
+    public Object evaluateSimulation(@RequestBody java.util.Map<String, String> request) {
+        String situation = request.get("situation");
+        String playerAnswer = request.get("player_answer");
+        return simulationUseCase.evaluate(situation, playerAnswer);
     }
 
     // 채팅기록을 알려주는 루트
