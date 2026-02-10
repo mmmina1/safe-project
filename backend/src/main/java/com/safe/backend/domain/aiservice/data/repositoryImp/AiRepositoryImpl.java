@@ -3,10 +3,11 @@ package com.safe.backend.domain.aiservice.data.repositoryImp;
 import com.safe.backend.domain.aiservice.data.Model.ChatResponseModel;
 import com.safe.backend.domain.aiservice.data.datasource.AiChatDBDataSource;
 import com.safe.backend.domain.aiservice.data.datasource.PythonAiDataSource;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatResultEntity;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatSourceEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatSourceEntity;
 import com.safe.backend.domain.aiservice.domain.repository.AiRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -23,19 +24,25 @@ public class AiRepositoryImpl implements AiRepository {
     private final AiChatDBDataSource aiChatDBDataSource;
 
     @Override
-    public ChatResultEntity chat(String message, String userId) {
+    public ChatResultEntity chat(String message, Long userId) {
+
         // 1. 파이썬 AI 서버와 통신
-        ChatResponseModel response = pythonAiDataSource.sendChatMessage(message, userId);
+        // 1. [변환!] Long(숫자)을 String(문자)으로 바꿔서 파이썬에게 보냅니다.
+        // (null이면 "-1"로 변환)
+        String sessionId = (userId != null) ? String.valueOf(userId) : "-1";
 
-        // 2. DB에 채팅 로그 저장 (비동기로 처리하는 것이 좋으나 우선 동기로 구현)
-        try {
-            long numericUserId = parseUserId(userId);
-            aiChatDBDataSource.create(numericUserId, "user", message);
-            aiChatDBDataSource.create(numericUserId, "bot", response.getAnswer());
-        } catch (Exception e) {
-            log.error("Failed to save chat log to DB: {}", e.getMessage());
+        // 2. 이제 에러 없이 들어갑니다! (sendChatMessage가 String을 기다리고 있으니까요)
+        ChatResponseModel response = pythonAiDataSource.sendChatMessage(message, sessionId);
+
+        // 2. DB에 채팅 로그 저장 (회원일 때만!)
+        if (userId != null) { // 👈 이 체크가 꼭 필요합니다!
+            try {
+                aiChatDBDataSource.create(userId, "user", message);
+                aiChatDBDataSource.create(userId, "bot", response.getAnswer());
+            } catch (Exception e) {
+                log.error("Failed to save chat log to DB: {}", e.getMessage());
+            }
         }
-
         // 3. DTO -> Domain Entity 변환
         return new ChatResultEntity(
                 response.getAnswer(),
@@ -46,9 +53,8 @@ public class AiRepositoryImpl implements AiRepository {
     }
 
     @Override
-    public List<ChatMessageEntity> getChatHistory(String userId) {
-        long numericUserId = parseUserId(userId);
-        return aiChatDBDataSource.read(numericUserId).stream()
+    public List<ChatMessageEntity> getChatHistory(Long userId) {
+        return aiChatDBDataSource.read(userId).stream()
                 .map(model -> new ChatMessageEntity(
                         model.getRole(),
                         model.getContent(),
@@ -59,18 +65,6 @@ public class AiRepositoryImpl implements AiRepository {
     @Override
     public String diagnosePhishing(String phoneNumber) {
         return pythonAiDataSource.requestDiagnosis(phoneNumber);
-    }
-
-    /**
-     * userId 문자열을 Long으로 변환 (실제 서비스에서는 보안 세션 등에서 가져와야 함)
-     */
-    private long parseUserId(String userId) {
-        try {
-            return Long.parseLong(userId);
-        } catch (NumberFormatException e) {
-            // "react_user" 등 숫자가 아닌 경우 임시 ID 1L 반환
-            return 1L;
-        }
     }
 
     @Override

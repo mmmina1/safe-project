@@ -1,4 +1,5 @@
-import axios from "axios";
+// src/api/paymentApi.js
+import axiosInstance from "./axiosInstance"; // axios 대신 공용 도구 사용
 
 /**
  * 토스페이먼츠 결제 승인 요청
@@ -7,7 +8,7 @@ import axios from "axios";
  */
 export const confirmPayment = async (paymentData) => {
     try {
-        const response = await axios.post("/api/v1/payments/confirm", paymentData);
+        const response = await axiosInstance.post("/api/v1/payments/confirm", paymentData);
         return response;
     } catch (error) {
         console.error("Payment Confirmation API Error:", error);

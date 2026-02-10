@@ -63,14 +63,14 @@ export default function PaymentPractice() {
     return (
         <div className="animate-fade-in">
             <h2 className="page-title">💳 결제 연습 (Sandbox)</h2>
-            <p className="text-muted mb-4">토스페이먼츠의 실제 결제 흐름을 안전하게 연습해볼 수 있습니다.</p>
+            <p className="text-secondary mb-4">토스페이먼츠의 실제 결제 흐름을 안전하게 연습해볼 수 있습니다.</p>
 
             <div className="dashboard-card">
                 <div id="payment-method" className="w-100" />
                 <div id="agreement" className="w-100" />
 
-                <div className="mt-4 text-center border-top pt-4">
-                    <p className="text-muted small mb-3">연습용이므로 실제 비용이 청구되지 않습니다.</p>
+                <div className="mt-4 text-center border-top border-secondary pt-4">
+                    <p className="text-secondary small mb-3">연습용이므로 실제 비용이 청구되지 않습니다.</p>
                     <button
                         className="btn btn-primary btn-lg px-5 py-3 fw-bold"
                         onClick={handlePaymentRequest}

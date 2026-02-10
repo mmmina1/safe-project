@@ -76,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
-
+                        .requestMatchers("/api/cart/**").authenticated()
                         // 그 외는 토큰 필요
                         .anyRequest().authenticated()
                 );
@@ -118,4 +118,3 @@ public class SecurityConfig {
     }
 
 }
-

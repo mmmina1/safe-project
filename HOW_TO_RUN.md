@@ -5,7 +5,7 @@
 <!-- 첫 실행시 -->
 cd frontend
 npm install
-npm install react-router-dom lucide-react zustand @tosspayments/tosspayments-sdk chart.js react-chartjs-2 react-unity-webgl
+npm install react-router-dom react-bootstrap bootstrap react-icons lucide-react zustand axios @tanstack/react-query react-hook-form recharts chart.js react-chartjs-2 react-unity-webgl react-leaflet @tosspayments/tosspayments-sdk @tosspayments/payment-widget-sdk
 npm run dev
 
 <!-- 재시작시 -->

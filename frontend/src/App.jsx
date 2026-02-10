@@ -48,6 +48,9 @@ import KakaoLogoutCallbackPage from './pages/KakaoLogoutCallbackPage.jsx';
 import GoogleCallbackPage from './pages/GoogleCallbackPage.jsx';
 import MonitoringPage from './components/monitoring/MonitoringPage.jsx';
 
+import UserRoute from './UserRoute.jsx';
+import MyPage from './pages/MyPage/MyPage';
+
 //운영자 페이지
 import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
 import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
@@ -105,6 +108,10 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/mypage" element={
+                <UserRoute>
+                  <MyPage />
+                </UserRoute>} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
 
@@ -117,6 +124,7 @@ function App() {
               <Route path="/ai" element={<LandingView />} />
               <Route path="/ai/diagnosis" element={<Diagnosis />} />
               <Route path="/ai/simulator" element={<Simulator />} />
+
               {/* 4. 모니터링 (팀원 작업) */}
               <Route path="/monitoring" element={<MonitoringPage />} />
 

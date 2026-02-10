@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatRequestModel {
     private String message;
-    private String session_id = "default_session";
+    private String session_id;
     private Boolean use_rag = true;
 
     public ChatRequestModel(String message, String userId) {
         this.message = message;
-        this.session_id = userId != null ? userId : "default_session";
+        this.session_id = userId != null ? userId : "-1";
         this.use_rag = true;
     }
 }
