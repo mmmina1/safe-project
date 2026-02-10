@@ -3,7 +3,7 @@
 // ============================================================
 import React, { useState } from 'react';
 import { Search, FileText, ChevronRight, LayoutDashboard, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
-
+import { getDashboardData } from '../../../api/myPageApi.js';
 // ============================================================
 // 2. 진단 센터 화면 부품
 // ============================================================
@@ -20,6 +20,17 @@ const DiagnosisCenter = () => {
         { id: 2, date: '2023.09.01', name: '직업군 특화 진단', score: 72, status: '완료' },
         { id: 3, date: '2023.08.15', name: '간편 진단', score: null, status: '중단' },
     ];
+
+    // useEffect(() => {
+    //     getDashboardData()
+    //         .then(data => {
+    //             console.log("데이터 도착:", data);
+    //             // setDashboardData(data); // 데이터를 가져와서 저장
+    //         })
+    //         .catch(err => {
+    //             console.error("데이터 로딩 실패");
+    //         });
+    // }, []);
 
     /* ------------------------------------------------------------
        A. 리포트 상세 보기 화면 (리포트를 클릭했을 때 나타남)
