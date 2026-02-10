@@ -20,12 +20,13 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final KakaoAuthService kakaoAuthService;
     private final GoogleAuthService googleAuthService;
+
     public AuthService(UserRepository userRepository,
-                       AuthAccountRepository authAccountRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtTokenProvider jwtTokenProvider,
-                       KakaoAuthService kakaoAuthService,
-                       GoogleAuthService googleAuthService) {
+            AuthAccountRepository authAccountRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider,
+            KakaoAuthService kakaoAuthService,
+            GoogleAuthService googleAuthService) {
         this.userRepository = userRepository;
         this.authAccountRepository = authAccountRepository;
         this.passwordEncoder = passwordEncoder;
@@ -72,11 +73,12 @@ public class AuthService {
         // 3. JWT 토큰 발급
         return jwtTokenProvider.createToken(user);
     }
+
     @Transactional
     public User socialLogin(AuthProvider provider,
-                            String providerUserId,
-                            String email,
-                            String name) {
+            String providerUserId,
+            String email,
+            String name) {
 
         // 1️⃣ 이미 이 카카오 계정이 auth_accounts에 연결돼 있는지 먼저 확인
         AuthAccount authAccount = authAccountRepository
@@ -197,7 +199,7 @@ public class AuthService {
         String jwt = jwtTokenProvider.createToken(user);
         System.out.println("[KAKAO LOGIN] jwt = " + jwt);
         // 6-1) User에서 role 추출 (필드명에 맞게 수정)
-        String role = user.getRole().name();  // 예: Role이 enum이면 .name()
+        String role = user.getRole().name(); // 예: Role이 enum이면 .name()
 
         // 7) 최종 응답
         return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
@@ -242,8 +244,8 @@ public class AuthService {
         }
 
         String googleId = googleUser.getSub();
-        String email    = googleUser.getEmail();
-        String name     = googleUser.getName();
+        String email = googleUser.getEmail();
+        String name = googleUser.getName();
 
         if (email == null || email.isBlank()) {
             email = "google_" + googleId + "@google.local";
@@ -257,10 +259,9 @@ public class AuthService {
 
         String jwt = jwtTokenProvider.createToken(user);
 
-        //  여기서도 role 추출
-        String role = user.getRole().name();  // 필드명 다르면 맞춰서 변경
+        // 여기서도 role 추출
+        String role = user.getRole().name(); // 필드명 다르면 맞춰서 변경
         return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
     }
-
 
 }
