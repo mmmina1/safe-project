@@ -313,7 +313,6 @@ function ProductDetail() {
         </div>
       </div>
 
-
       <PlanModal
         open={showPlanModal} product={product} onClose={() => setShowPlanModal(false)} agreed={agreed}
         setAgreed={setAgreed} onSubscribe={handleSubscribe} />
