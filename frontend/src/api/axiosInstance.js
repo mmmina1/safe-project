@@ -22,16 +22,14 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
 
-    if (!localStorage.getItem("userId")) {
-      const payload = parseJwt(token);
-      const uid = payload?.sub;
-      if (uid) localStorage.setItem("userId", String(uid));
-    }
+    const payload = parseJwt(token);
+    const uid = payload?.sub;
+    if (uid) localStorage.setItem("userId", String(uid)); 
   }
 
   return config;

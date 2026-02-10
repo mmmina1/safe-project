@@ -3,10 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getProductDetail } from '../../../api/productApi'
 import { uploadMainImage } from '../../../api/productApi'
 import '../../../assets/css/ServiceProduct/ProductDetail.css'
+import { getReviewSummary } from '../../../api/reviewApi'
 
 import ProductQuickInfo from './ProductQuickInfo'
 import ProductIntroSection from './ProductIntroSection'
 import ProductReviewsSection from './ProductReviewsSection'
+import ProductQnaSection from './ProductQnaSection'
 import PlanModal from './PlanModal'
 
 function ProductDetail() {
@@ -20,6 +22,9 @@ function ProductDetail() {
   const [showPlanModal, setShowPlanModal] = useState(false)
   const [activeTab, setActiveTab] = useState('intro')
   const [agreed, setAgreed] = useState(false)
+
+  const [reviewAvg, setReviewAvg] = useState(null);
+  const [reviewCountState, setReviewCountState] = useState(null);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0]; // 사용자가 선택한 파일
@@ -72,6 +77,14 @@ function ProductDetail() {
         }
 
         setProduct(normalized)
+
+        try {
+            const summary = await getReviewSummary(productId)
+            setReviewAvg(Number(summary.avgRating ?? 0))
+            setReviewCountState(Number(summary.reviewCount ?? 0))
+          } catch (e) {
+            console.warn('summary fetch failed', e)
+          }
 
       } catch (e) {
         console.error(e)
@@ -147,8 +160,8 @@ function ProductDetail() {
 
   const isFree = product.priceType === 'FREE'
   const displayPrice = isFree ? 0 : product.price ?? 0
-  const displayRating = Number(product.rating ?? 0)
-  const displayReviewCount = Number(product.reviewCount ?? 0)
+  const displayRating = Number((reviewAvg ?? product.rating ?? 0));
+  const displayReviewCount = Number((reviewCountState ?? product.reviewCount ?? 0));
   const isOutOfStock = product.stockQty === 0
 
   return (
@@ -255,17 +268,22 @@ function ProductDetail() {
             <div className="sp-tabs">
               <button
                 className={`sp-tab-button sp-tab-button-large${activeTab === 'intro' ? 'active' : ''}`}
-                onClick={() => setActiveTab('intro')}
-              >
+                onClick={() => setActiveTab('intro')} >
                 <span className="sp-tab-icon">📋</span>
                 <span className='sp-tab-text'>서비스 소개</span>
               </button>
+              
               <button
                 className={`sp-tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
-                onClick={() => setActiveTab('reviews')}
-              >
+                onClick={() => setActiveTab('reviews')} >
                 <span className="sp-tab-icon">💬</span>
                 <span className='sp-tab-text'>이용 후기</span>
+              </button>
+
+              <button className={`sp-tab-button ${activeTab === 'qna' ? 'active' : ''}`}
+              onClick={() => setActiveTab('qna')}>
+                <span className='sp-tab-icon'>❓</span>
+                <span className='sp-tab-text'>상품 문의</span>
               </button>
             </div>
 
@@ -283,8 +301,13 @@ function ProductDetail() {
               )}
 
               {activeTab === 'reviews' && (
-                <ProductReviewsSection productId={productId} rating={product.rating} reviewCount={product.reviewCount} />
+                <ProductReviewsSection productId={productId} onAvgChange={(avg) => setReviewAvg(avg)} />
               )}
+
+              {activeTab === 'qna' && (
+                <ProductQnaSection productId={productId}/>
+              )}
+              
             </div>
           </div>
         </div>

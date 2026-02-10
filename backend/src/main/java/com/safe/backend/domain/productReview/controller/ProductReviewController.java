@@ -20,9 +20,15 @@ public class ProductReviewController {
     @GetMapping
     public Page<ReviewResponse> list(
             @PathVariable Long productId,
-            @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.DESC) Pageable pageable,
+            HttpServletRequest request
     ) {
-        return reviewService.getReviews(productId, pageable);
+        Long me = null;
+        String auth = request.getHeader("Authorization");
+        if (auth != null && auth.startsWith("Bearer ")) {
+            me = jwtTokenProvider.getUserId(auth.substring(7));
+        }
+        return reviewService.getReviews(productId, pageable, me);
     }
 
     @GetMapping("/summary")

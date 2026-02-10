@@ -261,7 +261,7 @@ function CommunityDetail() {
 
             const likeCount = c.commentLikeCount ?? c.comment_like_count ?? 0;
 
-            const likedByMe = likedComments.has(cId);
+            const likeByMe = likedComments.has(cId);
 
             return (
               <div
@@ -343,10 +343,10 @@ function CommunityDetail() {
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "4px",
-                          color: likedByMe ? "#ff4d4f" : "#666",
+                          color: likeByMe ? "#ff4d4f" : "#666",
                         }}
                       >
-                        {likedByMe ? "❤️" : "🤍"} {likeCount}
+                        {likeByMe ? "❤️" : "🤍"} {likeCount}
                       </span>
                     </div>
 

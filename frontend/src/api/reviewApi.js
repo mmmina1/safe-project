@@ -25,3 +25,9 @@ export const toggleReviewLike = (productId, reviewId) =>
   axiosInstance
     .post(`/api/products/${productId}/reviews/${reviewId}/like`)
     .then((r) => r.data);
+
+// 평균 및 리뷰 정보
+export const getReviewSummary = (productId) => 
+  axiosInstance
+    .get(`/api/products/${productId}/reviews/summary`)
+    .then((r) => r.data);

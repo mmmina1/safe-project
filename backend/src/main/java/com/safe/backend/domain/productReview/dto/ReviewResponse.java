@@ -17,10 +17,11 @@ public record ReviewResponse (
     Long likeCount,
     Boolean isVisible,
     LocalDateTime createdDate,
-    LocalDateTime updatedDate
+    LocalDateTime updatedDate,
+    boolean likeByMe
 ){
     
-    public static ReviewResponse from(ProductReview r){
+    public static ReviewResponse from(ProductReview r, boolean likeByMe){
         return new ReviewResponse(
             r.getReviewId(),
             r.getProduct().getProductId(),
@@ -32,7 +33,8 @@ public record ReviewResponse (
             r.getLikeCount(),
             r.getIsVisible(),
             r.getCreatedDate(),
-            r.getUpdatedDate()
+            r.getUpdatedDate(),
+            likeByMe
         );
     }
 }

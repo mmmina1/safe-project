@@ -3,7 +3,7 @@ import '../../../assets/css/ServiceProduct/ProductReview.css'
 // updateProductReview API가 필요합니다.
 import { getProductReviews, createProductReview, deleteProductReview, updateProductReview, toggleReviewLike  } from '../../../api/reviewApi'
 
-function ProductReviewsSection({ productId, rating, reviewCount }) {
+function ProductReviewsSection({ productId, onAvgChange }) {
   const [loading, setLoading] = useState(true)
   const [reviews, setReviews] = useState([])
   const [pageInfo, setPageInfo] = useState({ page: 0, size: 10, totalPages: 0, totalElements: 0 })
@@ -16,31 +16,59 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
   const [editingReviewId, setEditingReviewId] = useState(null) // 현재 수정 중인 리뷰 ID (null이면 작성 모드)
   const [likeBusy, setLikeBusy] = useState({})
 
-  const userId = localStorage.getItem("userId")
+  //점수 평균
+  const [avgRating, setAvgRating] = useState(0);
+
+  //로그인 유저 token 받기
+  const getUserIdFromToken = () => {
+  const token = localStorage.getItem("accessToken");
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload?.sub ? String(payload.sub) : null; // sub = userId
+    } catch {
+      return null;
+    }
+  };
+
+  const [userId, setUserId] = useState(() => getUserIdFromToken());
 
   const fetchPage = async (page = 0) => {
     try {
       setLoading(true)
       setErr(null)
+
       const data = await getProductReviews(productId, { page, size: pageInfo.size })
-      setReviews(data.content ?? [])
+      const list = data.content ?? [];
+      setReviews(list);
+
+      // 현재 페이지 리뷰 기준 평균
+      const avg =
+        list.length > 0
+          ? list.reduce((sum, r) => sum + Number(r.rating ?? 0), 0) / list.length
+          : 0;
+
+      setAvgRating(avg);
+      onAvgChange?.(avg) //부모에게 전달
+
       setPageInfo(prev => ({
         ...prev,
         page: data.number ?? page,
         totalPages: data.totalPages ?? 0,
         totalElements: data.totalElements ?? 0,
-      }))
+      }));
     } catch (e) {
-      console.error(e)
-      setErr('리뷰를 불러오지 못했습니다.')
+      console.error(e);
+      setErr('리뷰를 불러오지 못했습니다.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!productId) return
     fetchPage(0)
+    setUserId(getUserIdFromToken());
   }, [productId])
 
   // 폼 초기화 함수
@@ -141,20 +169,30 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
     }
     if(likeBusy[reviewId]) return
 
+    const prev = reviews.find(r => r.reviewId === reviewId)
+    const prevLiked = !!prev?.likeByMe
+
+    setReviews(list =>
+      list.map(r => r.reviewId === reviewId
+        ? { ...r, likeByMe: !prevLiked, likeCount: (r.likeCount ?? 0) + (prevLiked ? -1 : 1) }
+        : r
+      )
+    )
+
     try{
       setLikeBusy(prev => ({...prev, [reviewId]: true}))
 
       const res = await toggleReviewLike(productId,reviewId)
 
       //서버가 최신
-    if (res && typeof res === 'object' && ('likeCount' in res || 'likedByMe' in res)) {
-      setReviews(prev =>
-        prev.map(r =>
+    if (res && typeof res === 'object' && ('likeCount' in res || 'likeByMe' in res)) {
+      setReviews(list =>
+        list.map(r =>
           r.reviewId === reviewId
           ? {
                 ...r,
                 likeCount: (res.likeCount ?? r.likeCount),
-                likedByMe: (res.likedByMe ?? r.likedByMe),
+                likeByMe: (res.likeByMe ?? r.likeByMe),
               }
             : r
         )
@@ -167,6 +205,13 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
     await fetchPage(pageInfo.page)
     } catch(e) {
       console.error(e)
+
+      setReviews(list =>
+      list.map(r => r.reviewId === reviewId
+        ? { ...r, likeByMe: prevLiked, likeCount: (r.likeCount ?? 0) + (prevLiked ? 1 : -1) }
+        : r
+      )
+    ) 
       alert("좋아요 처리 실패 : " + (e?.response?.data?.message ?? e.message))
     }finally{
       setLikeBusy(prev => ({...prev, [reviewId]: false}))
@@ -180,9 +225,9 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
       {/* 리뷰 요약 카드 */}
       <div className='sp-review-summary-card'>
         <div className='sp-summary-rating'>
-          <div className='sp-rating-number'>{Number(rating ?? 0).toFixed(1)}</div>
-          <div className='sp-rating-stars'>{renderStars(Number(rating ?? 0))}</div>
-          <div className='sp-rating-count'>{Number(reviewCount ?? 0)}개의 평가</div>
+          <div className='sp-rating-number'>{avgRating.toFixed(1)}</div>
+          <div className='sp-rating-stars'>{renderStars(avgRating)}</div>
+          <div className='sp-rating-count'>{pageInfo.totalElements}개의 평가</div>
         </div>
         
         <button 
@@ -302,7 +347,7 @@ function ProductReviewsSection({ productId, rating, reviewCount }) {
                   <div className='sp-review-content-text'>{r.content}</div>
 
                   <div className='sp-review-footer'>
-                    <button className={`sp-like-btn-small ${r.likedByMe ? 'active' : ''}`}
+                    <button className={`sp-like-btn-small ${r.likeByMe ? 'active' : ''}`}
                       onClick={() => onToggleLike(r.reviewId)} disabled={!!likeBusy[r.reviewId]} >
                       <span className='sp-like-icon'>👍</span>
                       <span>
