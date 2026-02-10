@@ -11,11 +11,15 @@ import com.safe.backend.domain.community.entity.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     
+    // 리액트가 전체 댓글을 가져올 때 사용하는 메서드
     @Query("SELECT c FROM Comment c " +
            "LEFT JOIN FETCH c.user " +
            "WHERE c.postId = :postId " +
            "AND c.isDeleted = false " +
-           "ORDER BY c.createdDate ASC")
+           "ORDER BY " +
+           "  COALESCE(c.parentCommentId, c.commentId) ASC, " + 
+           "  CASE WHEN c.parentCommentId IS NULL THEN 0 ELSE 1 END ASC, " + 
+           "  c.createdDate ASC")
     List<Comment> findAllByPostIdWithUser(@Param("postId") Long postId);
     
     @Query("SELECT c FROM Comment c " +

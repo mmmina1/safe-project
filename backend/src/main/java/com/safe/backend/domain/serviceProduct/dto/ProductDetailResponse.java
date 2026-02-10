@@ -16,10 +16,11 @@ public record ProductDetailResponse (
     String description,
     Long categoryId,
     String status,
-    String priceType
+    String priceType,
+    ProductPlanDto plan
 ) {
 
-    public static ProductDetailResponse of (Product p, ProductDetail d,Double rating, Integer reviewCount) {
+    public static ProductDetailResponse of (Product p, ProductDetail d,ProductPlanDto planDto, Double rating, Integer reviewCount) {
 
         Long categoryId = (p.getBaseCategory() != null)
             ? p.getBaseCategory().getCategoryId()
@@ -38,7 +39,8 @@ public record ProductDetailResponse (
             d.getDetailDesc(),
             categoryId,
             p.getStatus().name(),
-            p.getPriceType().name()
+            p.getPriceType().name(),
+            planDto
 
         );
     }

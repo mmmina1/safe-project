@@ -88,3 +88,155 @@ footer {
   background-color: #f9fafb;
   border-color: #9ca3af;
 }
+/* 전체 Auth 페이지 공통 레이아웃 */
+.auth-page {
+  min-height: calc(100vh - 80px); /* 헤더 높이만큼 빼주고 싶으면 조정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.auth-container {
+  max-width: 520px;
+}
+
+/* 카드 박스 */
+.auth-card {
+  background: rgba(12, 16, 32, 0.92);
+  border-radius: 16px;
+  padding: 32px 32px 28px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #f5f5f7;
+}
+
+/* 타이틀 / 서브타이틀 */
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 0.9rem;
+  color: #9da3b0;
+  margin-bottom: 20px;
+}
+
+/* 라벨 / 인풋 */
+.auth-label {
+  font-size: 0.9rem;
+  color: #d3d8e4;
+}
+
+.auth-input {
+  background-color: #181b2a;
+  border-color: #2a3044;
+  color: #f5f5f7;
+}
+
+.auth-input::placeholder {
+  color: #767b89;
+}
+
+.auth-input:focus {
+  background-color: #181b2a;
+  border-color: #ffc107; /* 브랜드 노랑 */
+  color: #f5f5f7;      
+  box-shadow: 0 0 0 0.15rem rgba(255, 193, 7, 0.25);
+}
+
+/* 메시지 */
+.auth-alert {
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+/* 제출 버튼 */
+.auth-submit-btn {
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 999px;
+}
+
+/* 하단 링크 텍스트 */
+.auth-bottom-text {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: #9da3b0;
+  text-align: center;
+}
+
+.auth-bottom-text a {
+  color: #ffc107;
+  text-decoration: none;
+}
+
+.auth-bottom-text a:hover {
+  text-decoration: underline;
+}
+
+/* 비밀번호 토글 버튼 + 아이콘 (이전 답변과 동일) */
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0;
+
+  cursor: pointer;
+  color: #b0b3c0;
+}
+
+.password-toggle-btn:hover {
+  background: rgba(255, 193, 7, 0.16);
+  color: #ffc107;
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.35);
+}
+
+.password-toggle-icon {
+  width: 16px;
+  height: 16px;
+}
+.auth-bottom-row {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.auth-bottom-text {
+  color: #9da3b0;
+}
+
+.auth-link {
+  color: #ffc107;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}

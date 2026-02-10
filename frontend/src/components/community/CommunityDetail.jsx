@@ -1,260 +1,380 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { communityApi } from '../../api/communityApi'
-import "../../assets/css/community/CommunityDetail.css"
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { communityApi } from "../../api/communityApi";
+import "../../assets/css/community/CommunityDetail.css";
 
 function CommunityDetail() {
-  const { postId } = useParams()
-  const navigate = useNavigate()
-  const [post, setPost] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [comments, setComments] = useState([]) 
-  const [commentInput, setCommentInput] = useState("")
-  
-  const [editingCommentId, setEditingCommentId] = useState(null)
-  const [editContent, setEditContent] = useState("")
-  
-  const [currentUserId, setCurrentUserId] = useState(null)
-  const [currentUserName, setCurrentUserName] = useState(null)
+  const { postId } = useParams();
+  const navigate = useNavigate();
+
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [comments, setComments] = useState([]);
+  const [commentInput, setCommentInput] = useState("");
+
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
+
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  const [replyingToId, setReplyingToId] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
+
+  const [likedComments, setLikedComments] = useState(new Set());
+
+  const decodeJwtPayload = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      if (!base64Url) return null;
+
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64 + "===".slice((base64.length + 3) % 4);
+
+      const json = atob(padded);
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
-    const userName = localStorage.getItem('userName')
-    
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        const userId = payload.sub || payload.userId || payload.id
-        
-        if (userId) {
-          setCurrentUserId(Number(userId))
-          setCurrentUserName(userName)
-        }
-      } catch (error) {
-        console.error('토큰 파싱 실패:', error)
-      }
-    }
-  }, [])
+    const token =
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("jwt");
+
+    if (!token) return;
+
+    const payload = decodeJwtPayload(token);
+    if (!payload) return;
+
+    const uid = payload.sub ?? payload.userId ?? payload.id;
+    const uidNum = Number(uid);
+
+    if (!Number.isNaN(uidNum)) setCurrentUserId(uidNum);
+  }, []);
 
   const fetchComments = async () => {
     try {
-      const res = await communityApi.getComments(postId)
-      setComments(Array.isArray(res) ? res : [])
+      const res = await communityApi.getComments(postId);
+      const rawData = Array.isArray(res) ? res : [];
+
+      const sortedData = [...rawData].sort((a, b) => {
+        const aP = a.parentCommentId || a.parent_comment_id;
+        const bP = b.parentCommentId || b.parent_comment_id;
+
+        const aId = a.commentId || a.comment_id;
+        const bId = b.commentId || b.comment_id;
+
+        const aG = aP || aId;
+        const bG = bP || bId;
+
+        if (aG === bG) {
+          if (!aP) return -1;
+          if (!bP) return 1;
+          return new Date(a.createdDate) - new Date(b.createdDate);
+        }
+        return aG - bG;
+      });
+
+      setComments(sortedData);
     } catch (err) {
-      console.error("댓글 로딩 실패:", err)
-      setComments([])
+      setComments([]);
     }
-  }
+  };
 
   const fetchData = async () => {
     try {
-      const postData = await communityApi.getPostDetail(postId)
-      setPost(postData)
-      await fetchComments() 
+      setPost(await communityApi.getPostDetail(postId));
+      await fetchComments();
     } catch (err) {
-      console.error("데이터 로딩 실패:", err)
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  useEffect(() => { fetchData() }, [postId])
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId]);
+
+  useEffect(() => {
+    setLikedComments(new Set());
+  }, [currentUserId]);
+
+  useEffect(() => {
+    if (!postId) return;
+    fetchComments();
+}, [currentUserId, postId]);
+
+  const handleLike = async (commentId) => {
+    if (!currentUserId) return;
+
+    try {
+      const result = await communityApi.toggleCommentLike(commentId, currentUserId);
+
+      setLikedComments((prev) => {
+        const next = new Set(prev);
+        if (result.liked) next.add(commentId);
+        else next.delete(commentId);
+        return next;
+      });
+
+      setComments((prev) =>
+        prev.map((c) => {
+          const cId = c.commentId || c.comment_id;
+          if (cId !== commentId) return c;
+
+          return {
+            ...c,
+            commentLikeCount: result.likeCount,
+            comment_like_count: result.likeCount,
+          };
+        })
+      );
+
+      if (result.liked) alert("좋아요!");
+      else alert("좋아요 취소!");
+    } catch (e) {
+      console.error(e);
+      alert("좋아요 처리 실패");
+    }
+  };
 
   const handleCommentSubmit = async () => {
-    if (!currentUserId) {
-      alert("로그인이 필요합니다.");
-      navigate('/login');
-      return;
-    }
+    const trimmed = commentInput.trim();
+    if (!currentUserId || !trimmed) return;
 
-    if (!commentInput.trim()) {
-      alert("댓글 내용을 입력해주세요.");
-      return;
-    }
-    
     try {
       await communityApi.createComment({
         post_id: Number(postId),
-        user_id: currentUserId,
-        content: commentInput
+        user_id: Number(currentUserId),
+        content: trimmed,
       });
-      
-      setCommentInput(""); 
-      await fetchComments(); 
-      alert("댓글이 등록되었습니다!");
+
+      setCommentInput("");
+      await fetchComments();
     } catch (err) {
-      console.error("등록 에러:", err);
-      alert("댓글 등록 실패");
+      console.error("댓글 등록 실패:", err?.response?.data || err);
+      alert("등록 실패");
     }
-  }
+  };
 
-  const handleEditClick = (comment) => {
-    if (comment.userId !== currentUserId) {
-      alert("본인의 댓글만 수정할 수 있습니다.");
-      return;
-    }
-    setEditingCommentId(comment.commentId)
-    setEditContent(comment.content)
-  }
+  const handleReplySubmit = async (parentId) => {
+    const trimmed = replyContent.trim();
+    if (!currentUserId || !trimmed) return;
 
-  const handleEditSubmit = async (commentId) => {
-    if (!editContent.trim()) {
-      alert("댓글 내용을 입력해주세요.");
-      return;
-    }
-    
     try {
-      await communityApi.updateComment(commentId, {
-        content: editContent,
-        user_id: currentUserId
+      await communityApi.createComment({
+        post_id: Number(postId),
+        user_id: Number(currentUserId),
+        content: trimmed,
+        parent_comment_id: Number(parentId),
       });
-      
+
+      setReplyContent("");
+      setReplyingToId(null);
+      await fetchComments();
+    } catch (err) {
+      console.error("답글 등록 실패:", err?.response?.data || err);
+      alert("답글 등록 실패");
+    }
+  };
+
+  const handleEditSubmit = async (id) => {
+    const trimmed = editContent.trim();
+    if (!currentUserId || !trimmed) return;
+
+    try {
+      await communityApi.updateComment(id, {
+        content: trimmed,
+        user_id: Number(currentUserId),
+      });
+
       setEditingCommentId(null);
-      setEditContent("");
       await fetchComments();
-      alert("댓글이 수정되었습니다!");
-    } catch (err) {
-      console.error("수정 에러:", err);
-      alert(err.response?.data?.error || "댓글 수정에 실패했습니다.");
+    } catch (e) {
+      console.error(e);
     }
-  }
+  };
 
-  const handleEditCancel = () => {
-    setEditingCommentId(null)
-    setEditContent("")
-  }
+  const handleDelete = async (id) => {
+    if (!window.confirm("삭제하시겠습니까?")) return;
 
-  const handleDelete = async (commentId, commentUserId) => {
-    if (commentUserId !== currentUserId) {
-      alert("본인의 댓글만 삭제할 수 있습니다.");
-      return;
-    }
-
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    
     try {
-      await communityApi.deleteComment(commentId, currentUserId);
+      await communityApi.deleteComment(id, currentUserId);
       await fetchComments();
-      alert("댓글이 삭제되었습니다!");
-    } catch (err) {
-      console.error("삭제 에러:", err);
-      alert(err.response?.data?.error || "댓글 삭제에 실패했습니다.");
+    } catch (e) {
+      console.error(e);
     }
-  }
+  };
 
-  if (loading) return <div className='detail-wrap'>로딩 중...</div>
+  if (loading) return <div className="detail-wrap">로딩 중...</div>;
 
   return (
-    <div className='detail-wrap'>
-      <div className='detail-hero'>
-        <button className='back-btn' onClick={() => navigate(-1)}>←</button>
-        <div className='detail-title-row'>
-          <span className='detail-chip'>{post?.category}</span>
-          <h1 className='detail-title'>{post?.title}</h1>
+    <div className="detail-wrap">
+      <div className="detail-hero">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ←
+        </button>
+
+        <div className="detail-title-row">
+          <span className="detail-chip">{post?.category}</span>
+          <h1 className="detail-title">{post?.title}</h1>
         </div>
+
         <div className="detail-meta">
           <span>👤 {post?.name || "익명"}</span>
-          <span>📅 {post?.created_date}</span>
+          <span>📅 {post?.createdDate?.split("T")[0]}</span>
         </div>
       </div>
-      
-      <div className='detail-card'>
-        <div className='detail-content'>{post?.content}</div>
+
+      <div className="detail-card">
+        <div className="detail-content">{post?.content}</div>
       </div>
 
-      <div className="comment-section" style={{ marginTop: "30px", borderTop: "1px solid #333", paddingTop: "20px" }}>
-        <h3 style={{ color: "#fff" }}>댓글 {comments.length}</h3>
-        
-        {currentUserId ? (
-          <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-            <textarea 
-              value={commentInput}
-              onChange={(e) => setCommentInput(e.target.value)}
-              style={{ flex: 1, backgroundColor: "#222", color: "#fff", padding: "10px", borderRadius: "5px", border: "1px solid #444" }}
-              placeholder="댓글을 남겨보세요"
-              rows="3"
-            />
-            <button 
-              onClick={handleCommentSubmit}
-              style={{ padding: "0 20px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}
-            >등록</button>
-          </div>
-        ) : (
-          <div style={{ padding: "20px", backgroundColor: "#222", borderRadius: "5px", textAlign: "center", marginBottom: "20px" }}>
-            <p style={{ color: "#999", margin: 0 }}>
-              댓글을 작성하려면 
-              <button 
-                onClick={() => navigate('/login')} 
-                style={{ color: "#3b82f6", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", marginLeft: "5px" }}
-              >
-                로그인
-              </button>
-              이 필요합니다.
-            </p>
-          </div>
-        )}
+      <div className="comment-section">
+        <h3 className="comment-title">댓글 {comments.length}</h3>
 
-        <div className="comment-list">
-          {comments.map((c, index) => {
-            const isOwner = c.userId === currentUserId;
-            const isEditing = editingCommentId === c.commentId;
+        <div className="comment-write-container">
+          <textarea
+            className="comment-input-field"
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            placeholder="댓글을 남겨보세요"
+          />
+          <button className="comment-submit-button" onClick={handleCommentSubmit}>
+            등록
+          </button>
+        </div>
+
+        <div className="comment-list-container">
+          {comments.map((c) => {
+            const isOwner = c.userId === currentUserId || c.user_id === currentUserId;
+
+            const cId = c.commentId || c.comment_id;
+
+            const isEditing = editingCommentId === cId;
+            const isReply = !!(c.parentCommentId || c.parent_comment_id);
+
+            const likeCount = c.commentLikeCount ?? c.comment_like_count ?? 0;
+
+            const likeByMe = likedComments.has(cId);
 
             return (
-              <div key={c.commentId || `comment-${index}`} style={{ padding: "15px 0", borderBottom: "1px solid #222" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                  <span style={{ color: "#60a5fa", fontWeight: "bold" }}>{c.name || '익명'}</span>
-                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                    <span style={{ color: "#666", fontSize: "12px" }}>
-                      {Array.isArray(c.createdDate) 
-                        ? `${c.createdDate[0]}-${String(c.createdDate[1]).padStart(2, '0')}-${String(c.createdDate[2]).padStart(2, '0')}`
-                        : "방금 전"}
-                    </span>
-                    
-                    {isOwner && !isEditing && (
-                      <>
-                        <button 
-                          onClick={() => handleEditClick(c)}
-                          style={{ padding: "4px 10px", fontSize: "12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "3px", cursor: "pointer" }}
-                        >수정</button>
-                        <button 
-                          onClick={() => handleDelete(c.commentId, c.userId)}
-                          style={{ padding: "4px 10px", fontSize: "12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "3px", cursor: "pointer" }}
-                        >삭제</button>
-                      </>
-                    )}
+              <div
+                key={cId}
+                className={`comment-card-item ${isReply ? "comment-reply-item" : ""}`}
+              >
+                <div className="comment-item-header">
+                  <span className="comment-author-name">{c.name || "익명"}</span>
+
+                  <div className="comment-header-right">
+                    <span className="comment-date-text">{c.createdDate?.split("T")[0]}</span>
+
+                    <div className="comment-owner-btns">
+                      {!isEditing && (
+                        <button
+                          className="btn-reply"
+                          onClick={() => {
+                            setReplyingToId(cId);
+                            setReplyContent("");
+                          }}
+                        >
+                          답글
+                        </button>
+                      )}
+
+                      {isOwner && !isEditing && (
+                        <>
+                          <button
+                            className="btn-edit"
+                            onClick={() => {
+                              setEditingCommentId(cId);
+                              setEditContent(c.content);
+                            }}
+                          >
+                            수정
+                          </button>
+
+                          <button className="btn-delete" onClick={() => handleDelete(cId)}>
+                            삭제
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 {isEditing ? (
-                  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                    <textarea 
+                  <div className="comment-edit-box">
+                    <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      style={{ flex: 1, backgroundColor: "#222", color: "#fff", padding: "10px", borderRadius: "5px", border: "1px solid #444" }}
-                      rows="3"
-                    />
-                    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                      <button 
-                        onClick={() => handleEditSubmit(c.commentId)}
-                        style={{ padding: "8px 15px", fontSize: "12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "3px", cursor: "pointer" }}
-                      >저장</button>
-                      <button 
-                        onClick={handleEditCancel}
-                        style={{ padding: "8px 15px", fontSize: "12px", backgroundColor: "#6b7280", color: "#fff", border: "none", borderRadius: "3px", cursor: "pointer" }}
-                      >취소</button>
+                      />
+                      <div className="edit-btn-group">
+                      <button
+                        className="btn-save-confirm"
+                        onClick={() => handleEditSubmit(cId)}
+                      >
+                          저장
+                      </button>
+                      <button
+                        className="btn-cancel-edit"
+                        onClick={() => setEditingCommentId(null)}
+                      >
+                        취소
+                      </button>
                     </div>
                   </div>
                 ) : (
-                  <p style={{ color: "#ccc", margin: 0, whiteSpace: "pre-wrap" }}>{c.content}</p>
+                  <>
+                    <p className="comment-body-text">{c.content}</p>
+
+                    <div className="comment-footer" style={{ marginTop: "8px" }}>
+                      <span
+                        className="like-btn"
+                        onClick={() => handleLike(cId)}
+                        style={{
+                          cursor: "pointer",
+                          fontWeight: "800",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          color: likeByMe ? "#ff4d4f" : "#666",
+                        }}
+                      >
+                        {likeByMe ? "❤️" : "🤍"} {likeCount}
+                      </span>
+                    </div>
+
+                    {replyingToId === cId && (
+                      <div className="comment-edit-box reply-input-container">
+                        <textarea
+                          value={replyContent}
+                          onChange={(e) => setReplyContent(e.target.value)}
+                        />
+                        <div className="edit-btn-group">
+                          <button className="btn-save-confirm" onClick={() => handleReplySubmit(cId)}>
+                            등록
+                          </button>
+                          <button className="btn-cancel-edit" onClick={() => setReplyingToId(null)}>
+                            취소
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );
           })}
-          {comments.length === 0 && <p style={{ color: "#666", textAlign: "center" }}>등록된 댓글이 없습니다.</p>}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default CommunityDetail;

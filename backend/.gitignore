@@ -1,49 +1,78 @@
-# Build
-build/
-target/
-out/
-*.class
-*.jar
-*.war
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# QueryDSL generated
-build/generated/
-generated/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# IDE
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# IntelliJ IDEA
 .idea/
 *.iml
+
+# VSCode
 .vscode/
+
+# =========================
+# Gradle / Spring
+.gradle/
+build/
+out/
 
 # Logs
 *.log
-logs/
 
-# Environment
-application-local.properties
-application-dev.properties
-application-prod.properties
+# =========================
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 
-# Uploaded files
-uploads/
-
-# Gradle (❗필수)
-.gradle/
-**/.gradle/
-build/
-**/build/
-
-# Java / Backend build outputs
-bin/
-backend/bin/
-
-# Python virtualenv (❗필수)
+# Virtual environments
 .venv/
-backend/.venv/
+venv/
+env/
+ENV/
 
-# OS / temp
-.DS_Store
-Thumbs.db
+# PyCharm
+.idea/
+*.iml
 
-# Spring Boot config
-src/main/resources/application.properties
+# Python packages
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# Spring local config (DO NOT COMMIT)
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-*.properties
+!backend/src/main/resources/application.properties
+
+# Spring / Gradle build output (IMPORTANT)
+backend/bin/
+**/bin/
+
+# Spring local config
+backend/src/main/resources/application-local.properties

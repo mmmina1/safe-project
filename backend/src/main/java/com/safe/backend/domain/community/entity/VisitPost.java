@@ -38,7 +38,7 @@ public class VisitPost {
     @Column(name = "visit_count", nullable = false)
     private Integer visitCount = 0;
 
-    @Column(name = "like_count", nullable = false)
+    @Column(name = "Comment_like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Column(name = "report_count", nullable = false)
