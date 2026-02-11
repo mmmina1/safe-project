@@ -57,8 +57,8 @@ public class SecurityConfig {
 
                         // 관리자 및 운영자 전용 API
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "OPERATOR")
-
                         .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
+
 
                         //✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
@@ -81,7 +81,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
-
+                        .requestMatchers("/api/cart/**").authenticated()
                         // 그 외는 토큰 필요
                         .anyRequest().authenticated()
                 );
@@ -90,6 +90,7 @@ public class SecurityConfig {
         http.addFilterBefore(
                 new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
                 UsernamePasswordAuthenticationFilter.class
+                
         );
 
         // 403 에러 발생 시 로깅을 위한 예외 처리
@@ -142,4 +143,3 @@ public class SecurityConfig {
     }
 
 }
-

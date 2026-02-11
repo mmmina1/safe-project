@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function CsDashboardPage() {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export default function CsDashboardPage() {
   const { data: consultations = [] } = useQuery({
     queryKey: ["csConsultations"],
     queryFn: async () => {
-      const res = await api.get("/admin/cs/consultations");
+      const res = await api.get("/api/admin/cs/consultations");
       return res.data;
     },
   });
@@ -19,7 +19,7 @@ export default function CsDashboardPage() {
   const { data: selectedConsultation } = useQuery({
     queryKey: ["csConsultation", selectedConsultationId],
     queryFn: async () => {
-      const res = await api.get(`/admin/cs/consultations/${selectedConsultationId}`);
+      const res = await api.get(`/api/admin/cs/consultations/${selectedConsultationId}`);
       return res.data;
     },
     enabled: !!selectedConsultationId,
@@ -27,7 +27,7 @@ export default function CsDashboardPage() {
 
   const createMutation = useMutation({
     mutationFn: async (userId) => {
-      const res = await api.post("/admin/cs/consultations", null, {
+      const res = await api.post("/api/admin/cs/consultations", null, {
         params: userId != null ? { userId } : {},
       });
       return res.data;
@@ -39,7 +39,7 @@ export default function CsDashboardPage() {
 
   const assignMutation = useMutation({
     mutationFn: async ({ id, adminId }) => {
-      const res = await api.patch(`/admin/cs/consultations/${id}/assign`, null, {
+      const res = await api.patch(`/api/admin/cs/consultations/${id}/assign`, null, {
         params: { adminId },
       });
       return res.data;
@@ -52,7 +52,7 @@ export default function CsDashboardPage() {
 
   const memoMutation = useMutation({
     mutationFn: async ({ id, memo }) => {
-      const res = await api.patch(`/admin/cs/consultations/${id}/memo`, null, {
+      const res = await api.patch(`/api/admin/cs/consultations/${id}/memo`, null, {
         params: { memo },
       });
       return res.data;
@@ -66,7 +66,7 @@ export default function CsDashboardPage() {
 
   const completeMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/cs/consultations/${id}/complete`);
+      const res = await api.patch(`/api/admin/cs/consultations/${id}/complete`);
       return res.data;
     },
     onSuccess: () => {

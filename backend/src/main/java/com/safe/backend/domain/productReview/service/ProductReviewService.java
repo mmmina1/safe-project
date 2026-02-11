@@ -1,6 +1,11 @@
 package com.safe.backend.domain.productReview.service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;  
@@ -9,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safe.backend.domain.productReview.dto.*;
 import com.safe.backend.domain.productReview.entity.ProductReview;
+import com.safe.backend.domain.productReview.repository.ProductReviewLikeRepository;
 import com.safe.backend.domain.productReview.repository.ProductReviewRepository;
 import com.safe.backend.domain.serviceProduct.entity.Product;
 import com.safe.backend.domain.serviceProduct.repository.ProductRepository;
@@ -24,12 +30,30 @@ public class ProductReviewService {
     private final ProductReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ProductReviewLikeRepository reviewLikeRepository;
+
 
     @Transactional(readOnly = true)
-    public Page<ReviewResponse> getReviews(Long productId, Pageable pageable){
-        return reviewRepository
-                .findByProduct_ProductIdAndIsVisibleTrue(productId, pageable)
-                .map(ReviewResponse::from);
+    public Page<ReviewResponse> getReviews(Long productId, Pageable pageable, Long me) {
+
+        Page<ProductReview> page =
+                reviewRepository.findByProduct_ProductIdAndIsVisibleTrue(productId, pageable);
+
+        List<Long> ids = page.getContent().stream()
+                .map(ProductReview::getReviewId)
+                .collect(Collectors.toList());
+
+        Set<Long> likedSet = Collections.emptySet();
+        if (me != null && !ids.isEmpty()) {
+            likedSet = new HashSet<Long>(reviewLikeRepository.findLikedReviewIds(me, ids));
+        }
+
+        final Set<Long> finalLikedSet = likedSet; // 람다에서 쓰려고 final로
+
+        return page.map(r -> ReviewResponse.from(
+                r,
+                me != null && finalLikedSet.contains(r.getReviewId())
+        ));
     }
 
     @Transactional(readOnly = true)
@@ -77,6 +101,7 @@ public class ProductReviewService {
             throw new IllegalStateException("삭제 권한이 없습니다.");
         }
 
+        reviewLikeRepository.deleteById_ReviewId(reviewId);
         reviewRepository.delete(review);
     }
 
@@ -86,4 +111,37 @@ public class ProductReviewService {
             throw new IllegalArgumentException("rating은 1.0~5.0 범위여야 합니다.");
         }
     }
+
+    @Transactional
+    public ReviewLikeResponse toggleLike(Long productId, Long reviewId, Long userId) {
+
+        // 1) (중요) 리뷰가 해당 상품에 속하는지 검증
+        ProductReview review = reviewRepository
+                .findByReviewIdAndProduct_ProductId(reviewId, productId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 없습니다. reviewId=" + reviewId));
+
+        var id = new com.safe.backend.domain.productReview.entity.ProductReviewLikeId(reviewId, userId);
+
+        boolean exists = reviewLikeRepository.existsById(id);
+
+        boolean likeByMe;
+        if (exists) {
+            reviewLikeRepository.deleteById(id);
+            reviewRepository.decreaseLikeCount(reviewId);
+            likeByMe = false;
+        } else {
+            reviewLikeRepository.save(com.safe.backend.domain.productReview.entity.ProductReviewLike.of(reviewId, userId));
+            reviewRepository.increaseLikeCount(reviewId);
+            likeByMe = true;
+        }
+
+        // 2) 최신 likeCount 구하기 (DB count를 써도 되고, like_count 컬럼을 다시 읽어도 됨)
+        // 여기서는 count로 정확히 가져가자
+        long likeCount = reviewLikeRepository.countById_ReviewId(reviewId);
+
+        return new ReviewLikeResponse(reviewId, likeCount, likeByMe);
+    }
+
+
+
 }

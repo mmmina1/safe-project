@@ -1,8 +1,9 @@
 package com.safe.backend.domain.aiservice.domain.usecase;
 
-import com.safe.backend.domain.aiservice.domain.Entity.ChatMessageEntity;
-import com.safe.backend.domain.aiservice.domain.Entity.ChatResultEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
+import com.safe.backend.domain.aiservice.domain.entity.ChatResultEntity;
 import com.safe.backend.domain.aiservice.domain.repository.AiRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class ChatUseCase {
 
     private final AiRepository aiRepository;
 
-    public ChatResultEntity execute(String message, String userId) {
+    public ChatResultEntity execute(String message, Long userId) {
         // 비즈니스 로직 & 검증
         if (message == null || message.trim().isEmpty()) {
             return new ChatResultEntity(
@@ -26,7 +27,7 @@ public class ChatUseCase {
         return aiRepository.chat(message, userId);
     }
 
-    public List<ChatMessageEntity> execute(String userId) {
+    public List<ChatMessageEntity> execute(Long userId) {
         return aiRepository.getChatHistory(userId);
     }
 

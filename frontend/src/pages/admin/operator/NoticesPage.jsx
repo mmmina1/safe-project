@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function NoticesPage() {
   const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export default function NoticesPage() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["adminNotices"],
     queryFn: async () => {
-      const res = await api.get("/admin/notices");
+      const res = await api.get("/api/admin/notices");
       return res.data;
     },
   });
@@ -24,7 +24,7 @@ export default function NoticesPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload) => {
-      const res = await api.post("/admin/notices", payload);
+      const res = await api.post("/api/admin/notices", payload);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminNotices"] }),
@@ -32,7 +32,7 @@ export default function NoticesPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, type, title, content }) => {
-      const res = await api.put(`/admin/notices/${id}`, { type, title, content });
+      const res = await api.put(`/api/admin/notices/${id}`, { type, title, content });
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminNotices"] }),
@@ -40,7 +40,7 @@ export default function NoticesPage() {
 
   const toggleMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/notices/${id}/toggle`);
+      const res = await api.patch(`/api/admin/notices/${id}/toggle`);
       return res.data;
     },
     onSuccess: (updatedNotice) => {

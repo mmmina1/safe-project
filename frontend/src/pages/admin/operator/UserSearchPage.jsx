@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function UserSearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -10,7 +10,7 @@ export default function UserSearchPage() {
     queryKey: ["adminUsers", keyword],
     queryFn: async () => {
       const params = keyword ? { keyword } : {};
-      const res = await api.get("/admin/users/search", { params });
+      const res = await api.get("/api/admin/users/search", { params });
       return res.data;
     },
   });

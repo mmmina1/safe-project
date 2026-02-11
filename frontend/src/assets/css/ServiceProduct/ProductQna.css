@@ -1,0 +1,173 @@
+/* ProductQna.css */
+
+.sp-qna {
+  padding: 18px;
+  border: 1px solid #e9e9ee;
+  border-radius: 14px;
+  background: #fff;
+}
+
+/* header */
+.sp-qna-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sp-qna-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.sp-qna-writerBtn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: #f7f7fb;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.sp-qna-writerBtn:hover {
+  background: #efeff7;
+}
+
+.sp-qna-writerBtn:active {
+  transform: translateY(1px);
+}
+
+/* form */
+.sp-qna-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 14px;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fafafe;
+}
+
+.sp-qna-input,
+.sp-qna-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #dcdce3;
+  background: #fff;
+  outline: none;
+  font-size: 14px;
+}
+
+.sp-qna-input:focus,
+.sp-qna-textarea:focus {
+  border-color: #b9b9ff;
+  box-shadow: 0 0 0 3px rgba(120, 120, 255, 0.15);
+}
+
+.sp-qna-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.sp-qna-private {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #333;
+}
+
+.sp-qna-private input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.sp-qna-submit {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #2f2f2f;
+  background: #2f2f2f;
+  color: #fff;
+  font-weight: 800;
+}
+
+.sp-qna-submit:hover {
+  filter: brightness(1.05);
+}
+
+.sp-qna-submit:active {
+  transform: translateY(1px);
+}
+
+/* states */
+.sp-qna-empty {
+  opacity: 0.75;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.sp-qna-error {
+  border: 1px solid #ffd6d6;
+  background: #fff5f5;
+  color: #b00020;
+}
+
+/* list */
+.sp-qna-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-qna-item {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ededf3;
+  background: #fff;
+}
+
+.sp-qna-item:hover {
+  background: #fbfbff;
+}
+
+.sp-qna-itemTitle {
+  font-weight: 800;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.sp-qna-itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.sp-dot {
+  opacity: 0.5;
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .sp-qna {
+    padding: 14px;
+  }
+
+  .sp-qna-title {
+    font-size: 16px;
+  }
+
+  .sp-qna-writerBtn {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}

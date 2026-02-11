@@ -523,6 +523,7 @@
   color: rgba(234, 240, 255, 0.9);
 }
 
+
 .sp-like-icon {
   font-size: 14px;
 }
@@ -635,6 +636,25 @@
 .sp-write-review-btn.editing {
   background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
 }
+
+/* 좋아요 처리 */
+.sp-like-btn-small {
+  border: 1px solid rgba(234,240,255,0.18);
+  background: rgba(255,255,255,0.04);
+  color: rgba(234,240,255,0.85);
+  transition: transform 0.08s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.sp-like-btn-small.active {
+  color: #3b82f6 !important; 
+  background-color: #eff6ff !important; 
+  border-color: #3b82f6 !important;
+}
+
+.sp-like-btn-small.active .sp-like-icon {
+  transform: translateY(-1px);
+}
+
 
 /* ===== 반응형 ===== */
 @media (max-width: 768px) {

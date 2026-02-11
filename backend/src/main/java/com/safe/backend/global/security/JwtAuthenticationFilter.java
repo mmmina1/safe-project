@@ -10,6 +10,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -55,14 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                     new SimpleGrantedAuthority(roleName)
                 );
-                
-                // 디버깅: 권한 설정 로깅
+
                 if (request.getRequestURI().startsWith("/api/admin")) {
                     System.out.println("[JWT Filter] User ID: " + userId);
                     System.out.println("[JWT Filter] User Role: " + user.getRole().name());
                     System.out.println("[JWT Filter] Authority: " + roleName);
                 }
-                
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 user, null, authorities
@@ -72,13 +75,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                // 디버깅: 사용자를 찾을 수 없음
                 if (request.getRequestURI().startsWith("/api/admin")) {
                     System.out.println("[JWT Filter] User not found for userId: " + userId);
                 }
             }
         } else {
-            // 디버깅: 토큰이 없거나 유효하지 않음
             if (request.getRequestURI().startsWith("/api/admin")) {
                 System.out.println("[JWT Filter] Token is null or invalid");
             }

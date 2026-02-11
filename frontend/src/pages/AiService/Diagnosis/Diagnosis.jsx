@@ -11,7 +11,8 @@ const Diagnosis = () => {
         isLoading,
         result,
         handleAnswer,
-        resetDiagnosis
+        resetDiagnosis,
+        totalQuestions // [NEW] 전체 문항 수 추가
     } = useDiagnosis();
 
     // 로딩 중일 때 표시할 화면
@@ -77,7 +78,7 @@ const Diagnosis = () => {
                 </div>
 
                 <div className="question-area">
-                    <span className="text-primary fw-bold mb-2 d-block">질문 {currentStep + 1} / 10</span>
+                    <span className="text-primary fw-bold mb-2 d-block">질문 {currentStep + 1} / {totalQuestions}</span>
                     <h2 className="question-title">{currentQuestion.text}</h2>
 
                     <div className="option-group">

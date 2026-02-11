@@ -1,6 +1,7 @@
 package com.safe.backend.domain.community.controller;
 
 import com.safe.backend.domain.community.dto.CommentCreate;
+import com.safe.backend.domain.community.dto.CommentLikeRequest;
 import com.safe.backend.domain.community.dto.CommentResponse;
 import com.safe.backend.domain.community.dto.CommentUpdate;
 import com.safe.backend.domain.community.service.CommentService;
@@ -85,6 +86,27 @@ public class CommentController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(errorBody("요청 처리 실패", e));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorBody("서버 오류", e));
+        }
+    }
+
+    // 댓글 좋아요 토글
+    @PostMapping("/{commentId}/likes")
+    public ResponseEntity<?> toggleLike(
+            @PathVariable Long commentId,
+            @RequestBody CommentLikeRequest dto
+    ) {
+        try {
+            CommentService.CommentLikeToggleResult result =
+                    commentService.likeComment(commentId, dto.getUserId());
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(errorBody("요청 오류", e));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

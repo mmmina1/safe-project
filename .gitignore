@@ -60,7 +60,13 @@ ENV/
 *.egg-info/
 dist/
 build/
+!frontend/public/unity-sim/uni/Build/
 
 # Environment variables
 .env
 .env.local
+
+# Spring Boot Local Properties
+application-local.properties
+**/application-local.properties
+

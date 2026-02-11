@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from '../../../api/axios'
+import api from "../../../api/axiosInstance"
 
 export default function CommunityReportsPage() {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export default function CommunityReportsPage() {
   const { data: reports = [], isLoading, isError, error } = useQuery({
     queryKey: ["adminReports", statusFilter],
     queryFn: async () => {
-      const res = await api.get("/admin/community/reports");
+      const res = await api.get("/api/admin/community/reports");
       return res.data;
     },
   });
@@ -19,7 +19,7 @@ export default function CommunityReportsPage() {
   const { data: blindReasons = [] } = useQuery({
     queryKey: ["blindReasons"],
     queryFn: async () => {
-      const res = await api.get("/admin/blind-reasons");
+      const res = await api.get("/api/admin/blind-reasons");
       return res.data;
     },
   });
@@ -28,7 +28,7 @@ export default function CommunityReportsPage() {
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/community/reports/${id}/approve`);
+      const res = await api.patch(`/api/admin/community/reports/${id}/approve`);
       return res.data;
     },
     onSuccess: () => {
@@ -38,7 +38,7 @@ export default function CommunityReportsPage() {
 
   const rejectMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await api.patch(`/admin/community/reports/${id}/reject`);
+      const res = await api.patch(`/api/admin/community/reports/${id}/reject`);
       return res.data;
     },
     onSuccess: () => {
@@ -48,7 +48,7 @@ export default function CommunityReportsPage() {
 
   const blindMutation = useMutation({
     mutationFn: async (postId) => {
-      const res = await api.post(`/admin/community/posts/${postId}/blind`, null, {
+      const res = await api.post(`/api/admin/community/posts/${postId}/blind`, null, {
         params: { reasonId: blindReasonId },
       });
       return res.data;

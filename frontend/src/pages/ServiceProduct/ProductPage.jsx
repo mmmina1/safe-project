@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { getProducts } from '../../api/productAPI'
+import { getProducts } from '../../api/productApi'
 import ProductFilters from '../../components/serviceProduct/ProductFilters'
 import ProductList from '../../components/serviceProduct/ProductList'
 import '../../assets/css/ServiceProduct/ProductPage.css'
