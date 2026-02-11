@@ -1,7 +1,10 @@
 package com.safe.backend.global.error;// com.safe.backend.global.error.GlobalExceptionHandler.java
 import com.safe.backend.global.error.ErrorResponse;
+import com.safe.backend.global.exception.AccountBlockedException;
+import com.safe.backend.global.exception.AccountSuspendedException;
 import jakarta.persistence.PersistenceException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +17,21 @@ import java.util.logging.Logger;
 public class GlobalExceptionHandler {
 
     private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class.getName());
+    //  계정 일시 정지
+    @ExceptionHandler(AccountSuspendedException.class)
+    public ResponseEntity<ErrorResponse> handleAccountSuspended(AccountSuspendedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN) // 403
+                .body(new ErrorResponse("ACCOUNT_SUSPENDED", e.getMessage()));
+    }
 
+    //  계정 보안 차단
+    @ExceptionHandler(AccountBlockedException.class)
+    public ResponseEntity<ErrorResponse> handleAccountBlocked(AccountBlockedException e) {
+        return ResponseEntity
+                .status(HttpStatus.LOCKED) // 423
+                .body(new ErrorResponse("ACCOUNT_BLOCKED", e.getMessage()));
+    }
     // 이메일 중복 / 잘못된 요청
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException e) {

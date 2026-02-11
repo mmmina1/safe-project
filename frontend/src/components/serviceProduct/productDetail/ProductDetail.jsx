@@ -8,7 +8,7 @@ import { getReviewSummary } from '../../../api/reviewApi'
 import ProductQuickInfo from './ProductQuickInfo'
 import ProductIntroSection from './ProductIntroSection'
 import ProductReviewsSection from './ProductReviewsSection'
-import ProductQnaSection from './ProductQnaSection'
+//import ProductQnaSection from './ProductQnaSection'
 import PlanModal from './PlanModal'
 
 function ProductDetail() {

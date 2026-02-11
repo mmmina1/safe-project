@@ -8,4 +8,6 @@ import java.util.List;
 public interface UserStateRepository extends JpaRepository<UserState, Long> {
     List<UserState> findByUserIdOrderByStateDateDesc(Long userId);
     List<UserState> findByUserIdAndEndDateIsNull(Long userId); // 현재 적용중인 제재
+    // 전체 운영 이력 (최근 순)
+    List<UserState> findAllByOrderByStateDateDesc();
 }

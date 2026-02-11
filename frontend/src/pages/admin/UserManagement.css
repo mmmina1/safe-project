@@ -2,6 +2,7 @@
   color: #e6e8f0;
 }
 
+/* ===== 제목 & 서브타이틀 ===== */
 .admin-title {
   font-size: 1.4rem;
   font-weight: 700;
@@ -14,7 +15,7 @@
   margin-bottom: 20px;
 }
 
-/* ===== 탭 디자인 (기존 스타일 계승) ===== */
+/* ===== 탭 디자인 ===== */
 .admin-tabs {
   display: flex;
   gap: 10px;
@@ -59,9 +60,10 @@
 
 .admin-table th,
 .admin-table td {
-  padding: 14px 12px; /* 패딩을 살짝 늘려 가독성 확보 */
+  padding: 14px 12px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: middle;
 }
 
 .admin-table th {
@@ -70,7 +72,41 @@
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* 조치 버튼 */
+/* ===== 상태 배지 (계정 상태) ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid;
+  text-align: center;
+  min-width: 60px;
+}
+
+.badge-normal   { color: #4cc9f0; border-color: rgba(76, 201, 240, 0.6); }
+.badge-warning  { color: #ffb020; border-color: rgba(255, 176, 32, 0.6); }
+.badge-blocked  { color: #ff5c5c; border-color: rgba(255, 92, 92, 0.6); }
+
+/* ===== 운영 이력용 텍스트 ===== */
+.action-text.WARNING   { color: #ffb020; font-weight: 600; }
+.action-text.SUSPENDED { color: #ffb020; font-weight: 600; }
+.action-text.BANNED    { color: #ff5c5c; font-weight: 600; }
+.action-text.UNBLOCK   { color: #4cc9f0; font-weight: 600; }
+
+.reason-col {
+  color: #a9b0d4;
+  font-size: 0.8rem;
+}
+
+/* ===== 액션 셀 & 버튼 ===== */
+.admin-action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;  /* 버튼 오른쪽 정렬 */
+  gap: 8px;                   /* 버튼 간 간격 */
+}
+
+/* 조치하기 버튼 */
 .btn-admin-action {
   background-color: rgba(76, 201, 240, 0.1);
   border: 1px solid rgba(76, 201, 240, 0.3);
@@ -88,28 +124,25 @@
   color: #171a33;
 }
 
-/* ===== 상태 배지 (사용자 목록) ===== */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  border: 1px solid;
-  text-align: center;
-  min-width: 60px;
+/* 제재 해제 버튼 */
+.btn-admin-release {
+  background-color: transparent;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+  color: #4cc9f0;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
-.badge-normal { color: #4cc9f0; border-color: rgba(76, 201, 240, 0.6); }
-.badge-warning { color: #ffb020; border-color: rgba(255, 176, 32, 0.6); }
-.badge-blocked { color: #ff5c5c; border-color: rgba(255, 92, 92, 0.6); }
+.btn-admin-release:hover {
+  background-color: rgba(76, 201, 240, 0.15);
+  color: #e6e8f0;
+}
 
-/* 운영 이력용 텍스트 컬러 */
-.action-text.WARNING { color: #ffb020; font-weight: 600; }
-.action-text.BLOCK { color: #ff5c5c; font-weight: 600; }
-.action-text.UNBLOCK { color: #4cc9f0; font-weight: 600; }
-.reason-col { color: #a9b0d4; font-size: 0.8rem; }
-
-/* ===== 모달 (Modal) 디자인 ===== */
+/* ===== 모달 디자인 ===== */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -120,7 +153,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; /* 최상단 */
+  z-index: 9999;
 }
 
 .admin-modal {
@@ -175,7 +208,8 @@
   color: #a9b0d4;
 }
 
-.modal-select, .modal-textarea {
+.modal-select,
+.modal-textarea {
   background: #141833;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
@@ -185,7 +219,8 @@
   font-size: 0.9rem;
 }
 
-.modal-select:focus, .modal-textarea:focus {
+.modal-select:focus,
+.modal-textarea:focus {
   border-color: #ffc107;
 }
 
@@ -209,8 +244,15 @@
   cursor: pointer;
   font-size: 0.9rem;
 }
+/* 액션 컬럼 헤더 오른쪽 정렬 */
+.admin-table th:last-child {
+  text-align: right;
+}
 
-.btn-primary { background: #ffc107; color: #171a33; }
-.btn-primary:hover { background: #ffdb70; }
+
+/* 모달 버튼 공통 */
+.btn-primary  { background: #ffc107; color: #171a33; }
+.btn-primary:hover  { background: #ffdb70; }
+
 .btn-secondary { background: rgba(255, 255, 255, 0.1); color: #fff; }
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }

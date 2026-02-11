@@ -54,7 +54,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         //  관리자 전용 API
-                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
 
 

@@ -5,7 +5,10 @@ import com.safe.backend.domain.auth.entity.AuthAccount;
 import com.safe.backend.domain.auth.entity.AuthProvider;
 import com.safe.backend.domain.auth.repository.AuthAccountRepository;
 import com.safe.backend.domain.user.entity.User;
+import com.safe.backend.domain.user.entity.UserStatus;
 import com.safe.backend.domain.user.repository.UserRepository;
+import com.safe.backend.global.exception.AccountBlockedException;
+import com.safe.backend.global.exception.AccountSuspendedException;
 import com.safe.backend.global.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,9 @@ public class AuthService {
         this.googleAuthService = googleAuthService;
     }
 
+    /**
+     * 이메일/비밀번호 회원가입
+     */
     @Transactional
     public void signup(String email, String name, String rawPassword) {
         // 1. 이메일 중복 체크
@@ -54,14 +60,18 @@ public class AuthService {
         authAccountRepository.save(localAccount);
     }
 
+    /**
+     * 이메일/비밀번호 로그인
+     */
     @Transactional(readOnly = true)
     public String login(String email, String rawPassword) {
         // 1. 이메일로 유저 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
+        // 소셜 전용 계정 방어
         if (user.getPasswordHash() == null) {
-            throw new IllegalArgumentException("소셜 로그인으로 가입된 계정입니다. 카카오 로그인을 사용해 주세요.");
+            throw new IllegalArgumentException("소셜 로그인으로 가입된 계정입니다. 카카오/구글 로그인을 사용해 주세요.");
         }
 
         // 2. 비밀번호 일치 여부 확인
@@ -70,10 +80,17 @@ public class AuthService {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // 3. JWT 토큰 발급
+        // 3. 계정 상태 / 위험 상태 검증
+        validateLoginAllowed(user);
+
+        // 4. JWT 토큰 발급
         return jwtTokenProvider.createToken(user);
     }
 
+
+    /**
+     * provider + providerUserId + email 기반 소셜 계정 매핑
+     */
     @Transactional
     public User socialLogin(AuthProvider provider,
             String providerUserId,
@@ -195,16 +212,24 @@ public class AuthService {
             throw new IllegalArgumentException("카카오 계정과 연결된 유저를 생성/조회하지 못했습니다.");
         }
 
-        // 6) JWT 발급
+        // 6) 계정 상태 / 위험 상태 검증
+        validateLoginAllowed(user);
+
+        // 7) JWT 발급
         String jwt = jwtTokenProvider.createToken(user);
         System.out.println("[KAKAO LOGIN] jwt = " + jwt);
         // 6-1) User에서 role 추출 (필드명에 맞게 수정)
         String role = user.getRole().name(); // 예: Role이 enum이면 .name()
 
-        // 7) 최종 응답
+         // 예: Role이 enum이면 .name()
+
+        // 9) 최종 응답
         return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
     }
 
+    /**
+     * 구글 로그인: code → accessToken → userInfo → socialLogin → JWT 발급
+     */
     @Transactional
     public LoginResponse googleLogin(String code) {
 
@@ -254,14 +279,32 @@ public class AuthService {
             name = "구글유저-" + googleId;
         }
 
+        // 3) 공통 소셜 로그인 로직
         User user = socialLogin(AuthProvider.GOOGLE, googleId, email, name);
         System.out.println("[GOOGLE LOGIN] user = " + user);
 
+        // 4) 계정 상태 / 위험 상태 검증
+        validateLoginAllowed(user);
+
+        // 5) JWT 발급
         String jwt = jwtTokenProvider.createToken(user);
 
         // 여기서도 role 추출
         String role = user.getRole().name(); // 필드명 다르면 맞춰서 변경
         return new LoginResponse(jwt, user.getEmail(), user.getName(), role);
+    }
+
+    /**
+     * 로그인 허용 여부 검증
+     * - status: SUSPENDED면 로그인 불가
+     * - riskStatus: BLOCKED면 로그인 불가
+     */
+    private void validateLoginAllowed(User user) {
+        // 1. 계정 상태
+        if (user.getStatus() == UserStatus.SUSPENDED) {
+            throw new AccountSuspendedException("일시 정지된 계정입니다. 관리자에게 문의해 주세요.");
+        }
+
     }
 
 }
