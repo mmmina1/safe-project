@@ -83,7 +83,7 @@ public class AdminUserService {
         userStateRepository.save(state);
 
         // 2) 계정 상태 변경 로직
-        if (request.getType() == StateType.SUSPENDED || request.getType() == StateType.BANNED) {
+        if (request.getType() == StateType.SUSPENDED) {
             user.setStatus(UserStatus.SUSPENDED);
         }
         // WARNING은 상태 변경 없이 이력만 기록
