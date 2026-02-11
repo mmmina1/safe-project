@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { Search, FileText, ChevronRight, LayoutDashboard, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
 import { getDashboardData } from '../../../api/myPageApi.js';
+import { Link } from 'react-router-dom';
 // ============================================================
 // 2. 진단 센터 화면 부품
 // ============================================================
@@ -123,7 +124,10 @@ const DiagnosisCenter = () => {
                     <h4 className="mb-2">내 취약점을 완벽하게 파악하고 싶다면?</h4>
                     <p className="opacity-75 mb-0">AI가 분석하는 정밀 보안 진단을 시작해보세요.</p>
                 </div>
-                <button className="btn btn-warning fw-bold px-4 py-2">AI 취약도 진단 바로가기</button>
+                <Link to="/ai" className="text-decoration-none">
+                    <button className="btn btn-warning fw-bold px-4 py-2">AI 취약도 진단 바로가기</button>
+                </Link>
+
             </div>
 
             <div className="d-flex justify-content-between align-items-center mb-3">
