@@ -164,6 +164,12 @@ function ProductDetail() {
   const displayReviewCount = Number((reviewCountState ?? product.reviewCount ?? 0));
   const isOutOfStock = product.stockQty === 0
 
+  // 상대 경로 이미지를 백엔드 기준 절대 URL로 변환 (서비스 소개 영역 표시용)
+  const API_BASE = 'http://localhost:8080'
+  const mainImageUrl = (product.mainImage && product.mainImage.trim())
+    ? (product.mainImage.startsWith('http') ? product.mainImage : `${API_BASE}${product.mainImage.startsWith('/') ? '' : '/'}${product.mainImage}`)
+    : null
+
   return (
     <div className="sp-bg">
       <div className="sp-shell-detail">
@@ -296,7 +302,7 @@ function ProductDetail() {
                   features={product.features}
                   plan={product.plan}
                   priceType={product.priceType}
-                  imageUrl={product.mainImage}
+                  imageUrl={mainImageUrl}
                 />
               )}
 
