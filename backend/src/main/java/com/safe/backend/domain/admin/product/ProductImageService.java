@@ -13,7 +13,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.UUID;
 
-@Service
+@Service("adminProductImageService")
 public class ProductImageService {
 
     private static final String PRODUCTS_SUBDIR = "products";

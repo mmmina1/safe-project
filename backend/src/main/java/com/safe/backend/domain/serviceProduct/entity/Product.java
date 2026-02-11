@@ -59,9 +59,6 @@ public class Product {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    @Column(name = "description", length = 1000)
-    private String description;
-
     @Column(name = "is_active")
     private Integer isActive;
 

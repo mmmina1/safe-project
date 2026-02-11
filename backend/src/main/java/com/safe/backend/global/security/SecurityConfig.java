@@ -11,10 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.http.HttpMethod;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -53,8 +55,8 @@ public class SecurityConfig {
                                 "/api/comments/**"
                         ).permitAll()
 
-                        //  관리자 전용 API
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // 관리자 및 운영자 전용 API
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "OPERATOR")
 
                         .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
 
@@ -90,6 +92,26 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
         );
 
+        // 403 에러 발생 시 로깅을 위한 예외 처리
+        http.exceptionHandling(exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    System.out.println("[Security] Access Denied for URI: " + request.getRequestURI());
+                    System.out.println("[Security] Method: " + request.getMethod());
+                    var auth = SecurityContextHolder.getContext().getAuthentication();
+                    if (auth != null) {
+                        System.out.println("[Security] Authenticated: " + auth.isAuthenticated());
+                        System.out.println("[Security] Principal: " + auth.getPrincipal());
+                        System.out.println("[Security] Authorities: " + auth.getAuthorities());
+                    } else {
+                        System.out.println("[Security] No authentication found");
+                    }
+                    System.out.println("[Security] Exception: " + accessDeniedException.getMessage());
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+                })
+        );
+
         return http.build();
     }
 
@@ -106,11 +128,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // 허용할 HTTP 메서드
-<<<<<<< HEAD
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-=======
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
->>>>>>> b7ecbb4e9b81c1a0582d7bc172551f8e0bb8bc1f
 
         // 허용할 헤더
         config.setAllowedHeaders(List.of("*"));

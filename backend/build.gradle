@@ -35,23 +35,17 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testRuntimeOnly 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-<<<<<<< HEAD
-	
+
 	// JWT 라이브러리
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// AWS S3 SDK (구버전 - S3Uploader, AwsS3Config에서 사용)
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.470'
 	
-	// AWS S3 SDK
+	// AWS S3 SDK (신버전 - ProductImageService에서 사용)
 	implementation 'software.amazon.awssdk:s3:2.20.0'
-=======
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
-  runtimeOnly 'com.h2database:h2'
->>>>>>> b7ecbb4e9b81c1a0582d7bc172551f8e0bb8bc1f
 }
 
 tasks.named('test') {

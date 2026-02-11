@@ -19,8 +19,8 @@ public class UserState {
     private Long adminId; // 처리 관리자 ID
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 20)
-    private StateType type; // WARNING, SUSPENDED, BANNED
+    @Column(name = "type", nullable = false, length = 50)
+    private StateType type; // WARNING, SUSPENDED, BANNED, DELETED
 
     @Column(name = "reason", length = 150)
     private String reason;

@@ -220,10 +220,10 @@ export default function OperatorDashboard() {
       {/* 그래프 섹션 */}
       <div style={{ 
         display: "grid", 
-        gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))", 
-        gap: "24px", 
-        marginTop: "64px",
-        marginBottom: "32px",
+        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", 
+        gap: "20px", 
+        marginTop: "32px",
+        marginBottom: "24px",
         animation: "fadeIn 0.5s ease-in 0.2s both",
         width: "100%",
         boxSizing: "border-box",
@@ -232,7 +232,7 @@ export default function OperatorDashboard() {
         {/* 막대 그래프 */}
         <div style={{ 
           background: CARD_BG, 
-          padding: "24px", 
+          padding: "16px 20px", 
           borderRadius: "12px", 
           border: `1px solid ${BORDER}`,
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -246,26 +246,26 @@ export default function OperatorDashboard() {
         onMouseLeave={(e) => {
           e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
         }}>
-          <h2 style={{ margin: "0 0 20px 0", fontSize: "1.125rem", fontWeight: 700, color: TEXT_WHITE }}>
+          <h2 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: 700, color: TEXT_WHITE }}>
             통계 현황
           </h2>
-          <div style={{ width: "100%", height: "400px", minWidth: "0", overflow: "hidden" }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barChartData} margin={{ top: 20, right: 20, left: 10, bottom: 40 }}>
+          <div style={{ width: "100%", height: "260px", minHeight: 180, minWidth: "0", overflow: "hidden" }}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={180}>
+              <BarChart data={barChartData} margin={{ top: 12, right: 12, left: 8, bottom: 32 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                 <XAxis 
                   dataKey="name" 
-                  tick={{ fill: TEXT_WHITE, fontSize: 12, fontWeight: 500 }}
+                  tick={{ fill: TEXT_WHITE, fontSize: 10, fontWeight: 500 }}
                   stroke={BORDER}
                   angle={0}
                   textAnchor="middle"
-                  height={40}
+                  height={32}
                   interval={0}
                 />
                 <YAxis 
-                  tick={{ fill: TEXT_WHITE, fontSize: 12, fontWeight: 500 }}
+                  tick={{ fill: TEXT_WHITE, fontSize: 10, fontWeight: 500 }}
                   stroke={BORDER}
-                  width={45}
+                  width={38}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -285,7 +285,7 @@ export default function OperatorDashboard() {
         {/* 파이 차트 */}
         <div style={{ 
           background: CARD_BG, 
-          padding: "24px", 
+          padding: "16px 20px", 
           borderRadius: "12px", 
           border: `1px solid ${BORDER}`,
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -299,12 +299,12 @@ export default function OperatorDashboard() {
         onMouseLeave={(e) => {
           e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
         }}>
-          <h2 style={{ margin: "0 0 20px 0", fontSize: "1.125rem", fontWeight: 700, color: TEXT_WHITE }}>
+          <h2 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: 700, color: TEXT_WHITE }}>
             {pieChartTitle}
           </h2>
           {pieChartData.length > 0 ? (
-            <div style={{ width: "100%", height: "320px", minWidth: "0", overflow: "hidden" }}>
-              <ResponsiveContainer width="100%" height="100%">
+            <div style={{ width: "100%", height: "240px", minHeight: 180, minWidth: "0", overflow: "hidden" }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={180}>
                 <PieChart>
                   <Pie
                     data={pieChartData}
@@ -312,7 +312,7 @@ export default function OperatorDashboard() {
                     cy="50%"
                     labelLine={false}
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={115}
+                    outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
                   >
@@ -326,22 +326,22 @@ export default function OperatorDashboard() {
                       border: `1px solid ${BORDER}`,
                       borderRadius: "8px",
                       color: TEXT_WHITE,
-                      fontSize: "13px",
+                      fontSize: "12px",
                       fontWeight: 500
                     }}
                   />
                   <Legend 
-                    wrapperStyle={{ color: TEXT_WHITE, fontSize: "13px", fontWeight: 500 }}
-                    iconSize={14}
+                    wrapperStyle={{ color: TEXT_WHITE, fontSize: "11px", fontWeight: 500 }}
+                    iconSize={12}
                   />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           ) : (
-            <div style={{ height: 320, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: TEXT_MUTED, gap: "8px" }}>
-              <div style={{ fontSize: "2rem", opacity: 0.5 }}>📊</div>
-              <div>표시할 데이터가 없습니다.</div>
-              <div style={{ fontSize: "0.875rem", marginTop: "8px", opacity: 0.7 }}>
+            <div style={{ height: 240, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: TEXT_MUTED, gap: "6px" }}>
+              <div style={{ fontSize: "1.5rem", opacity: 0.5 }}>📊</div>
+              <div style={{ fontSize: "0.875rem" }}>표시할 데이터가 없습니다.</div>
+              <div style={{ fontSize: "0.8125rem", marginTop: "4px", opacity: 0.7 }}>
                 CS 상담이나 공지사항을 추가하면<br />여기에 통계가 표시됩니다.
               </div>
             </div>

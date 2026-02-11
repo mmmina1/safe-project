@@ -54,7 +54,11 @@ export default function UserSearchPage() {
 
   const releaseMutation = useMutation({
     mutationFn: async (userId) => {
-      const res = await api.patch(`/admin/users/${userId}/release`, null, {
+      const id = Number(userId);
+      if (!Number.isInteger(id) || id < 1) {
+        throw new Error("유효하지 않은 회원 ID입니다.");
+      }
+      const res = await api.patch(`/admin/users/${id}/release`, null, {
         params: { adminId: 1 }, // TODO: 실제 관리자 ID로 변경
       });
       return res.data;
@@ -451,7 +455,8 @@ export default function UserSearchPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setReleaseConfirmId(user.userId);
+                              const id = user?.userId ?? user?.id;
+                              if (id != null) setReleaseConfirmId(Number(id));
                             }}
                             disabled={releaseMutation.isPending}
                             style={{

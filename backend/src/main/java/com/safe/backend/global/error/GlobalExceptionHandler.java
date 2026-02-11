@@ -4,8 +4,10 @@ import jakarta.persistence.PersistenceException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest() // 400
                 .body(new ErrorResponse(e.getMessage()));
+    }
+
+    // PathVariable/RequestParam 타입 변환 실패 (예: userId에 "undefined", "1:1" 등)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+        String param = e.getName();
+        String value = e.getValue() != null ? String.valueOf(e.getValue()) : "null";
+        String message = "잘못된 요청 값입니다. (" + param + ": " + value + ")";
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
     // DTO 검증 실패 (@Valid) - 공지 등 폼 검증

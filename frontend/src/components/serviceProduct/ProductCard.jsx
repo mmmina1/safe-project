@@ -19,22 +19,17 @@ function ProductCard({item}) {
     const rating = item.rating ?? item.avgRating ?? 0;
     const reviewCount = item.reviewCount ?? item.review_count ?? item.reviewsCount ?? 0;
 
-<<<<<<< HEAD
     const API_BASE = "http://localhost:8080";
     const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
     
-    const imageStyle = item.mainImage
-        ? { backgroundImage: `url(${imageFullUrl(item.mainImage)})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-=======
     const mainImage = item.mainImage ?? item.main_image ?? null;
 
     const imageStyle = mainImage
         ? { 
-            backgroundImage: `url("${mainImage}")`,
+            backgroundImage: `url(${imageFullUrl(mainImage)})`,
             backgroundSize: 'cover', 
             backgroundPosition: 'center' 
           }
->>>>>>> b7ecbb4e9b81c1a0582d7bc172551f8e0bb8bc1f
         : { backgroundColor: '#2a2f3a' };
 
   return (

@@ -63,7 +63,17 @@ public class AdminUserController {
             @PathVariable Long userId,
             @RequestParam(defaultValue = "1") Long adminId
     ) {
-        return ResponseEntity.ok(adminUserService.releaseUser(userId, adminId));
+        try {
+            return ResponseEntity.ok(adminUserService.releaseUser(userId, adminId));
+        } catch (IllegalArgumentException e) {
+            throw e; // GlobalExceptionHandler가 처리
+        } catch (Exception e) {
+            System.err.println("[AdminUserController] releaseUser 예외 발생:");
+            System.err.println("  userId: " + userId);
+            System.err.println("  adminId: " + adminId);
+            e.printStackTrace();
+            throw new RuntimeException("회원 활성화 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{userId}")
@@ -71,8 +81,18 @@ public class AdminUserController {
             @PathVariable Long userId,
             @RequestParam(defaultValue = "1") Long adminId
     ) {
-        adminUserService.deleteUser(userId, adminId);
-        return ResponseEntity.ok().build();
+        try {
+            adminUserService.deleteUser(userId, adminId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw e; // GlobalExceptionHandler가 처리
+        } catch (Exception e) {
+            System.err.println("[AdminUserController] deleteUser 예외 발생:");
+            System.err.println("  userId: " + userId);
+            System.err.println("  adminId: " + adminId);
+            e.printStackTrace();
+            throw new RuntimeException("회원 삭제 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
     }
 
     @PatchMapping("/{userId}/restore")

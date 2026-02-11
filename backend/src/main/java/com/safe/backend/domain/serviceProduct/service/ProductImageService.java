@@ -10,7 +10,7 @@ import com.safe.backend.global.s3.S3Uploader;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service("productMainImageService")
 @RequiredArgsConstructor
 @Transactional
 public class ProductImageService {

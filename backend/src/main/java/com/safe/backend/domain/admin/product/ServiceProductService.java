@@ -22,6 +22,13 @@ public class ServiceProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public ServiceProductResponse findById(Long id) {
+        ServiceProduct product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        return new ServiceProductResponse(product);
+    }
+
     @Transactional
     public ServiceProductResponse create(ServiceProductRequest request) {
         ServiceProduct product = ServiceProduct.of(
