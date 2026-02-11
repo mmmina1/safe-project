@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/uploads/**").permitAll()
 
                         // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
