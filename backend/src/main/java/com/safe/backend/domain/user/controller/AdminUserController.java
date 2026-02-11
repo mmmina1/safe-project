@@ -35,6 +35,11 @@ public class AdminUserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/agents")
+    public ResponseEntity<List<UserResponse>> getAgents() {
+        return ResponseEntity.ok(adminUserService.getAgents());
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long userId) {
         return ResponseEntity.ok(adminUserService.getUserById(userId));
@@ -58,6 +63,43 @@ public class AdminUserController {
             @PathVariable Long userId,
             @RequestParam(defaultValue = "1") Long adminId
     ) {
-        return ResponseEntity.ok(adminUserService.releaseUser(userId, adminId));
+        try {
+            return ResponseEntity.ok(adminUserService.releaseUser(userId, adminId));
+        } catch (IllegalArgumentException e) {
+            throw e; // GlobalExceptionHandler가 처리
+        } catch (Exception e) {
+            System.err.println("[AdminUserController] releaseUser 예외 발생:");
+            System.err.println("  userId: " + userId);
+            System.err.println("  adminId: " + adminId);
+            e.printStackTrace();
+            throw new RuntimeException("회원 활성화 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Long adminId
+    ) {
+        try {
+            adminUserService.deleteUser(userId, adminId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw e; // GlobalExceptionHandler가 처리
+        } catch (Exception e) {
+            System.err.println("[AdminUserController] deleteUser 예외 발생:");
+            System.err.println("  userId: " + userId);
+            System.err.println("  adminId: " + adminId);
+            e.printStackTrace();
+            throw new RuntimeException("회원 삭제 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @PatchMapping("/{userId}/restore")
+    public ResponseEntity<UserResponse> restoreUser(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Long adminId
+    ) {
+        return ResponseEntity.ok(adminUserService.restoreUser(userId, adminId));
     }
 }

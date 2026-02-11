@@ -17,6 +17,9 @@ function ProductCard({item}) {
     const priceType = item.priceType ?? item.price_type;
     const price = item.price ?? item.monthlyPrice ?? 0;
 
+    const API_BASE = "http://localhost:8080";
+    const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
+
     const mainImage = item.mainImage ?? item.main_image ?? null;
     const [ summary, setSummary ] = useState(null);
 
@@ -32,7 +35,7 @@ function ProductCard({item}) {
 
     const imageStyle = mainImage
         ? { 
-            backgroundImage: `url("${mainImage}")`,
+            backgroundImage: `url(${imageFullUrl(mainImage)})`,
             backgroundSize: 'cover', 
             backgroundPosition: 'center' 
           }

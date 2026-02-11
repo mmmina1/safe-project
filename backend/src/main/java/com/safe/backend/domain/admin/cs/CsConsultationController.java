@@ -50,4 +50,10 @@ public class CsConsultationController {
     public ResponseEntity<CsConsultationResponse> complete(@PathVariable Long id) {
         return ResponseEntity.ok(csConsultationService.complete(id));
     }
+
+    @DeleteMapping("/consultations/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        csConsultationService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }
