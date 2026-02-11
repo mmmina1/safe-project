@@ -52,10 +52,40 @@ const Diagnosis = () => {
                         <div className="result-score">{result.score}점</div>
                         <h4 className="mt-3">종합 진단 결과</h4>
                     </div>
-                    <div className="result-body py-4 px-3 bg-light rounded-4 mb-4">
-                        <p className="mb-0" style={{ lineHeight: '1.7', color: '#334155' }}>
-                            {result.summary}
-                        </p>
+                    <div className="result-body py-4 px-3 bg-light rounded-4 mb-4 text-start">
+                        <div className="mb-4">
+                            <h5 className="fw-bold text-dark mb-2">🔍 AI 종합 진단 총평</h5>
+                            <p className="mb-0 text-secondary" style={{ lineHeight: '1.7' }}>
+                                {result.summary}
+                            </p>
+                        </div>
+
+                        {result.top3Types && result.top3Types.length > 0 && (
+                            <div className="mb-4">
+                                <h5 className="fw-bold text-danger mb-2">⚠ 주의가 필요한 범죄 유형</h5>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {result.top3Types.map((type, idx) => (
+                                        <span key={idx} className="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                                            {type}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {result.recommendations && result.recommendations.length > 0 && (
+                            <div>
+                                <h5 className="fw-bold text-primary mb-2">🛡️ 맞춤형 보안 처방전</h5>
+                                <ul className="list-unstyled mb-0">
+                                    {result.recommendations.map((rec, idx) => (
+                                        <li key={idx} className="d-flex align-items-start gap-2 mb-2 text-secondary">
+                                            <CheckCircle size={16} className="text-primary mt-1 flex-shrink-0" />
+                                            <span>{rec}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                     <button onClick={resetDiagnosis} className="btn btn-primary btn-lg w-100 rounded-pill py-3">
                         다시 진단하기

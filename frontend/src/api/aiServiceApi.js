@@ -61,4 +61,17 @@ export const phishService = {
             throw error;
         }
     },
+
+    getDiagnosisHistory: async () => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await axiosInstance.get('/api/ai/diagnosis/history', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Get Diagnosis History Error:', error);
+            throw error;
+        }
+    },
 };

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,16 +27,10 @@ public class AiDiagSession {
     @Column(name = "overall_score")
     private Integer overallScore;
 
-    @Column(name = "diagnosis_name", length = 100)
-    private String diagnosisName;
-
     @Column(name = "top3_types", length = 100)
     private String top3Types;
 
-    @Column(name = "ai_comment", columnDefinition = "TEXT")
-    private String aiComment;
-
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String summary;
 
     @Column(name = "created_date")
@@ -43,6 +38,10 @@ public class AiDiagSession {
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
+
+    @OneToMany(mappedBy = "diagSession", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("sortOrder ASC")
+    private List<AiDiagRecommendation> recommendations;
 
     @PrePersist
     protected void onCreate() {

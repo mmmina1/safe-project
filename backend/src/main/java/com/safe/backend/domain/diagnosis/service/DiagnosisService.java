@@ -14,8 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import com.safe.backend.domain.diagnosis.dto.DiagnosisHistoryResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +31,7 @@ public class DiagnosisService {
     private final UserRepository userRepository;
 
     // 점수는 이미 계산돼서 넘어옴 (int score), 분석은 파이썬에서 함
-    public AiDiagSession saveDiagnosisResult(String email, String diagnosisName, int score,
+    public AiDiagSession saveDiagnosisResult(String email, int score,
             List<Map<String, Object>> answers,
             String aiComment, List<String> top3Types, List<String> aiRecommendations) {
 
@@ -38,10 +41,9 @@ public class DiagnosisService {
         // 1. 세션 저장 (점수 + AI 요약/TOP3 저장)
         AiDiagSession session = AiDiagSession.builder()
                 .userId(user.getUserId())
-                .diagnosisName(diagnosisName)
                 .overallScore(score)
-                .aiComment(aiComment)
                 .top3Types(top3Types != null ? String.join(",", top3Types) : null)
+                .summary(aiComment) // aiComment를 요약(summary) 필드에 저장
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())
                 .build();
@@ -65,21 +67,17 @@ public class DiagnosisService {
         }
         recommendationRepository.saveAll(recommendations);
 
-        // 3. 사용자 답변 내역 저장 (데이터 분석용)
+        // 3. 사용자 답변 내역 저장 (가볍게 Key와 Value만 저장)
         if (answers != null) {
             List<AiDiagAnswer> aiDiagAnswers = new ArrayList<>();
             for (Map<String, Object> ans : answers) {
                 String qKey = (String) ans.get("question_key");
-                String qText = (String) ans.get("question_text");
                 String aVal = (String) ans.get("answer_value");
-                String aText = (String) ans.get("answer_text");
 
                 AiDiagAnswer diagAnswer = AiDiagAnswer.builder()
                         .diagSession(session)
                         .questionKey(qKey)
-                        .questionText(qText)
                         .answerValue(aVal)
-                        .answerText(aText)
                         .build();
                 aiDiagAnswers.add(diagAnswer);
             }
@@ -89,4 +87,22 @@ public class DiagnosisService {
         return session;
     }
 
+    public List<DiagnosisHistoryResponse> getDiagnosisHistory(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        List<AiDiagSession> sessions = sessionRepository.findAllByUserIdOrderByCreatedDateDesc(user.getUserId());
+
+        return sessions.stream().map(s -> new DiagnosisHistoryResponse(
+                s.getDiagId(),
+                s.getOverallScore(),
+                s.getSummary(),
+                s.getTop3Types() != null ? Arrays.asList(s.getTop3Types().split(",")) : new ArrayList<>(),
+                s.getCreatedDate(),
+                s.getRecommendations().stream().map(r -> new DiagnosisHistoryResponse.RecommendationResponse(
+                        r.getRecText(),
+                        r.isChecked(),
+                        r.getSortOrder())).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+    }
 }
