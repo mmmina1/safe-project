@@ -42,7 +42,7 @@ public class DiagnosisService {
         AiDiagSession session = AiDiagSession.builder()
                 .userId(user.getUserId())
                 .overallScore(score)
-                .top3Types(top3Types != null ? String.join(",", top3Types) : null)
+                .top3Types(top3Types != null && !top3Types.isEmpty() ? String.join(",", top3Types) : null)
                 .summary(aiComment) // aiComment를 요약(summary) 필드에 저장
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())

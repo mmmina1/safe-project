@@ -85,8 +85,8 @@ const DiagnosisCenter = () => {
                                 </span>
                             </div>
                             <h5 className="card-label">🔍 AI 종합 진단 총평</h5>
-                            <div className="bg-light p-3 rounded-4 mb-4">
-                                <p className="mb-0" style={{ lineHeight: '1.7', color: '#334155' }}>
+                            <div className="bg-light p-4 rounded-4 mb-4 border border-secondary border-opacity-10">
+                                <p className="mb-0 fs-5" style={{ lineHeight: '1.7' }}>
                                     {selectedReport.summary}
                                 </p>
                             </div>
