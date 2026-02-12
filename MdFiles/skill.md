@@ -1,53 +1,53 @@
-# 🛠️ Technology Stack (기술 스택)
+# 🛠️ Technology Stack (기술 스택 상세)
 
-이 프로젝트는 현대적인 웹 서비스 아키텍처를 따르며, 사용자 중심의 프론트엔드, 견고한 비즈니스 로직의 자바 백엔드, 그리고 고도화된 AI 능력을 가진 파이썬 서버가 유기적으로 결합된 시스템입니다.
+이 프로젝트는 **사용자 경험(Frontend)**, **비즈니스 안정성(Java Backend)**, **지능형 분석(Python AI)**의 세 가지 축을 중심으로 설계되었습니다. 각 기술의 채택 이유와 실제 활용 사례를 정리했습니다.
 
 ---
 
 ## 💻 Frontend (사용자 인터페이스)
-사용자에게 직관적이고 미려한 UI/UX를 제공하기 위해 최신 React 생태계를 활용합니다.
 
-- **Core**: ⚛️ React 19 (Vite)
-- **State Management**: Zustand
-- **Data Fetching**: TanStack React Query v5, Axios
-- **Navigation**: React Router DOM v7
-- **Styling**: Bootstrap 5, React Bootstrap
-- **Visualization**: Chart.js, Recharts, React Leaflet (Map)
-- **Integration**: 🎮 React Unity WebGL (3D 시뮬레이션 인터랙션)
-- **Payment**: Toss Payments SDK (결제 모듈)
-- **Utilities**: Lucide React, React Hook Form
-
----
-
-## ☕ Backend - Core (비즈니스 로직)
-견고한 성능과 보안이 필요한 핵심 서버 기능은 Spring Boot를 기반으로 합니다.
-
-- **Language**: Java 17
-- **Framework**: Spring Boot 3.5.10 (Gradle)
-- **Database**: MySQL (Production), H2 (Test)
-- **ORM**: Spring Data JPA
-- **Security**: Spring Security, JWT (jjwt)
-- **Cloud/Storage**: AWS S3 (Spring Cloud AWS)
-- **Utilities**: Lombok, Validation
+| 기술 | 용도 및 활용 사례 |
+| :--- | :--- |
+| **React 19 (Vite)** | 최신 훅(Hook)과 빠른 빌드 속도를 기반으로 한 고성능 SPA 개발 |
+| **Zustand** | 로그인 상태, 유저 프로필 등 전역 상태를 가볍고 직관적으로 관리 |
+| **TanStack React Query** | 진단 이력, 장바구니 등 서버 데이터의 실시간 동기화 및 캐싱 처리 |
+| **React Unity WebGL** | 보이스피싱 상황극을 위한 3D 유니티 게임을 웹 브라우저에 통합 및 양방향 통신 |
+| **Toss Payments SDK** | 실제 결제 및 결제 연습 시뮬레이션을 위한 토스페이먼츠 인터페이스 구현 |
+| **Chart.js / Recharts** | 사용자의 보안 위험 점수 변화 및 분석 결과를 시각적인 그래프로 제공 |
+| **React Leaflet** | 피싱 피해 발생 지역이나 보안 시설 위치 등을 지도로 시각화 |
 
 ---
 
-## 🐍 Backend - AI (지능형 엔진)
-추론 및 자연어 처리가 필요한 AI 핵심 모듈은 Python의 Clean Architecture를 따릅니다.
+## ☕ Backend - Core (비즈니스 및 보안)
 
-- **Full-Stack Framework**: FastAPI
-- **Architecture**: Domain-Driven Design (DDD) 기반 Clean Architecture
-- **Language Model**: OpenAI API
-- **Vector Database**: ChromaDB (RAG 기반 지식 검색)
-- **Data Processing**: Pydantic v2
-- **Logic**: RAG (Retrieval-Augmented Generation) 패턴 적용
+| 기술 | 용도 및 활용 사례 |
+| :--- | :--- |
+| **Spring Boot 3.5** | 전체 시스템의 뼈대이자 데이터 허브 역할을 하는 메인 API 서버 |
+| **Spring Security + JWT** | 사용자의 안전한 로그인 및 권한 관리를 위한 표준 인증 아키텍처 |
+| **Spring Data JPA** | MySQL과 연동하여 회원 정보, 주문 내역, 진단 세션 등을 객체 단위로 관리 |
+| **Validation** | 프론트엔드와 API 간의 데이터 무결성을 보장하기 위한 서버 사이드 검증 |
+| **AWS S3 SDK** | 사용자의 프로필 이미지나 진단 첨부 파일 등을 안전하게 클라우드에 저장 |
+
+---
+
+## 🐍 Backend - AI (지능형 분석 엔진)
+
+| 기술 | 용도 및 활용 사례 |
+| :--- | :--- |
+| **FastAPI** | 비동기 처리를 지원하는 가벼운 프레임워크로, AI 추론 요청을 고속으로 처리 |
+| **OpenAI API** | GPT-4 모델을 활용하여 사용자의 대화를 분석하고 상황극 대사를 실시간 생성 |
+| **ChromaDB** | 실제 피싱 판례 데이터를 벡터화하여 저장하고, AI가 참고할 사례를 빛의 속도로 검색 |
+| **RAG 패턴** | AI가 학습하지 않은 최신 피싱 수법이나 매뉴얼을 실시간으로 참조하여 답변의 신뢰도 향상 |
+| **Clean Architecture** | 도메인 로직과 데이터 처리를 분리하여 AI 모델이나 DB 교체가 용이한 구조 설계 |
 
 ---
 
 ## 🏗️ Infrastructure & Others
-안정적인 서비스 배포와 운영을 위한 환경입니다.
 
-- **Containerization**: 🐳 Docker, Docker Compose
-- **In-Memory Cache**: Redis 7
-- **Version Control**: Git
-- **Documentation**: Markdown, Mermaid Diagrams
+| 기술 | 용도 및 활용 사례 |
+| :--- | :--- |
+| **Docker / Compose** | DB, Redis, AI 서버 등 한 환경으로 묶어 어디서나 동일하게 실행 가능하도록 컨테이너화 |
+| **MySQL 8.0** | 서비스의 핵심 비즈니스 데이터(유저, 주문, 마이페이지 이력)를 영구 저장 |
+| **Redis** | 반복되는 데이터 조회 성능을 높이기 위한 캐싱 및 실시간 데이터 처리 보조 |
+| **Git / GitHub** | 협업 및 코드 버전 관리를 통해 개발 안정성 확보 |
+| **Mermaid** | 복잡한 AI 아키텍처와 데이터 흐름을 문서 내에서 정교한 다이어그램으로 시각화 |
