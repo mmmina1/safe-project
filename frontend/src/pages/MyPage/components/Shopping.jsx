@@ -81,6 +81,11 @@ const Shopping = ({ initialTab = 'orders' }) => {
         alert(`주문 번호 ${orderId} 상세 내역 팝업 (준비중)\n\n- 상품명: ...\n- 결제금액: ...`);
     };
 
+    // [New] 장바구니 총액 계산
+    const calculateTotal = () => {
+        return cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    };
+
     // [New] 장바구니 주문하기 핸들러 (Mock)
     const handleCheckout = () => {
         if (cartItems.length === 0) {
@@ -88,7 +93,8 @@ const Shopping = ({ initialTab = 'orders' }) => {
             return;
         }
 
-        const confirmCheckout = window.confirm(`총 ${cartItems.length}개 상품을 주문하시겠습니까?\n(토스페이먼츠 연동 시 결제창이 호출됩니다)`);
+        const total = calculateTotal();
+        const confirmCheckout = window.confirm(`총 ${cartItems.length}개 상품을 주문하시겠습니까?\n합계: ${total.toLocaleString()}원\n(토스페이먼츠 연동 시 결제창이 호출됩니다)`);
         if (confirmCheckout) {
             // 결제 성공 시나리오
             alert('결제가 완료되었습니다! (Mock)');
@@ -97,8 +103,10 @@ const Shopping = ({ initialTab = 'orders' }) => {
             const newOrder = {
                 id: Math.floor(Math.random() * 1000000).toString(),
                 date: new Date().toLocaleDateString(),
-                items: `${cartItems[0].productName} 외 ${cartItems.length - 1}건`,
-                price: '338,000', // Mock price
+                items: cartItems.length > 1
+                    ? `${cartItems[0].productName} 외 ${cartItems.length - 1}건`
+                    : cartItems[0].productName,
+                price: total.toLocaleString(), // 동적 가격 반영
                 status: '결제완료'
             };
 
@@ -234,7 +242,7 @@ const Shopping = ({ initialTab = 'orders' }) => {
                         <div className="p-4 bg-transparent border-top border-secondary text-end">
                             <div className="mb-3">
                                 <span className="text-secondary me-3">총 상품금액</span>
-                                <span className="fw-bold fs-5 text-white">338,000원</span>
+                                <span className="fw-bold fs-5 text-white">{calculateTotal().toLocaleString()}원</span>
                             </div>
                             <button
                                 className="btn btn-primary btn-lg px-5"
