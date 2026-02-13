@@ -55,9 +55,9 @@ public class SecurityConfig {
                                 "/api/comments/**"
                         ).permitAll()
 
-                        // 관리자 및 운영자 전용 API
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "OPERATOR")
-                        .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
+                        //  관리자 전용 API
+                        .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
 
 
                         //✅ 해당 내용 추가!! - 최민아
