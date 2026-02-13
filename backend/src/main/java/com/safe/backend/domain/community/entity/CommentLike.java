@@ -11,7 +11,8 @@ import lombok.Setter;
 public class CommentLike {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "likes_id")
+    private Long likesId;
 
     @Column(name = "comment_id", nullable = false) 
     private Long commentId;
