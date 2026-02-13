@@ -1,6 +1,39 @@
 version: '3.8'
 
 services:
+  # 1. 프론트엔드 (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: safe-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - java-backend
+    networks:
+      - safe-network
+
+  # 2. 자바 백엔드 (Spring Boot)
+  java-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: safe-java-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/src/main/resources/application-local.properties
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - PYTHON_BACKEND_URL=http://python-backend:8000
+    depends_on:
+      - redis
+      - python-backend
+    networks:
+      - safe-network
+
+  # 3. 파이썬 백엔드 (FastAPI)
   python-backend:
     build:
       context: ./backend-python/py
@@ -19,6 +52,7 @@ services:
     networks:
       - safe-network
 
+  # 4. 레디스 (Redis)
   redis:
     image: redis:7-alpine
     container_name: safe-redis
@@ -32,7 +66,6 @@ services:
       - safe-network
 
 volumes:
-
   redis_data:
 
 networks:

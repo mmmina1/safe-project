@@ -28,7 +28,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider,
-                          UserRepository userRepository) {
+            UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
@@ -39,8 +39,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 회원가입 / 로그인 / 테스트 API 등은 모두 허용
                         .requestMatchers(
@@ -52,19 +51,18 @@ public class SecurityConfig {
                                 "/api/images/upload",
                                 "/api/ai/**",
                                 "/api/v1/payments/**",
-                                "/api/comments/**"
-                        ).permitAll()
+                                "/api/comments/**")
+                        .permitAll()
 
-                        //  관리자 전용 API
+                        // 관리자 전용 API
                         .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
 
-
-                        //✅ 해당 내용 추가!! - 최민아
+                        // ✅ 해당 내용 추가!! - 최민아
                         .requestMatchers(HttpMethod.GET,
                                 "/api/community/posts/**",
-                                "/api/products/**",      // 실제 백엔드 경로에 맞게!
-                                "/api/product/**"        // 혹시 이 경로면 이것도!
+                                "/api/products/**", // 실제 백엔드 경로에 맞게!
+                                "/api/product/**" // 혹시 이 경로면 이것도!
                         ).permitAll()
 
                         // 업로드된 이미지 파일 접근 허용
@@ -72,26 +70,25 @@ public class SecurityConfig {
 
                         // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
 
                         // ✅ 상품: 등록/수정/삭제는 일단 로그인 필요(또는 ADMIN으로 변경 가능)
-                        .requestMatchers(HttpMethod.POST,   "/api/products/**", "/api/product/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT,    "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
                         .requestMatchers("/api/cart/**").authenticated()
                         // 그 외는 토큰 필요
-                        .anyRequest().authenticated()
-                );
+                        .anyRequest().authenticated());
 
         // JWT 필터 추가
         http.addFilterBefore(
                 new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
                 UsernamePasswordAuthenticationFilter.class
-                
+
         );
 
         // 403 에러 발생 시 로깅을 위한 예외 처리
@@ -110,9 +107,9 @@ public class SecurityConfig {
                     System.out.println("[Security] Exception: " + accessDeniedException.getMessage());
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
-                })
-        );
+                    response.getWriter().write(
+                            "{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+                }));
 
         return http.build();
     }
@@ -127,7 +124,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 프론트 주소 허용 (React dev 서버)
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "http://localhost", // 도커 프론트엔드 주소
+                "http://127.0.0.1"));
 
         // 허용할 HTTP 메서드
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
