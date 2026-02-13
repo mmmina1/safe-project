@@ -52,40 +52,73 @@ public class BlacklistService {
 
     @Transactional
     public BlacklistResponse create(BlacklistRequest request, Long adminId) {
-        if (request.getTargetValue() == null || request.getTargetValue().trim().isEmpty()) {
-            throw new IllegalArgumentException("대상 값(전화번호 또는 URL)을 입력하세요.");
-        }
-        
-        String type = request.getType();
-        if (type == null || type.isEmpty()) {
-            // 자동 판단
-            String value = request.getTargetValue().trim();
-            if (value.startsWith("http://") || value.startsWith("https://") || value.contains(".")) {
-                type = "URL";
-            } else {
-                type = "PHONE";
+        try {
+            if (request.getTargetValue() == null || request.getTargetValue().trim().isEmpty()) {
+                throw new IllegalArgumentException("대상 값(전화번호 또는 URL)을 입력하세요.");
             }
+            
+            String type = request.getType();
+            System.out.println("DEBUG - Request type: '" + type + "'");
+            
+            if (type == null || type.isEmpty() || "자동 판단".equals(type)) {
+                // 자동 판단
+                String value = request.getTargetValue().trim();
+                if (value.startsWith("http://") || value.startsWith("https://") || value.contains(".")) {
+                    type = "URL";
+                } else {
+                    type = "PHONE";
+                }
+                System.out.println("DEBUG - Auto-detected type: " + type);
+            } else {
+                System.out.println("DEBUG - Using provided type: " + type);
+            }
+            
+            // 중복 체크
+            if (blacklistRepository.findByTargetValueAndType(request.getTargetValue().trim(), type).isPresent()) {
+                throw new IllegalArgumentException("이미 등록된 항목입니다.");
+            }
+            
+            Blacklist blacklist;
+            if ("PHONE".equals(type)) {
+                System.out.println("DEBUG - Creating PHONE blacklist");
+                blacklist = Blacklist.ofPhoneNumber(request.getTargetValue().trim());
+            } else if ("URL".equals(type)) {
+                System.out.println("DEBUG - Creating URL blacklist");
+                blacklist = Blacklist.ofUrl(request.getTargetValue().trim());
+            } else {
+                throw new IllegalArgumentException("유효하지 않은 유형입니다: " + type);
+            }
+            
+            if (request.getReason() != null && !request.getReason().trim().isEmpty()) {
+                blacklist.setReason(request.getReason().trim());
+            }
+            
+            // 필수 필드 검증 및 디버깅
+            if (blacklist.getTargetValue() == null || blacklist.getTargetValue().trim().isEmpty()) {
+                throw new IllegalArgumentException("대상 값(전화번호 또는 URL)은 필수입니다.");
+            }
+            if (blacklist.getType() == null || blacklist.getType().trim().isEmpty()) {
+                throw new IllegalArgumentException("유형은 필수입니다.");
+            }
+            
+            // 디버깅: 저장 전 필드 값 확인
+            System.out.println("DEBUG - Before save:");
+            System.out.println("  targetValue: " + blacklist.getTargetValue());
+            System.out.println("  type: " + blacklist.getType());
+            System.out.println("  reportCount: " + blacklist.getReportCount());
+            System.out.println("  voiceReportCnt: " + blacklist.getVoiceReportCnt());
+            System.out.println("  smsReportCnt: " + blacklist.getSmsReportCnt());
+            System.out.println("  isActive: " + blacklist.getIsActive());
+            System.out.println("  reason: " + blacklist.getReason());
+            
+            Blacklist saved = blacklistRepository.save(blacklist);
+            historyRepository.save(BlacklistHistory.of(saved, "CREATE", adminId));
+            return new BlacklistResponse(saved);
+        } catch (IllegalArgumentException e) {
+            throw e; // 이미 적절한 메시지가 있으므로 그대로 전달
+        } catch (Exception e) {
+            throw new IllegalArgumentException("블랙리스트 생성 중 오류가 발생했습니다: " + e.getMessage());
         }
-        
-        // 중복 체크
-        if (blacklistRepository.findByTargetValueAndType(request.getTargetValue().trim(), type).isPresent()) {
-            throw new IllegalArgumentException("이미 등록된 항목입니다.");
-        }
-        
-        Blacklist blacklist;
-        if ("PHONE".equals(type)) {
-            blacklist = Blacklist.ofPhoneNumber(request.getTargetValue().trim());
-        } else {
-            blacklist = Blacklist.ofUrl(request.getTargetValue().trim());
-        }
-        
-        if (request.getReason() != null && !request.getReason().trim().isEmpty()) {
-            blacklist.setReason(request.getReason().trim());
-        }
-        
-        Blacklist saved = blacklistRepository.save(blacklist);
-        historyRepository.save(BlacklistHistory.of(saved, "CREATE", adminId));
-        return new BlacklistResponse(saved);
     }
 
     @Transactional

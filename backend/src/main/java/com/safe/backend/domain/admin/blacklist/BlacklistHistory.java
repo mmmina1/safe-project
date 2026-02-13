@@ -30,9 +30,18 @@ public class BlacklistHistory {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "created_date", nullable = true, updatable = false)
+    private LocalDateTime createdDate;
+
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        if (this.createdDate == null) {
+            this.createdDate = now;
+        }
     }
 
     public static BlacklistHistory of(Blacklist blacklist, String actionType, Long adminId) {

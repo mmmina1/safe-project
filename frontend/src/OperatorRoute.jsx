@@ -7,7 +7,10 @@ function OperatorRoute({ children }) {
   const roleRaw = localStorage.getItem('role') || '';
   const role = roleRaw.trim();
 
-  console.log('[OperatorRoute] token =', token, 'role =', role);
+  // 개발 모드에서만 로그 출력
+  if (import.meta.env.DEV) {
+    console.log('[OperatorRoute] token =', token, 'role =', role);
+  }
 
   // 1) 로그인 안 되어 있으면 → 로그인 페이지로
   if (!token) {

@@ -21,16 +21,19 @@ function UserAuthNav() {
     setUserName(name || '');
     setRole(storedRole.trim());
 
-    console.log(
-      'UserAuthNav: token =',
-      token,
-      'isLoggedIn =',
-      !!token,
-      'userName =',
-      name,
-      'role =',
-      storedRole
-    );
+    // 개발 모드에서만 로그 출력
+    if (import.meta.env.DEV) {
+      console.log(
+        'UserAuthNav: token =',
+        token,
+        'isLoggedIn =',
+        !!token,
+        'userName =',
+        name,
+        'role =',
+        storedRole
+      );
+    }
   }, [location]);
 
   const isAdmin = role.includes('ADMIN');

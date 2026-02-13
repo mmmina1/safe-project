@@ -14,8 +14,8 @@ import Simulator from './pages/AiService/Simulator/Simulator';
 import Success from './pages/Payment/Success.jsx';
 import Fail from './pages/Payment/Fail.jsx';
 
-import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import Header from './components/Header.jsx';
 
 
 // 페이지 컴포넌트들
@@ -52,21 +52,22 @@ import UserRoute from './UserRoute.jsx';
 import MyPage from './pages/MyPage/MyPage';
 
 //운영자 페이지
-import OperatorLayout from './pages/admin/operator/OperatorLayout.jsx';
-import OperatorDashboard from './pages/admin/operator/OperatorDashboard.jsx';
-import UserSearchPage from './pages/admin/operator/UserSearchPage.jsx';
-import CsDashboardPage from './pages/admin/operator/CsDashboardPage.jsx';
-import ServiceProductsPage from './pages/admin/operator/ServiceProductsPage.jsx';
-import CommunityReportsPage from './pages/admin/operator/CommunityReportsPage.jsx';
-import BlindReasonsPage from './pages/admin/operator/BlindReasonsPage.jsx';
-import NoticesPage from './pages/admin/operator/NoticesPage.jsx';
-import BannersPage from './pages/admin/operator/BannersPage.jsx';
-import BlacklistPage from './pages/admin/operator/BlacklistPage.jsx';
+import OperatorLayout from './pages/operator/OperatorLayout.jsx';
+import OperatorDashboard from './pages/operator/OperatorDashboard.jsx';
+import UserSearchPage from './pages/operator/UserSearchPage.jsx';
+import CsDashboardPage from './pages/operator/CsDashboardPage.jsx';
+import ServiceProductsPage from './pages/operator/ServiceProductsPage.jsx';
+import CommunityReportsPage from './pages/operator/CommunityReportsPage.jsx';
+import BlindReasonsPage from './pages/operator/BlindReasonsPage.jsx';
+import NoticesPage from './pages/operator/NoticesPage.jsx';
+import BannersPage from './pages/operator/BannersPage.jsx';
+import BlacklistPage from './pages/operator/BlacklistPage.jsx';
 // src/App.jsx 상단 import 목록에 추가
 import OperatorRoute from './OperatorRoute.jsx';
 
-function App() {
 
+
+function App() {
   const location = useLocation();
   
   // 팝업창인지 확인 (window.opener가 있으면 팝업창)

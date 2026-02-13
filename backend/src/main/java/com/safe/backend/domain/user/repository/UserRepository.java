@@ -1,6 +1,7 @@
 package com.safe.backend.domain.user.repository;
 
 import com.safe.backend.domain.user.entity.User;
+import com.safe.backend.domain.user.entity.UserRole;
 import com.safe.backend.domain.user.entity.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /** 대시보드용: 특정 상태 회원 수 (ACTIVE만 세면 "현재 이용 가능 회원 수") */
     long countByStatus(UserStatus status);
+
+    /** 상담원 목록 조회 (ADMIN, OPERATOR 역할) */
+    List<User> findByRoleIn(List<UserRole> roles);
 }
