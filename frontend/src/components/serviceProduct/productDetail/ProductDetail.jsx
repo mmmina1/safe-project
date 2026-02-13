@@ -310,6 +310,7 @@ function ProductDetail() {
                 <ProductReviewsSection productId={productId} onAvgChange={(avg) => setReviewAvg(avg)} />
               )}
 
+
               {activeTab === 'qna' && (
                 <ProductQnaSection productId={productId}/>
               )}
