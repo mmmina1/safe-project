@@ -18,7 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     /**
-     * 결제 완료 처리 (장바구니 -> 주문)
+     * 결제 완료 처리2 (장바구니 -> 주문)
      */
     @PostMapping("/checkout")
     public ResponseEntity<Long> checkout(@AuthenticationPrincipal User user) {
