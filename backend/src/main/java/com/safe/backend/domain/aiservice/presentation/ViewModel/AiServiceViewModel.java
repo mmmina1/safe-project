@@ -1,4 +1,4 @@
-package com.safe.backend.domain.aiservice.presentation.viewmodel;
+package com.safe.backend.domain.aiservice.presentation.ViewModel;
 
 import com.safe.backend.domain.aiservice.domain.entity.ChatMessageEntity;
 import com.safe.backend.domain.aiservice.domain.entity.ChatRequestEntity;

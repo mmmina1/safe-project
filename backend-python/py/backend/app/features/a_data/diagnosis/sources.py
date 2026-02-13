@@ -1,65 +1,37 @@
-import mysql.connector
-import os
-from dotenv import load_dotenv
-from typing import Optional
-
-load_dotenv()
-
+import json
 from app.core.ai.engine import AIEngine
+from app.features.a_domain.diagnosis.entities import DiagnosisResult
 
-# 실제 MySQL 데이터베이스와 통신 및 AI 분석을 병행하는 데이터 소스
-class MySQLDiagnosisDataSource:
+class AIDiagnosisSource:
     def __init__(self):
-        self.config = {
-            'host': os.getenv('DB_HOST'),
-            'user': os.getenv('DB_USER'),
-            'password': os.getenv('DB_PASSWORD'),
-            'database': os.getenv('DB_NAME')
-        }
-        # 진단 전용 AI 엔진 추가
+        # 진단 전용 AI 엔진 가동
         self.engine = AIEngine("diagnosis")
 
-    def _get_connection(self):
-        return mysql.connector.connect(**self.config)
-
-    def analyze_with_ai(self, habits: str) -> str:
-        """사용자의 습관을 AI 엔진이 전문적으로 분석"""
-        return self.engine.get_answer(habits, use_rag=False)
-
-    def save(self, data: dict) -> dict:
-        # (기존 MySQL 저장 로직 동일)
-        conn = self._get_connection()
-        cursor = conn.cursor()
+    def analyze_survey(self, formatted_content: str) -> dict:
+        """
+        AI 엔진에게 설문 내용을 전달하고 분석 결과를 받아옵니다.
+        """
         try:
-            sql = """
-            INSERT INTO diagnosis_results (session_id, total_score, risk_level, summary)
-            VALUES (%s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                total_score = VALUES(total_score),
-                risk_level = VALUES(risk_level),
-                summary = VALUES(summary)
-            """
-            values = (
-                data["session_id"],
-                data["total_score"],
-                data["risk_level"],
-                data["summary"]
-            )
-            cursor.execute(sql, values)
-            conn.commit()
-            return data
-        finally:
-            cursor.close()
-            conn.close()
+            # AI 엔진 호출 (GPT-4o + RAG 활성화)
+            raw_response = self.engine.get_answer(formatted_content, use_rag=True)
+            
+            # JSON 형식의 응답을 파이썬 딕셔너리로 변환
+            # 응답이 ```json ... ``` 형태인 경우를 대비해 전처리 시도
+            clean_json = raw_response.strip()
+            if clean_json.startswith("```json"):
+                clean_json = clean_json.split("```json")[1].split("```")[0].strip()
+            elif clean_json.startswith("```"):
+                clean_json = clean_json.split("```")[1].split("```")[0].strip()
+            
+            return json.loads(clean_json)
+        except Exception as e:
+            # 파싱 에러나 엔진 에러 발생 시 기본값 반환
+            print(f"[AIDiagnosisSource] Error: {e}")
+            return {
+                "aiComment": f"분석 도중 오류가 발생했습니다: {str(e)}",
+                "top3Types": ["분석 불가"],
+                "recommendations": ["잠시 후 다시 시도해 주세요."]
+            }
 
-    def get(self, session_id: str) -> Optional[dict]:
-        conn = self._get_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            cursor.execute("SELECT * FROM diagnosis_results WHERE session_id = %s", (session_id,))
-            return cursor.fetchone()
-        finally:
-            cursor.close()
-            conn.close()
-
-diagnosis_db = MySQLDiagnosisDataSource()
+# 싱글톤 인스턴스
+diagnosis_source = AIDiagnosisSource()

@@ -3,6 +3,9 @@
 // ============================================================
 import React, { useState } from 'react';
 import { Search, FileText, ChevronRight, LayoutDashboard, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
+import { phishService } from '../../../api/aiServiceApi.js';
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // ============================================================
 // 2. 진단 센터 화면 부품
@@ -13,13 +16,35 @@ const DiagnosisCenter = () => {
     const [selectedReport, setSelectedReport] = useState(null);
     // activeTab: 상세 리포트 안에서 '요약/권장사항/오답분석' 중 어떤 탭이 보여질지 결정합니다.
     const [activeTab, setActiveTab] = useState('summary');
+    // [신규] 서버에서 가져온 실제 진단 내역
+    const [history, setHistory] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // [샘플데이터] 화면에 보여줄 가짜 진단 기록 리스트입니다.
-    const history = [
-        { id: 1, date: '2023.10.25', name: '정기 AI 종합 진단', score: 85, status: '완료' },
-        { id: 2, date: '2023.09.01', name: '직업군 특화 진단', score: 72, status: '완료' },
-        { id: 3, date: '2023.08.15', name: '간편 진단', score: null, status: '중단' },
-    ];
+    useEffect(() => {
+        setIsLoading(false);
+        phishService.getDiagnosisHistory()
+            .then(data => {
+                console.log("진단 내역 도착:", data);
+                // 서버 데이터를 화면 규격에 맞게 변환
+                const mappedHistory = data.map(item => ({
+                    id: item.diagId,
+                    date: new Date(item.createdDate).toLocaleDateString(),
+                    name: 'AI 종합 취약점 진단',
+                    score: item.score,
+                    status: '완료',
+                    summary: item.summary,
+                    top3Types: item.top3Types,
+                    recommendations: item.recommendations
+                }));
+                setHistory(mappedHistory);
+            })
+            .catch(err => {
+                console.error("진단 내역 로딩 실패:", err);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
     /* ------------------------------------------------------------
        A. 리포트 상세 보기 화면 (리포트를 클릭했을 때 나타남)
@@ -55,42 +80,54 @@ const DiagnosisCenter = () => {
                         <div className="animate-fade-in">
                             <div className="text-center mb-5">
                                 <div className="display-4 fw-bold text-primary mb-2">{selectedReport.score}점</div>
-                                <span className="status-badge badge-safe">안전 단계</span>
+                                <span className={`status-badge ${selectedReport.score >= 80 ? 'badge-safe' : (selectedReport.score >= 50 ? 'badge-warning' : 'badge-danger')}`}>
+                                    {selectedReport.score >= 80 ? '안전' : (selectedReport.score >= 50 ? '주의' : '위험')} 단계
+                                </span>
                             </div>
-                            <h5 className="card-label">주요 발견 사항</h5>
-                            <ul className="list-group list-group-flush">
-                                <li className="list-group-item px-0">연령대 대비 금융 지식 수준이 높습니다.</li>
-                                <li className="list-group-item px-0 text-warning fw-medium">최근 직업 관련 보안 인식이 다소 낮아졌습니다. (주의 필요)</li>
-                            </ul>
+                            <h5 className="card-label">🔍 AI 종합 진단 총평</h5>
+                            <div className="bg-light p-4 rounded-4 mb-4 border border-secondary border-opacity-10">
+                                <p className="mb-0 fs-5" style={{ lineHeight: '1.7' }}>
+                                    {selectedReport.summary}
+                                </p>
+                            </div>
                         </div>
                     )}
 
                     {activeTab === 'recommend' && (
                         <div className="animate-fade-in">
-                            <h5 className="card-label">개선 권장사항 체크리스트</h5>
-                            {[
-                                { label: '[필수] 비밀번호를 특수문자 포함 12자리 이상으로 변경하세요.', done: false },
-                                { label: '[권장] 2단계 인증을 활성화하세요.', done: false },
-                                { label: '[완료] 최근 의심스러운 로그인 기록을 확인했습니다.', done: true },
-                            ].map((item, idx) => (
-                                <div key={idx} className="d-flex align-items-center mb-3 p-3 border rounded">
-                                    <input type="checkbox" checked={item.done} readOnly className="form-check-input me-3" />
-                                    <span className={item.done ? 'text-muted text-decoration-line-through' : 'fw-medium'}>
-                                        {item.label}
-                                    </span>
-                                    {!item.done && <ChevronRight size={16} className="ms-auto text-muted" />}
-                                </div>
-                            ))}
+                            <h5 className="card-label">🛡️ 맞춤형 보안 처방전</h5>
+                            {selectedReport.recommendations && selectedReport.recommendations.length > 0 ? (
+                                selectedReport.recommendations.map((item, idx) => (
+                                    <div key={idx} className="d-flex align-items-center mb-3 p-3 border rounded">
+                                        <input type="checkbox" checked={item.isChecked} readOnly className="form-check-input me-3" />
+                                        <span className={item.isChecked ? 'text-muted text-decoration-line-through' : 'fw-medium'}>
+                                            {item.recText}
+                                        </span>
+                                        {!item.isChecked && <ChevronRight size={16} className="ms-auto text-muted" />}
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-muted text-center py-4">사용 가능한 권장사항이 없습니다.</p>
+                            )}
                         </div>
                     )}
 
                     {activeTab === 'analysis' && (
                         <div className="animate-fade-in">
-                            <h5 className="card-label">가장 많이 틀린 유형: 상황 판단 능력</h5>
+                            <h5 className="card-label">⚠ 주의가 필요한 범죄 유형</h5>
+                            <div className="d-flex flex-wrap gap-2 mb-4">
+                                {selectedReport.top3Types && selectedReport.top3Types.length > 0 ? (
+                                    selectedReport.top3Types.map((type, idx) => (
+                                        <span key={idx} className="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                                            {type}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <p className="text-muted">분석된 유형이 없습니다.</p>
+                                )}
+                            </div>
                             <div className="alert alert-light border">
-                                <p className="fw-bold">Q. 다음 중 스미싱 문자로 의심되는 것은?</p>
-                                <div className="small text-danger mb-2">당신의 선택: [오답] 이번달 건강검진 결과 확인하세요 (+링크)</div>
-                                <div className="small text-success">정답: 모두 정답 (모든 출처 불분명 링크는 의심해야 함)</div>
+                                <p className="small text-muted mb-0">※ AI가 사용자의 보안 설문 답변을 바탕으로 도출한 위험 요소입니다.</p>
                             </div>
                         </div>
                     )}
@@ -112,7 +149,10 @@ const DiagnosisCenter = () => {
                     <h4 className="mb-2">내 취약점을 완벽하게 파악하고 싶다면?</h4>
                     <p className="opacity-75 mb-0">AI가 분석하는 정밀 보안 진단을 시작해보세요.</p>
                 </div>
-                <button className="btn btn-warning fw-bold px-4 py-2">AI 취약도 진단 바로가기</button>
+                <Link to="/ai" className="text-decoration-none">
+                    <button className="btn btn-warning fw-bold px-4 py-2">AI 취약도 진단 바로가기</button>
+                </Link>
+
             </div>
 
             <div className="d-flex justify-content-between align-items-center mb-3">

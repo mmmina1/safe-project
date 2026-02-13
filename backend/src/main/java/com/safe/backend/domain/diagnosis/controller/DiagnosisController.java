@@ -16,6 +16,7 @@ import java.util.Map;
 public class DiagnosisController {
 
     private final DiagnosisService diagnosisService;
+    private final com.safe.backend.domain.aiservice.data.datasource.PythonAiDataSource pythonAiDataSource;
 
     @PostMapping("/submit")
     public ResponseEntity<?> submitDiagnosis(
@@ -28,19 +29,37 @@ public class DiagnosisController {
         System.out.println("======================");
 
         try {
+            // 1. 파이썬 AI 서비스를 호출하여 답변 분석 (총평, TOP3, 맞춤 권장사항 수신)
+            com.safe.backend.domain.aiservice.data.Model.PythonDiagnosisResponse aiResult = pythonAiDataSource
+                    .analyzeDiagnosis(request.answers());
+
+            // 2. 분석 결과와 함께 DB 저장
             diagnosisService.saveDiagnosisResult(
-                    user.getEmail(), // [FIX] getUsername() -> getEmail()
+                    user.getEmail(),
                     request.score(),
                     request.answers(),
-                    request.recommendations());
-            return ResponseEntity.ok().body(Map.of("message", "저장 완료"));
+                    aiResult.aiComment(),
+                    aiResult.top3Types(),
+                    aiResult.recommendations());
+
+            return ResponseEntity.ok().body(aiResult);
         } catch (Exception e) {
             e.printStackTrace(); // 서버 로그에 에러 출력
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<?> getHistory(@AuthenticationPrincipal User user) {
+        try {
+            return ResponseEntity.ok().body(diagnosisService.getDiagnosisHistory(user.getEmail()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     public record DiagnosisSubmitRequest(
+            String diagnosisName,
             int score,
             List<Map<String, Object>> answers,
             List<String> recommendations) {

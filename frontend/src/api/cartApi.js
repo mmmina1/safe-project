@@ -74,3 +74,35 @@ export const deleteCartItem = async (cartId) => {
         throw error;
     }
 };
+
+/**
+ * 주문 생성 (결제 처리)
+ */
+export const checkout = async () => {
+    const token = localStorage.getItem('accessToken');
+    try {
+        const response = await axiosInstance.post('/api/orders/checkout', {}, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        return response.data;
+    } catch (error) {
+        console.error('주문 처리 실패:', error);
+        throw error;
+    }
+};
+
+/**
+ * 주문 내역 조회
+ */
+export const getMyOrders = async () => {
+    const token = localStorage.getItem('accessToken');
+    try {
+        const response = await axiosInstance.get('/api/orders/my', {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        return response.data;
+    } catch (error) {
+        console.error('주문 내역 조회 실패:', error);
+        throw error;
+    }
+};

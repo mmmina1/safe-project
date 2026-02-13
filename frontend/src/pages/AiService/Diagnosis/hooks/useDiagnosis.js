@@ -30,6 +30,7 @@ export const useDiagnosis = () => {
             question_key: currentQuestion.id,
             question_text: currentQuestion.text,
             answer_text: answerText,
+            answer_value: answerText, // 텍스트 자체를 값으로 저장
             score: score
         };
 
@@ -42,65 +43,47 @@ export const useDiagnosis = () => {
             setTotalScore(newTotalScore);
             setCurrentStep(currentStep + 1);
         } else {
-            // 마지막 질문인 경우: 서버 통신(AI) 대신 로컬에서 점수 기반으로 결과 생성
+            // 마지막 질문인 경우: 서버 통신(AI) 시작
             setIsLoading(true);
 
-            // AI 분석을 흉내내기 위한 약간의 지연 시간 (0.8초)
-            setTimeout(() => {
-                // 100점 만점으로 환산 (총점 / 문항수 * 100)
-                // 예: 10문제 중 8점 -> 80점
-                const finalRawScore = newTotalScore;
-                const finalScore = Math.round((finalRawScore / questions.length) * 100);
+            // 서버로 전송할 데이터 준비 (백엔드 DTO 규격에 맞춤)
+            // AI 분석을 위해 텍스트 정보도 함께 보냅니다 (DB에는 저장되지 않음)
+            const submitData = newAnswers.map(ans => ({
+                question_key: ans.question_key,
+                question_text: ans.question_text,
+                answer_text: ans.answer_text,
+                answer_value: ans.answer_value
+            }));
 
-                let riskLevel = 'SAFE';
-                let summary = "";
+            try {
+                // 100점 만점으로 환산 (프론트에서도 일단 계산해서 보냄)
+                const finalScore = Math.round((newTotalScore / questions.length) * 100);
 
-                // 점수 기반 위험도 판정 로직 (높을수록 안전!)
-                if (finalScore >= 80) {
-                    riskLevel = 'SAFE';
-                    summary = "보안 상태가 매우 양호합니다! 평소 보안 수칙을 잘 지키고 계시네요. 앞으로도 출처 불분명한 링크는 클릭하지 마시고, 정기적으로 백신 검사를 수행하여 안전한 디지털 환경을 유지하시기 바랍니다.";
-                } else if (finalScore >= 50) {
-                    riskLevel = 'CAUTION';
-                    summary = "주의가 필요한 단계입니다. 보안 수칙을 어느 정도 알고 계시지만, 일부 취약한 부분이 발견되었습니다. 어카운트인포를 통해 내 계좌 현황을 점검하고, 최신 피싱 수법에 대해 조금 더 관심을 가지실 것을 권장합니다.";
-                } else {
-                    riskLevel = 'DANGER';
-                    summary = "위험 수준이 매우 높습니다! 현재 다양한 보이스피싱 위협에 노출되어 있을 가능성이 큽니다. 즉시 엠세이퍼를 통해 명의도용 여부를 확인하고, 출처가 불분명한 앱은 모두 삭제하십시오. 필요시 금융기관에 계좌 지급정지를 요청하세요.";
-                }
+                // 서버 API 호출 (AI 분석 + DB 저장 수행)
+                const response = await phishService.submitDiagnosis(finalScore, submitData);
 
+                // [변경] 서버에서 받은 진짜 AI 분석 결과를 상태에 저장
+                // response 구조: { aiComment, top3Types, recommendations }
                 setResult({
                     score: finalScore,
-                    risk_level: riskLevel,
-                    summary: summary
+                    risk_level: finalScore >= 80 ? 'SAFE' : (finalScore >= 50 ? 'CAUTION' : 'DANGER'),
+                    summary: response.aiComment, // AI의 총평
+                    top3Types: response.top3Types, // TOP3 위험 유형
+                    recommendations: response.recommendations // 맞춤 권장사항
                 });
 
-                // [NEW] 추천 항목 수집 (틀린 문제만)
-                const recommendations = newAnswers
-                    .filter(ans => ans.score < 1)
-                    .map(ans => {
-                        const originalQuestion = questions.find(q => q.id === ans.question_key);
-                        return originalQuestion ? originalQuestion.recommendation : null;
-                    })
-                    .filter(rec => rec !== null);
-
-                // [DEBUG] 데이터 흐름 확인용 로그
-                console.log("=== [진단 완료] 서버로 전송할 데이터 ===");
-                console.log("1. 총점:", finalScore);
-                console.log("2. 답안 목록:", newAnswers);
-                console.log("3. 추천 처방전:", recommendations);
-                console.log("======================================");
-
-                // [NEW] 서버로 결과 전송 (로그인한 사용자만)
-                const token = localStorage.getItem('accessToken');
-                if (token) {
-                    phishService.submitDiagnosis(finalScore, newAnswers, recommendations)
-                        .then(res => console.log("✅ 진단 결과 저장 성공:", res))
-                        .catch(err => console.error("❌ 진단 결과 저장 실패:", err));
-                } else {
-                    console.log("ℹ️ 게스트 사용자: 결과 저장 건너뜀 (로컬 확인용)");
-                }
-
+                console.log("✅ AI 진단 분석 성공:", response);
+            } catch (error) {
+                console.error("❌ AI 진단 분석 실패:", error);
+                // 에러 피드백을 위한 기본 결과 설정
+                setResult({
+                    score: Math.round((newTotalScore / questions.length) * 100),
+                    risk_level: 'ERROR',
+                    summary: "AI 분석 서버와 통신하는 중 문제가 발생했습니다. 결과를 저장하지 못했습니다."
+                });
+            } finally {
                 setIsLoading(false);
-            }, 800);
+            }
         }
     };
 
