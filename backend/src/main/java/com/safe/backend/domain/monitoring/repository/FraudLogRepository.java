@@ -21,4 +21,15 @@ public interface FraudLogRepository extends JpaRepository<FraudLog, Long> {
     @Query("SELECT COUNT(f) FROM FraudLog f WHERE f.createdAt >= :start AND f.createdAt < :end")
     long countByDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
+    @Query(value = """
+        SELECT HOUR(fl.created_at) AS hour, COUNT(*) AS cnt
+        FROM fraud_log fl
+        WHERE fl.created_at >= :start AND fl.created_at < :end
+        GROUP BY HOUR(fl.created_at)
+        ORDER BY hour
+        """, nativeQuery = true)
+    List<Object[]> countByHour(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }

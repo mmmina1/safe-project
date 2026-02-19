@@ -3,6 +3,7 @@ package com.safe.backend.domain.user.repository;
 import com.safe.backend.domain.user.entity.UserState;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserStateRepository extends JpaRepository<UserState, Long> {
@@ -10,4 +11,5 @@ public interface UserStateRepository extends JpaRepository<UserState, Long> {
     List<UserState> findByUserIdAndEndDateIsNull(Long userId); // 현재 적용중인 제재
     // 전체 운영 이력 (최근 순)
     List<UserState> findAllByOrderByStateDateDesc();
+    long countByStateDateBetween(LocalDateTime from, LocalDateTime to);
 }

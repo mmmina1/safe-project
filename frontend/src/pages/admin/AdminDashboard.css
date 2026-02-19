@@ -11,12 +11,81 @@
 .admin-dashboard {
   background-color: #0b0e23;
   color: #e6e8f0;
-  padding: 24px 24px 0 24px; 
+  padding: 24px 24px 0 24px;
   min-height: auto;
   font-size: 14px;
 }
 
-/* ===== 2. 섹션별 공통 스타일 ===== */
+/* 상단 인트로 텍스트 */
+.dashboard-intro {
+  margin-bottom: 10px;
+}
+
+.admin-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.admin-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ===== 2. 상단 KPI 카드 ===== */
+
+.top-kpi-grid {
+  margin-top: 16px;
+  margin-bottom: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+/* 공통 KPI 카드 */
+.kpi-card {
+  background: #141933;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 70px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out,
+    border-color 0.12s ease-out,
+    background 0.12s ease-out;
+}
+
+/* 보안 KPI 카드 (앞의 3개 정도) */
+.kpi-card.kpi-security {
+  background: #161f3f;
+  border-color: rgba(80, 140, 255, 0.4);
+}
+
+.kpi-card .label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.kpi-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== 3. 섹션별 공통 스타일 ===== */
+
 .dashboard-section {
   background-color: #141833;
   border-radius: 12px;
@@ -26,21 +95,40 @@
   border-top: 3px solid transparent;
 }
 
-.dashboard-section.risk-section { border-top-color: var(--chart-danger); } 
-.dashboard-section.growth-compact { border-top-color: var(--chart-info); }
-.dashboard-section.revenue-compact { border-top-color: var(--chart-success); }
+.dashboard-section.risk-section {
+  border-top-color: var(--chart-danger);
+}
+
+.dashboard-section.growth-compact {
+  border-top-color: var(--chart-info);
+}
+
+.dashboard-section.revenue-compact {
+  border-top-color: var(--chart-success);
+}
+
+/* 섹션 헤더 */
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-.section-header h2 { font-size: 1rem; font-weight: 700; margin: 0; }
+.section-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
 
-.header-title-group { display: flex; align-items: center; gap: 12px; }
+.header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
+/* 서버 상태 pill */
 .server-status-pill {
   font-size: 0.7rem;
   padding: 2px 10px;
@@ -51,32 +139,90 @@
   font-weight: 700;
 }
 
-/* ===== 3. 보안(Risk) 그리드 ===== */
+/* 실시간 모니터링 문구 */
+.status-live {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 라이브 빨간 점 */
+.status-live::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #ff5b5b;
+  box-shadow: 0 0 8px rgba(255, 91, 91, 0.8);
+}
+
+/* 깜빡이는 효과 (살짝만) */
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.status-live {
+  animation: blink 1.5s infinite;
+}
+
+/* 업데이트 시간 텍스트 */
+.updated-at {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ===== 4. 보안(Risk) 그리드 / 차트 섹션 ===== */
+
 .risk-content-grid {
   display: grid;
   grid-template-columns: 1.8fr 1fr;
   gap: 20px;
 }
 
-.mini-title { font-size: 0.85rem; color: #a9b0d4; margin-bottom: 12px; font-weight: 600; }
-
-.status-live {
-  color: var(--chart-danger);
-  font-size: 0.7rem;
-  font-weight: 800;
-  animation: blink 1.5s infinite;
+.mini-title {
+  font-size: 0.85rem;
+  color: #a9b0d4;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-/* ===== 4. 하단 레이아웃 (성장 & 비즈니스) ===== */
+/* 차트 카드 공통 */
+.chart-main,
+.chart-side {
+  background: rgba(5, 8, 23, 0.9);
+  border-radius: 10px;
+  padding: 12px 14px 10px;
+}
+
+/* 차트 데이터 없을 때 */
+.chart-placeholder {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== 5. 하단 레이아웃 (사용자/운영 + 멤버십) ===== */
+
 .bottom-row-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1.2fr; 
+  grid-template-columns: 1.4fr 1.2fr;
   gap: 20px;
   align-items: stretch;
   margin-bottom: 0;
 }
 
-.kpi-row { display: flex; gap: 12px; flex: 1; }
+/* 좌측 사용자/운영 KPI 묶음 */
+
+.kpi-row {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
 
 .kpi-item {
   flex: 1;
@@ -90,11 +236,23 @@
   border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.kpi-item .label { font-size: 0.8rem; color: var(--text-muted); }
-.kpi-item .value { font-size: 1.4rem; font-weight: 800; line-height: 1; }
-.kpi-item .value.warning { color: var(--chart-warning); }
+.kpi-item .label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
 
-/* 비즈니스 통합 컨텐츠 */
+.kpi-item .value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.kpi-item .value.warning {
+  color: var(--chart-warning);
+}
+
+/* 우측 멤버십/비즈니스 카드 */
+
 .revenue-business-content {
   background: #1c2146;
   padding: 16px 20px;
@@ -105,8 +263,15 @@
   min-height: 110px;
 }
 
-.rev-main-info { flex: 1; }
-.rev-desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+.rev-main-info {
+  flex: 1;
+}
+
+.rev-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
 
 .v-divider {
   width: 1px;
@@ -115,16 +280,50 @@
   margin: 0 15px;
 }
 
-.membership-box { flex: 1.2; display: flex; align-items: center; gap: 12px; }
-.membership-mini-chart { width: 75px; flex-shrink: 0; }
-.membership-legend { display: flex; flex-direction: column; gap: 4px; }
+.membership-box {
+  flex: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-.legend-item { display: flex; align-items: center; font-size: 0.7rem; }
-.legend-item .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
-.legend-item .tier-name { color: #a9b0d4; width: 35px; }
-.legend-item .tier-val { color: #fff; font-weight: 700; margin-left: 4px; }
+.membership-mini-chart {
+  width: 75px;
+  flex-shrink: 0;
+}
 
-/* ===== 5. 지표(Trend) ===== */
+.membership-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.7rem;
+}
+
+.legend-item .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.legend-item .tier-name {
+  color: #a9b0d4;
+  width: 35px;
+}
+
+.legend-item .tier-val {
+  color: #fff;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* ===== 6. 변화율(Trend) 표시 ===== */
+
 .val-group {
   display: flex;
   align-items: flex-end;
@@ -145,21 +344,38 @@
   line-height: 1.2;
 }
 
-.trend.positive { color: var(--chart-success); }
-.trend.negative { color: var(--chart-info); }
+/* (혹시 .trend positive/negative 조합으로 쓸 수도 있어서 유지) */
+.trend.positive {
+  color: var(--chart-success);
+}
 
-/* ===== 6. 차트 팝업(Tooltip) 커스텀 디자인 ===== */
+.trend.negative {
+  color: var(--chart-info);
+}
 
-/* 툴팁 컨테이너 기본 스타일 제거 및 재정의 */
+/* JSX에서 사용하는 클래스용 */
+.trend-positive {
+  color: var(--chart-success); /* 위험 감소 = good */
+}
+
+.trend-negative {
+  color: var(--chart-danger); /* 위험 증가 = bad */
+}
+
+.trend-neutral {
+  color: var(--text-muted);
+}
+
+/* ===== 7. Recharts Tooltip 커스텀 ===== */
+
 .recharts-default-tooltip {
-  background-color: #1c2146 !important; /* 배경색 */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* 미세한 테두리 */
-  border-radius: 8px !important; /* 둥근 모서리 */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4) !important; /* 그림자 깊이감 */
+  background-color: #1c2146 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4) !important;
   padding: 12px !important;
 }
 
-/* 툴팁 내부 제목 (예: 데이터 유출) */
 .recharts-tooltip-label {
   color: #ffffff !important;
   font-size: 0.95rem !important;
@@ -168,19 +384,15 @@
   display: block;
 }
 
-/* 툴팁 내부 리스트 아이템 (비중, 건수 등) */
 .recharts-tooltip-item {
   font-size: 0.8rem !important;
   font-weight: 500 !important;
   padding: 2px 0 !important;
-  color: #a9b0d4 !important; /* 보조 텍스트 컬러 */
+  color: #a9b0d4 !important;
 }
 
-/* 수치 강조 컬러 */
 .recharts-tooltip-item-value {
   color: #ffffff !important;
   font-weight: 700 !important;
   margin-left: 4px;
 }
-
-@keyframes blink { 50% { opacity: 0.3; } }

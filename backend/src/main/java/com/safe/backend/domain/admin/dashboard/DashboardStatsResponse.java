@@ -1,5 +1,10 @@
 package com.safe.backend.domain.admin.dashboard;
 
+import com.safe.backend.domain.monitoring.dto.response.MonitoringResponse;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 운영자 대시보드 요약 통계
  */
