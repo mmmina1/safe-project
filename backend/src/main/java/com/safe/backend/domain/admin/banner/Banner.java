@@ -35,6 +35,9 @@ public class Banner {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "created_date", nullable = true, updatable = false)
+    private LocalDateTime createdDate;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -44,6 +47,28 @@ public class Banner {
     @Column(name = "end_at")
     private LocalDateTime endAt; // 종료일
 
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        if (this.createdDate == null) {
+            this.createdDate = now;
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = now;
+        }
+        if (this.startAt == null) {
+            this.startAt = now;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public static Banner of(String title, String imageUrl, String linkUrl, Integer displayOrder) {
         Banner b = new Banner();
         b.title = title;
@@ -51,9 +76,11 @@ public class Banner {
         b.linkUrl = linkUrl;
         b.displayOrder = displayOrder;
         b.isActive = 1;
-        b.createdAt = LocalDateTime.now();
-        b.updatedAt = LocalDateTime.now();
-        b.startAt = LocalDateTime.now(); // 기본값: 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+        b.createdAt = now;
+        b.createdDate = now;
+        b.updatedAt = now;
+        b.startAt = now; // 기본값: 현재 시간
         return b;
     }
 

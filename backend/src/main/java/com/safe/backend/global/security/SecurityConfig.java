@@ -11,10 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.http.HttpMethod;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -65,7 +67,11 @@ public class SecurityConfig {
                                 "/api/product/**"        // 혹시 이 경로면 이것도!
                         ).permitAll()
 
+                        // 업로드된 이미지 파일 접근 허용
+                        .requestMatchers("/uploads/**").permitAll()
+
                         // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
@@ -88,6 +94,26 @@ public class SecurityConfig {
                 
         );
 
+        // 403 에러 발생 시 로깅을 위한 예외 처리
+        http.exceptionHandling(exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    System.out.println("[Security] Access Denied for URI: " + request.getRequestURI());
+                    System.out.println("[Security] Method: " + request.getMethod());
+                    var auth = SecurityContextHolder.getContext().getAuthentication();
+                    if (auth != null) {
+                        System.out.println("[Security] Authenticated: " + auth.isAuthenticated());
+                        System.out.println("[Security] Principal: " + auth.getPrincipal());
+                        System.out.println("[Security] Authorities: " + auth.getAuthorities());
+                    } else {
+                        System.out.println("[Security] No authentication found");
+                    }
+                    System.out.println("[Security] Exception: " + accessDeniedException.getMessage());
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+                })
+        );
+
         return http.build();
     }
 
@@ -104,7 +130,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // 허용할 HTTP 메서드
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         // 허용할 헤더
         config.setAllowedHeaders(List.of("*"));

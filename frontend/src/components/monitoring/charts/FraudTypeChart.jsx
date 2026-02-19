@@ -8,8 +8,8 @@ function FraudTypeChart({ data }) {
   const total = data.reduce((sum, item) => sum + item.count, 0);
 
   return (
-    <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer>
+    <div style={{ width: '100%', height: 300, minHeight: 200 }}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
         <PieChart>
           <Pie
             data={data}

@@ -58,4 +58,12 @@ public class CsConsultationService {
         consultation.complete();
         return new CsConsultationResponse(consultation);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!consultationRepository.existsById(id)) {
+            throw new IllegalArgumentException("존재하지 않는 상담입니다.");
+        }
+        consultationRepository.deleteById(id);
+    }
 }

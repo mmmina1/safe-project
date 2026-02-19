@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmText = '확인', cancelText = '취소' }) {
+export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmText = '확인', cancelText = '취소', confirmButtonStyle = {} }) {
   useEffect(() => {
     if (isOpen) {
       const handleEscape = (e) => {
@@ -82,19 +82,20 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, con
               padding: '10px 20px',
               borderRadius: '8px',
               border: 'none',
-              background: '#475569',
-              color: '#ffffff',
+              background: confirmButtonStyle.background || '#475569',
+              color: confirmButtonStyle.color || '#ffffff',
               fontWeight: 700,
               fontSize: '0.9375rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
+              ...confirmButtonStyle,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#546a7a';
+              e.currentTarget.style.background = confirmButtonStyle.background || '#546a7a';
               e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#475569';
+              e.currentTarget.style.background = confirmButtonStyle.background || '#475569';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >

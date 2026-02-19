@@ -17,10 +17,10 @@ public class Blacklist {
     @Column(name = "blacklist_id")
     private Long blacklistId;
 
-    @Column(name = "target_value", nullable = false, length = 255)
+    @Column(name = "target_value", nullable = false, length = 255, insertable = true, updatable = true)
     private String targetValue; // 전화번호 또는 URL
 
-    @Column(name = "type", nullable = false, length = 50)
+    @Column(name = "type", nullable = false, length = 50, insertable = true, updatable = true)
     private String type; // PHONE 또는 URL
 
     @Column(name = "report_count", nullable = false)
@@ -41,33 +41,52 @@ public class Blacklist {
     @Column(name = "is_active", nullable = false)
     private Integer isActive = 1; // 현재 차단 여부
 
-    @Column(name = "created_date", nullable = false, updatable = false)
+    @Column(name = "created_date", nullable = true, updatable = false)
     private LocalDateTime createdDate;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createdDate = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdDate == null) {
+            this.createdDate = now;
+        }
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
     }
 
     public static Blacklist ofPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("전화번호는 필수입니다.");
+        }
         Blacklist b = new Blacklist();
-        b.targetValue = phoneNumber;
+        b.targetValue = phoneNumber.trim();
         b.type = "PHONE";
         b.reportCount = 0;
         b.voiceReportCnt = 0;
         b.smsReportCnt = 0;
         b.isActive = 1;
+        b.lastReportedAt = null;
+        b.reason = null;
         return b;
     }
 
     public static Blacklist ofUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            throw new IllegalArgumentException("URL은 필수입니다.");
+        }
         Blacklist b = new Blacklist();
-        b.targetValue = url;
+        b.targetValue = url.trim();
         b.type = "URL";
         b.reportCount = 0;
         b.voiceReportCnt = 0;
         b.smsReportCnt = 0;
         b.isActive = 1;
+        b.lastReportedAt = null;
+        b.reason = null;
         return b;
     }
 

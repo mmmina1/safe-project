@@ -46,6 +46,9 @@ public class Product {
     @Column(name= "summary", length = 500)
     private String summary;
 
+    @Column(length = 1000)
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name= "status", length = 20)
     private ProductStatus status;
@@ -55,9 +58,6 @@ public class Product {
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-
-    @Column(name = "description", length = 1000)
-    private String description;
 
     @Column(name = "is_active")
     private Integer isActive;
