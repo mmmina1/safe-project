@@ -43,8 +43,22 @@ safe-project/
 │       └── application.yml
 ├── backend-python/       # Python 백엔드 (AI 서비스)
 ├── frontend/             # React 프론트엔드
+├── docs/                 # 프로젝트 문서 (DB, 배포, 설정 가이드)
+│   ├── database/         # MySQL 관련 가이드
+│   ├── deployment/       # 배포 관련 가이드 (AWS 등)
+│   ├── setup/            # 로컬 환경 세팅 가이드
+│   └── technical/        # 기술적 상세 문서
 └── docker-compose.yml    # Docker Compose 설정
 ```
+
+## 📚 프로젝트 문서 가이드
+
+프로젝트의 상세 가이드는 `docs/` 폴더에서 확인할 수 있습니다.
+
+- **[배포 가이드 (AWS)](docs/deployment/AWS_DEPLOYMENT_GUIDE.md)**: AWS 클라우드 배포 및 환경 설정 가이드
+- **[실행 방법](docs/setup/HOW_TO_RUN.md)**: 서비스 실행 상세 매뉴얼
+- **[데이터베이스 설정](docs/database/MYSQL_COMMANDS.md)**: MySQL 명령어 및 구조 참조
+- **[체크리스트](docs/setup/SETUP_CHECKLIST.md)**: 환경 구축을 위한 점검 리스트
 
 ## 시작하기
 
