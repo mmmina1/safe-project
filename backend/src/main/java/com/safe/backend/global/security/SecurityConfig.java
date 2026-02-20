@@ -34,88 +34,74 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // 회원가입 / 로그인 / 테스트 API 등은 모두 허용
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/monitoring/**",
-                                "/api/test",
-                                "/oauth2/**",
-                                "/oauth2/callback/**",
-                                "/api/images/upload",
-                                "/api/ai/**",
-                                "/api/v1/payments/**",
-                                "/api/comments/**"
-                        ).permitAll()
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(Customizer.withDefaults())
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .formLogin(form -> form.disable())
+        .httpBasic(basic -> basic.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/api/auth/**",
+                "/api/monitoring/**",
+                "/api/test",
+                "/oauth2/**",
+                "/oauth2/callback/**",
+                "/api/images/upload",
+                "/api/ai/**",
+                "/api/v1/payments/**",
+                "/api/comments/**"
+            ).permitAll()
 
-                        //  관리자 전용 API
-                        .requestMatchers("/api/admin/**").permitAll()
-                        .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
+            .requestMatchers("/api/admin/**").permitAll()
+            .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
 
+            .requestMatchers(HttpMethod.GET,
+                "/api/community/posts/**",
+                "/api/products/**",
+                "/api/product/**"
+            ).permitAll()
 
-                        //✅ 해당 내용 추가!! - 최민아
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/community/posts/**",
-                                "/api/products/**",      // 실제 백엔드 경로에 맞게!
-                                "/api/product/**"        // 혹시 이 경로면 이것도!
-                        ).permitAll()
+            .requestMatchers("/uploads/**").permitAll()
 
-                        // 업로드된 이미지 파일 접근 허용
-                        .requestMatchers("/uploads/**").permitAll()
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/community/posts/**").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/api/community/posts/**").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
 
-                        // ✅ 커뮤니티: 작성/수정/삭제는 로그인 필요
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,   "/api/community/posts/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT,    "/api/community/posts/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
+            .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/product/**").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/product/**").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
+            .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
-                        // ✅ 상품: 등록/수정/삭제는 일단 로그인 필요(또는 ADMIN으로 변경 가능)
-                        .requestMatchers(HttpMethod.POST,   "/api/products/**", "/api/product/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT,    "/api/products/**", "/api/product/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
-
-                        .requestMatchers("/api/cart/**").authenticated()
-                        // 그 외는 토큰 필요
-                        .anyRequest().authenticated()
-                );
-
-        // JWT 필터 추가
-        http.addFilterBefore(
-                new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
-                UsernamePasswordAuthenticationFilter.class
-                
+            .requestMatchers("/api/cart/**").authenticated()
+            .anyRequest().authenticated()
         );
 
-        // 403 에러 발생 시 로깅을 위한 예외 처리
-        http.exceptionHandling(exception -> exception
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    System.out.println("[Security] Access Denied for URI: " + request.getRequestURI());
-                    System.out.println("[Security] Method: " + request.getMethod());
-                    var auth = SecurityContextHolder.getContext().getAuthentication();
-                    if (auth != null) {
-                        System.out.println("[Security] Authenticated: " + auth.isAuthenticated());
-                        System.out.println("[Security] Principal: " + auth.getPrincipal());
-                        System.out.println("[Security] Authorities: " + auth.getAuthorities());
-                    } else {
-                        System.out.println("[Security] No authentication found");
-                    }
-                    System.out.println("[Security] Exception: " + accessDeniedException.getMessage());
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
-                })
-        );
+    http.addFilterBefore(
+        new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
+        UsernamePasswordAuthenticationFilter.class
+    );
 
-        return http.build();
-    }
+    http.exceptionHandling(exception -> exception
+        .authenticationEntryPoint((request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"" + authException.getMessage() + "\"}");
+        })
+        .accessDeniedHandler((request, response, accessDeniedException) -> {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+        })
+    );
+
+    return http.build(); // ✅ 이게 반드시 있어야 함
+}
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -127,7 +113,11 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 프론트 주소 허용 (React dev 서버)
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOriginPatterns(List.of(
+        "http://localhost:5173",
+        "http://192.168.*.*:5173"
+        ));
+
 
         // 허용할 HTTP 메서드
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

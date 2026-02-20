@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "../../api/axios";
+import api from "../../api/axiosInstance"
 import { ToastContext } from "../../contexts/ToastContext";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { TableSkeleton } from "../../components/Skeleton";

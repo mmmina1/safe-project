@@ -9,24 +9,24 @@ export const communityApi = {
     page = 1,
     size = 10,
   }) => {
-    const res = await axiosInstance.get("/api/community/posts", {
+    const res = await axiosInstance.get("/community/posts", {
       params: { query, category, tag, sort, page, size },
     });
     return res.data;
   },
 
   getPostDetail: async (postId) => {
-    const res = await axiosInstance.get(`/api/community/posts/${postId}`);
+    const res = await axiosInstance.get(`/community/posts/${postId}`);
     return res.data;
   },
 
   createPost: async (postData) => {
-    const res = await axiosInstance.post("/api/community/posts", postData);
+    const res = await axiosInstance.post("/community/posts", postData);
     return res.data;
   },
 
   getComments: async (postId) => {
-    const res = await axiosInstance.get("/api/comments", {
+    const res = await axiosInstance.get("/comments", {
       params: { post_id: postId },
     });
     return res.data;
@@ -50,7 +50,7 @@ export const communityApi = {
       payload.parent_comment_id = Number(payload.parent_comment_id);
     }
 
-    const res = await axiosInstance.post("/api/comments", payload);
+    const res = await axiosInstance.post("/comments", payload);
     return res.data;
   },
 
@@ -70,12 +70,12 @@ export const communityApi = {
       payload.parent_comment_id = Number(payload.parent_comment_id);
     }
 
-    const res = await axiosInstance.put(`/api/comments/${commentId}`, payload);
+    const res = await axiosInstance.put(`/comments/${commentId}`, payload);
     return res.data;
   },
 
   deleteComment: async (commentId, userId) => {
-    const res = await axiosInstance.delete(`/api/comments/${commentId}`, {
+    const res = await axiosInstance.delete(`/comments/${commentId}`, {
       params: { user_id: userId },
     });
     return res.data;
@@ -83,7 +83,7 @@ export const communityApi = {
 
   // 댓글 좋아요 토글 (백엔드: POST /api/comments/{commentId}/likes, body: { userId })
   toggleCommentLike: async (commentId, userId) => {
-    const res = await axiosInstance.post(`/api/comments/${commentId}/likes`, {
+    const res = await axiosInstance.post(`/comments/${commentId}/likes`, {
       userId: Number(userId),
     });
     return res.data; // { liked, likeCount }

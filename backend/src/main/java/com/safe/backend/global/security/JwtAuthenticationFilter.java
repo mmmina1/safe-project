@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -105,5 +107,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearer.substring(7);
         }
         return null;
+    }
+
+    
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        // ✅ 로그인/회원가입/토큰발급/소셜콜백/프리플라이트는 JWT 필터 제외
+        return path.startsWith("/api/auth/")
+            || path.startsWith("/oauth2/")
+            || path.startsWith("/oauth2/callback/")
+            || HttpMethod.OPTIONS.matches(request.getMethod());
     }
 }

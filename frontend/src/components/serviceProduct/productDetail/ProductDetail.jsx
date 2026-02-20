@@ -8,7 +8,7 @@ import { getReviewSummary } from '../../../api/reviewApi'
 import ProductQuickInfo from './ProductQuickInfo'
 import ProductIntroSection from './ProductIntroSection'
 import ProductReviewsSection from './ProductReviewsSection'
-//import ProductQnaSection from './ProductQnaSection'
+import ProductQnaSection from './ProductQnaSection'
 import PlanModal from './PlanModal'
 
 function ProductDetail() {
@@ -165,7 +165,7 @@ function ProductDetail() {
   const isOutOfStock = product.stockQty === 0
 
   // 상대 경로 이미지를 백엔드 기준 절대 URL로 변환 (서비스 소개 영역 표시용)
-  const API_BASE = 'http://localhost:8080'
+  const API_BASE = ''
   const mainImageUrl = (product.mainImage && product.mainImage.trim())
     ? (product.mainImage.startsWith('http') ? product.mainImage : `${API_BASE}${product.mainImage.startsWith('/') ? '' : '/'}${product.mainImage}`)
     : null

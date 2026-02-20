@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import api from "../../api/axios";
+import api from "../../api/axiosInstance"
 
 const CARD_BG = "#363a4d";
 const BORDER = "#545763";

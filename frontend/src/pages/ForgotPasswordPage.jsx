@@ -22,7 +22,7 @@ function ForgotPasswordPage() {
       setLoading(true);
 
       //  백엔드 비밀번호 재설정 토큰 발급 요청
-      const res = await axiosInstance.post('/api/auth/forgot-password', {
+      const res = await axiosInstance.post('/auth/forgot-password', {
         email,
       });
       console.log('forgot-password response:', res.data);

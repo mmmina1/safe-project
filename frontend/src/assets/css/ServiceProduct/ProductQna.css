@@ -1,173 +1,446 @@
-/* ProductQna.css */
+/* ProductQna.css — 다크 테마, 기존 페이지 어울림 */
 
+/* ── 컨테이너 ── */
 .sp-qna {
-  padding: 18px;
-  border: 1px solid #e9e9ee;
-  border-radius: 14px;
-  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(18, 20, 26, 0.90);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.40);
+  color: rgba(255, 255, 255, 0.90);
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
 }
 
-/* header */
+/* 로딩 */
+.sp-qna-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,0.55);
+  font-size: 14px;
+}
+
+.sp-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: #e8305a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── 에러 ── */
+.sp-qna-error {
+  border: 1px solid rgba(255, 80, 80, 0.40);
+  background: rgba(255, 60, 60, 0.08);
+  color: rgba(255, 190, 190, 0.95);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 14px;
+}
+
+/* ── 헤더 ── */
 .sp-qna-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .sp-qna-title {
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
   font-weight: 800;
-  letter-spacing: -0.2px;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -0.3px;
+}
+
+.sp-qna-title-icon {
+  font-size: 18px;
+}
+
+.sp-qna-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(232, 48, 90, 0.25);
+  border: 1px solid rgba(232, 48, 90, 0.45);
+  color: #f06090;
+  font-size: 11px;
+  font-weight: 900;
 }
 
 .sp-qna-writerBtn {
-  padding: 8px 12px;
-  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 15px;
+  border-radius: 12px;
   cursor: pointer;
-  border: 1px solid #ddd;
-  background: #f7f7fb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.88);
   font-weight: 700;
   font-size: 13px;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  letter-spacing: -0.2px;
 }
 
 .sp-qna-writerBtn:hover {
-  background: #efeff7;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.20);
 }
 
-.sp-qna-writerBtn:active {
-  transform: translateY(1px);
+.sp-qna-writerBtn.active {
+  background: rgba(232, 48, 90, 0.15);
+  border-color: rgba(232, 48, 90, 0.40);
+  color: #f06090;
 }
 
-/* form */
+.sp-qna-writerBtn:active { transform: translateY(1px); }
+
+/* ── 작성 폼 ── */
 .sp-qna-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: 10px 0 14px;
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background: #fafafe;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  animation: fadeSlideDown 0.2s ease;
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .sp-qna-input,
 .sp-qna-textarea {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #dcdce3;
-  background: #fff;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(8, 10, 14, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.92);
   outline: none;
   font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
 }
+
+.sp-qna-input::placeholder,
+.sp-qna-textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
 
 .sp-qna-input:focus,
 .sp-qna-textarea:focus {
-  border-color: #b9b9ff;
-  box-shadow: 0 0 0 3px rgba(120, 120, 255, 0.15);
+  border-color: rgba(232, 48, 90, 0.55);
+  box-shadow: 0 0 0 3px rgba(232, 48, 90, 0.14);
 }
 
 .sp-qna-textarea {
-  min-height: 120px;
+  min-height: 110px;
   resize: vertical;
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+.sp-qna-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .sp-qna-private {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   font-size: 13px;
-  color: #333;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  user-select: none;
 }
 
 .sp-qna-private input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
+  accent-color: #e8305a;
 }
 
 .sp-qna-submit {
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 10px 22px;
+  border-radius: 12px;
   cursor: pointer;
-  border: 1px solid #2f2f2f;
-  background: #2f2f2f;
+  border: none;
+  background: linear-gradient(135deg, #e8305a, #c0224a);
   color: #fff;
   font-weight: 800;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+  transition: filter 0.15s, transform 0.1s;
 }
 
-.sp-qna-submit:hover {
-  filter: brightness(1.05);
-}
+.sp-qna-submit:hover:not(:disabled) { filter: brightness(1.08); }
+.sp-qna-submit:active:not(:disabled) { transform: translateY(1px); }
+.sp-qna-submit:disabled { opacity: 0.55; cursor: not-allowed; }
 
-.sp-qna-submit:active {
-  transform: translateY(1px);
-}
-
-/* states */
+/* ── 빈 상태 ── */
 .sp-qna-empty {
-  opacity: 0.75;
-  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 0;
+  color: rgba(255, 255, 255, 0.45);
   font-size: 14px;
 }
 
-.sp-qna-error {
-  border: 1px solid #ffd6d6;
-  background: #fff5f5;
-  color: #b00020;
-}
+.sp-qna-empty-icon { font-size: 28px; opacity: 0.7; }
 
-/* list */
+/* ── 목록 ── */
 .sp-qna-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+/* ── 문의 아이템 ── */
 .sp-qna-item {
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #ededf3;
-  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .sp-qna-item:hover {
-  background: #fbfbff;
+  background: rgba(255, 255, 255, 0.075);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
-.sp-qna-itemTitle {
-  font-weight: 800;
-  margin-bottom: 6px;
-  font-size: 14px;
+.sp-qna-item.waiting {
+  border-left: 3px solid rgba(255, 193, 7, 0.55);
 }
 
-.sp-qna-itemMeta {
+.sp-qna-item.answered {
+  border-left: 3px solid rgba(72, 199, 116, 0.55);
+}
+
+/* 아이템 헤더 버튼 */
+.sp-qna-item-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  gap: 12px;
+}
+
+.sp-qna-item-left {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-qna-itemTitle {
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-chevron {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.40);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.sp-qna-item.expanded .sp-chevron { transform: none; }
+
+/* 아이템 바디 */
+.sp-qna-item-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  animation: fadeSlideDown 0.18s ease;
+}
+
+/* 문의 내용 블록 */
+.sp-qna-content-block {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sp-qna-content-text {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.sp-qna-meta-date {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+/* ── 답글 블록 ── */
+.sp-reply-block {
+  margin: 0 12px 14px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: rgba(72, 199, 116, 0.07);
+  border: 1px solid rgba(72, 199, 116, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sp-reply-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(72, 199, 116, 0.18);
+  border: 1px solid rgba(72, 199, 116, 0.35);
+  color: rgba(160, 255, 185, 0.95);
+  align-self: flex-start;
+}
+
+.sp-reply-text {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.80);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ── 관리자 답글 작성 폼 ── */
+.sp-reply-form {
+  margin: 0 12px 14px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: rgba(232, 48, 90, 0.06);
+  border: 1px solid rgba(232, 48, 90, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-reply-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  opacity: 0.8;
+  font-weight: 800;
+  color: rgba(232, 48, 90, 0.90);
+  letter-spacing: -0.1px;
 }
 
-.sp-dot {
-  opacity: 0.5;
+.sp-reply-icon { font-size: 14px; }
+
+.sp-reply-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(8, 10, 14, 0.55);
+  border: 1px solid rgba(232, 48, 90, 0.25);
+  color: rgba(255, 255, 255, 0.90);
+  outline: none;
+  font-size: 13.5px;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* responsive */
+.sp-reply-textarea::placeholder { color: rgba(255, 255, 255, 0.30); }
+
+.sp-reply-textarea:focus {
+  border-color: rgba(232, 48, 90, 0.55);
+  box-shadow: 0 0 0 3px rgba(232, 48, 90, 0.12);
+}
+
+.sp-reply-submit {
+  align-self: flex-end;
+  padding: 9px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, rgba(232, 48, 90, 0.85), rgba(192, 34, 74, 0.85));
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: -0.2px;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.sp-reply-submit:hover:not(:disabled) { filter: brightness(1.10); }
+.sp-reply-submit:active:not(:disabled) { transform: translateY(1px); }
+.sp-reply-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── 배지 ── */
+.sp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sp-badge.wait {
+  border: 1px solid rgba(255, 193, 7, 0.45);
+  background: rgba(255, 193, 7, 0.12);
+  color: rgba(255, 228, 140, 0.95);
+}
+
+.sp-badge.done {
+  border: 1px solid rgba(72, 199, 116, 0.45);
+  background: rgba(72, 199, 116, 0.12);
+  color: rgba(170, 255, 195, 0.95);
+}
+
+.sp-badge.private {
+  border: 1px solid rgba(150, 150, 200, 0.35);
+  background: rgba(150, 150, 200, 0.10);
+  color: rgba(210, 210, 255, 0.85);
+}
+
+/* ── 반응형 ── */
 @media (max-width: 480px) {
-  .sp-qna {
-    padding: 14px;
-  }
-
-  .sp-qna-title {
-    font-size: 16px;
-  }
-
-  .sp-qna-writerBtn {
-    padding: 7px 10px;
-    font-size: 12px;
-  }
+  .sp-qna { padding: 14px; border-radius: 14px; }
+  .sp-qna-title { font-size: 15px; }
+  .sp-qna-writerBtn { padding: 8px 12px; font-size: 12px; }
+  .sp-qna-item-header { padding: 12px 14px; }
+  .sp-reply-form,
+  .sp-reply-block { margin: 0 10px 12px; }
 }

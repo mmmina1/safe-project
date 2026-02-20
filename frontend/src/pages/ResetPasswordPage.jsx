@@ -49,7 +49,7 @@ function ResetPasswordPage() {
     try {
       setLoading(true);
 
-      await axiosInstance.post('/api/auth/reset-password', {
+      await axiosInstance.post('/auth/reset-password', {
         token,
         newPassword,
       });

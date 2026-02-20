@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import "../../assets/css/community/CommunityPost.css"
+import "../../assets/css/Community/CommunityPost.css"
 import { communityApi } from '../../api/communityApi'
 
 function CommunityPost() {//글 작성

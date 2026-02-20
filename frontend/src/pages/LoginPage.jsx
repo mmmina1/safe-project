@@ -33,7 +33,7 @@ function LoginPage() {
       setLoading(true);
       setMessage(null);
 
-      const res = await axiosInstance.post('/api/auth/login', {
+      const res = await axiosInstance.post('/auth/login', {
         email,
         password,
       });

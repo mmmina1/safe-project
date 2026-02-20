@@ -1,40 +1,43 @@
-version: '3.8'
-
 services:
-  python-backend:
+  backend:
     build:
-      context: ./backend-python/py
-      dockerfile: Dockerfile
-    container_name: safe-python-backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend-python/py:/app
+      context: ./backend
+    container_name: safe-backend
     environment:
-      - PYTHONIOENCODING=utf-8
-      - PYTHONPATH=/app/backend
-    env_file:
-      - ./backend-python/py/backend/.env
-    restart: always
-    networks:
-      - safe-network
+      DB_USERNAME: admin
+      DB_PASSWORD: safe1234
 
-  redis:
-    image: redis:7-alpine
-    container_name: safe-redis
-    restart: unless-stopped
+      JWT_SECRET: test_secret_test_secret_test_secret_test_secret_1234567890
+
+      KAKAO_CLIENT_ID: dummy
+      KAKAO_REDIRECT_URI: http://localhost:5173
+
+      GOOGLE_CLIENT_ID: dummy
+      GOOGLE_CLIENT_SECRET: dummy
+      GOOGLE_REDIRECT_URI: http://localhost:5173
+
+      AWS_S3_BUCKET: dummy
+      AWS_REGION: ap-northeast-2
+      AWS_ACCESS_KEY: dummy
+      AWS_SECRET_KEY: dummy
+
+      TOSS_PAYMENTS_SECRET_KEY: dummy
+
+      PORT: "8080"
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-    networks:
-      - safe-network
+      - "8081:8080"
+    restart: unless-stopped
 
-volumes:
-
-  redis_data:
-
-networks:
-  safe-network:
-    driver: bridge
+  frontend:
+    build:
+      context: ./frontend
+    container_name: safe-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      # (선택) 프론트에서 환경변수 쓸 때만
+      # VITE_API_BASE: /api
+      NODE_ENV: development
+    depends_on:
+      - backend
+    restart: unless-stopped

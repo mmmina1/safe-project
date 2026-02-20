@@ -10,7 +10,7 @@ import axiosInstance from './axiosInstance';
 export const addToCart = async (data) => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.post('/api/cart', data, {
+        const response = await axiosInstance.post('/cart', data, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -28,7 +28,7 @@ export const addToCart = async (data) => {
 export const getMyCart = async () => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.get('/api/cart', {
+        const response = await axiosInstance.get('/cart', {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -47,7 +47,7 @@ export const getMyCart = async () => {
 export const updateCartItem = async (cartId, quantity) => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.put(`/api/cart/${cartId}`, { quantity }, {
+        const response = await axiosInstance.put(`/cart/${cartId}`, { quantity }, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -65,7 +65,7 @@ export const updateCartItem = async (cartId, quantity) => {
 export const deleteCartItem = async (cartId) => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.delete(`/api/cart/${cartId}`, {
+        const response = await axiosInstance.delete(`/cart/${cartId}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -81,7 +81,7 @@ export const deleteCartItem = async (cartId) => {
 export const checkout = async () => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.post('/api/orders/checkout', {}, {
+        const response = await axiosInstance.post('/orders/checkout', {}, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -97,7 +97,7 @@ export const checkout = async () => {
 export const getMyOrders = async () => {
     const token = localStorage.getItem('accessToken');
     try {
-        const response = await axiosInstance.get('/api/orders/my', {
+        const response = await axiosInstance.get('/orders/my', {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
