@@ -28,80 +28,80 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider,
-                          UserRepository userRepository) {
+            UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http
-        .csrf(csrf -> csrf.disable())
-        .cors(Customizer.withDefaults())
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .formLogin(form -> form.disable())
-        .httpBasic(basic -> basic.disable())
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                "/api/auth/**",
-                "/api/monitoring/**",
-                "/api/test",
-                "/oauth2/**",
-                "/oauth2/callback/**",
-                "/api/images/upload",
-                "/api/ai/**",
-                "/api/v1/payments/**",
-                "/api/comments/**"
-            ).permitAll()
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/monitoring/**",
+                                "/api/test",
+                                "/oauth2/**",
+                                "/oauth2/callback/**",
+                                "/api/images/upload",
+                                "/api/ai/**",
+                                "/api/v1/payments/**",
+                                "/api/comments/**")
+                        .permitAll()
 
-            .requestMatchers("/api/admin/**").permitAll()
-            .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
+                        .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/api/operator/**").hasAnyRole("ADMIN", "OPERATOR")
 
-            .requestMatchers(HttpMethod.GET,
-                "/api/community/posts/**",
-                "/api/products/**",
-                "/api/product/**"
-            ).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/community/posts/**",
+                                "/api/products/**",
+                                "/api/product/**")
+                        .permitAll()
 
-            .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
 
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/community/posts/**").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/community/posts/**").authenticated()
-            .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/community/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/community/posts/**").authenticated()
 
-            .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/product/**").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/product/**").authenticated()
-            .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
-            .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/products/**", "/api/product/**").authenticated()
 
-            .requestMatchers("/api/cart/**").authenticated()
-            .anyRequest().authenticated()
-        );
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .anyRequest().authenticated());
 
-    http.addFilterBefore(
-        new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
-        UsernamePasswordAuthenticationFilter.class
-    );
+        http.addFilterBefore(
+                new JwtAuthenticationFilter(jwtTokenProvider, userRepository),
+                UsernamePasswordAuthenticationFilter.class);
 
-    http.exceptionHandling(exception -> exception
-        .authenticationEntryPoint((request, response, authException) -> {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"" + authException.getMessage() + "\"}");
-        })
-        .accessDeniedHandler((request, response, accessDeniedException) -> {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
-        })
-    );
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter()
+                            .write("{\"error\":\"Unauthorized\",\"message\":\"" + authException.getMessage() + "\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write(
+                            "{\"error\":\"Access Denied\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+                }));
 
-    return http.build(); // ✅ 이게 반드시 있어야 함
-}
+        return http.build(); // ✅ 이게 반드시 있어야 함
+    }
 
-
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}")
+    private String allowedOrigins;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -112,12 +112,14 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 프론트 주소 허용 (React dev 서버)
-        config.setAllowedOriginPatterns(List.of(
-        "http://localhost:5173",
-        "http://192.168.*.*:5173"
-        ));
-
+        // 프론트 주소 허용 (환경 변수 또는 기본값 사용)
+        if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
+            config.setAllowedOrigins(java.util.Arrays.asList(allowedOrigins.split(",")));
+        } else {
+            config.setAllowedOriginPatterns(List.of(
+                    "http://localhost:5173",
+                    "http://192.168.*.*:5173"));
+        }
 
         // 허용할 HTTP 메서드
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

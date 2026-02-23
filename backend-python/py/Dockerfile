@@ -1,24 +1,39 @@
-# 1. 베이스 이미지 설정 (가볍고 안정적인 3.12-slim 사용)
-FROM python:3.12-slim
+# 1. 빌드 스테이지
+FROM python:3.12-slim AS builder
 
-# 2. 작업 디렉토리 설정
 WORKDIR /app
-ENV PYTHONPATH=/app/backend
 
-# 3. 시스템 의존성 설치 (필요한 경우)
+# 필수 시스템 패키지 설치
 RUN apt-get update && apt-get install -y \
     build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. 의존성 파일 복사 및 설치
+# 의존성 파일 복사
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. 소스 코드 복사 (개발 시에는 볼륨 마운트로 덮어씌워짐)
+# 의존성 설치 최적화 (CPU 전용 및 노 캐시)
+RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+
+# 2. 실행 스테이지
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONIOENCODING=utf-8
+ENV PYTHONPATH=/app/backend
+
+# builder에서 설치된 패키지 및 바이너리 복사
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# 소스 코드 복사
 COPY . .
 
-# 6. 포트 노출
+# 포체 노출
 EXPOSE 8000
 
-# 7. 실행 명령 (uvicorn 사용, hot-reload 모드 활성화 가능)
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# 실행 명령
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

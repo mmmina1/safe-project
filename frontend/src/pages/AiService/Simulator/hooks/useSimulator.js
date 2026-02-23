@@ -65,7 +65,7 @@ export const useSimulator = () => {
         setEvaluationResult(null);
 
         try {
-            const response = await fetch(`http://localhost:8080/api/ai/simulator/start?scenarioType=${randomType}`);
+            const response = await fetch(`/api/ai/simulator/start?scenarioType=${randomType}`);
             const result = await response.json();
             const aiDialogue = result.data.answer;
 
@@ -86,7 +86,7 @@ export const useSimulator = () => {
         if (!simulationMessage) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/ai/simulator/evaluate`, {
+            const response = await fetch(`/api/ai/simulator/evaluate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

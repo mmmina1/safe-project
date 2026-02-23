@@ -1,6 +1,6 @@
 // src/pages/SignupPage.jsx
 import { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 function SignupPage() {
   const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ function SignupPage() {
       setLoading(true);
       setMessage(null);
 
-      const res = await axios.post('http://localhost:8080/api/auth/signup', {
+      const res = await axiosInstance.post('/auth/signup', {
         email,
         name,
         password,

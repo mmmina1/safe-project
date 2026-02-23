@@ -1,7 +1,7 @@
 // KakaoCallbackPage.jsx
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 function KakaoCallbackPage() {
   const location = useLocation();
@@ -22,8 +22,8 @@ function KakaoCallbackPage() {
     }
 
     // 카카오 전용 백엔드 엔드포인트로 code 전송
-    axios
-      .post('http://localhost:8080/api/auth/kakao', { code })
+    axiosInstance
+      .post('/auth/kakao', { code })
       .then((res) => {
         console.log('[KAKAO FRONT] res = ', res.data);
 
