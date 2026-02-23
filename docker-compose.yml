@@ -1,10 +1,9 @@
 services:
   backend:
-    build:
-      context: ./backend
+    image: 728276449447.dkr.ecr.ap-northeast-2.amazonaws.com/safe-backend:latest
     container_name: safe-backend
     environment:
-      DB_URL: jdbc:mysql://3.39.143.83:3306/safe_db?serverTimezone=UTC&characterEncoding=UTF-8
+      DB_URL: jdbc:mysql://172.31.43.126:3306/safe_db?serverTimezone=UTC&characterEncoding=UTF-8
       DB_USERNAME: admin
       DB_PASSWORD: safe1234
       JWT_SECRET: test_secret_test_secret_test_secret_test_secret_1234567890
@@ -29,11 +28,10 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
+    image: 728276449447.dkr.ecr.ap-northeast-2.amazonaws.com/safe-frontend:latest
     container_name: safe-frontend
     ports:
-      - "5173:80"
+      - "80:80"
     environment:
       NODE_ENV: development
       VITE_API_URL: "/api"
@@ -42,8 +40,7 @@ services:
     restart: unless-stopped
 
   python-backend:
-    build:
-      context: ./backend-python/py
+    image: 728276449447.dkr.ecr.ap-northeast-2.amazonaws.com/safe-python-backend:latest
     container_name: safe-python-backend
     ports:
       - "8000:8000"
@@ -53,6 +50,6 @@ services:
       PYTHONPATH: /app/backend
       PYTHON_BACKEND_URL: http://python-backend:8000
     volumes:
-      - ./backend-python/py/data:/app/data
-      - ./backend-python/py/backend/chroma_db:/app/backend/chroma_db
+      - ./data:/app/data
+      - ./chroma_db:/app/backend/chroma_db
     restart: unless-stopped

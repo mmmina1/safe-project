@@ -70,3 +70,6 @@ build/
 application-local.properties
 **/application-local.properties
 
+# Security
+*.pem
+*.ppk
