@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useMemo, useState } from 'react'
-import "../../assets/css/community/Community.css"
+import "../../assets/css/Community/Community.css"
 import { useNavigate } from 'react-router-dom'
 import { communityApi } from '../../api/communityApi'
 import CommunityFilters from './CommunityFilters'

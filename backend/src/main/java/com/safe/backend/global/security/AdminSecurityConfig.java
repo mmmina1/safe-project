@@ -8,9 +8,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@Profile("dev")   
-@Order(1)
+// @Configuration
+// @Profile("dev")   
+// @Order(1)
 public class AdminSecurityConfig {
 
     @Bean

@@ -1,73 +1,58 @@
-version: '3.8'
-
 services:
-  # 1. 프론트엔드 (React + Nginx)
+  backend:
+    build:
+      context: ./backend
+    container_name: safe-backend
+    environment:
+      DB_URL: jdbc:mysql://3.39.143.83:3306/safe_db?serverTimezone=UTC&characterEncoding=UTF-8
+      DB_USERNAME: admin
+      DB_PASSWORD: safe1234
+      JWT_SECRET: test_secret_test_secret_test_secret_test_secret_1234567890
+      KAKAO_CLIENT_ID: dummy
+      KAKAO_REDIRECT_URI: http://localhost:5173
+      GOOGLE_CLIENT_ID: dummy
+      GOOGLE_CLIENT_SECRET: dummy
+      GOOGLE_REDIRECT_URI: http://localhost:5173
+      AWS_S3_BUCKET: dummy
+      AWS_REGION: ap-northeast-2
+      AWS_ACCESS_KEY: dummy
+      AWS_SECRET_KEY: dummy
+      TOSS_PAYMENTS_SECRET_KEY: dummy
+      PORT: "8080"
+      SPRING_PROFILES_ACTIVE: local
+      CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost,http://127.0.0.1"
+      PYTHON_BACKEND_URL: http://python-backend:8000
+    ports:
+      - "8081:8080"
+    depends_on:
+      - python-backend
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     container_name: safe-frontend
     ports:
-      - "80:80"
-    depends_on:
-      - java-backend
-    networks:
-      - safe-network
-
-  # 2. 자바 백엔드 (Spring Boot)
-  java-backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: safe-java-backend
-    ports:
-      - "8080:8080"
-    env_file:
-      - ./backend/src/main/resources/application-local.properties
+      - "5173:80"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - PYTHON_BACKEND_URL=http://python-backend:8000
+      NODE_ENV: development
+      VITE_API_URL: "/api"
     depends_on:
-      - redis
-      - python-backend
-    networks:
-      - safe-network
+      - backend
+    restart: unless-stopped
 
-  # 3. 파이썬 백엔드 (FastAPI)
   python-backend:
     build:
       context: ./backend-python/py
-      dockerfile: Dockerfile
     container_name: safe-python-backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend-python/py:/app
     environment:
-      - PYTHONIOENCODING=utf-8
-      - PYTHONPATH=/app/backend
-    env_file:
-      - ./backend-python/py/backend/.env
-    restart: always
-    networks:
-      - safe-network
-
-  # 4. 레디스 (Redis)
-  redis:
-    image: redis:7-alpine
-    container_name: safe-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-dummy}
+      PYTHONIOENCODING: utf-8
+      PYTHONPATH: /app/backend
+      PYTHON_BACKEND_URL: http://python-backend:8000
     volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-    networks:
-      - safe-network
-
-volumes:
-  redis_data:
-
-networks:
-  safe-network:
-    driver: bridge
+      - ./backend-python/py/data:/app/data
+      - ./backend-python/py/backend/chroma_db:/app/backend/chroma_db
+    restart: unless-stopped

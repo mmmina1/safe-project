@@ -47,7 +47,7 @@ function UserAuthNav() {
 
     try {
       if (provider === 'KAKAO' && kakaoAccessToken) {
-        await fetch('http://localhost:8080/api/auth/kakao/logout', {
+        await fetch('/api/auth/kakao/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -29,7 +29,7 @@ function UserManagement() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axiosInstance.get('/api/admin/users/search');
+        const res = await axiosInstance.get('/admin/users/search');
         setUsers(res.data);
       } catch (error) {
         console.error('회원 목록 조회 실패:', error);
@@ -44,7 +44,7 @@ function UserManagement() {
 
     const fetchAllLogs = async () => {
       try {
-        const res = await axiosInstance.get('/api/admin/users/history');
+        const res = await axiosInstance.get('/admin/users/history');
         setLogs(res.data);
       } catch (error) {
         console.error('전체 운영 이력 조회 실패:', error);
@@ -62,7 +62,7 @@ function UserManagement() {
 
     try {
       const res = await axiosInstance.get(
-        `/api/admin/users/${user.userId}/history`
+        `/admin/users/${user.userId}/history`
       );
       setLogs(res.data);
     } catch (error) {
@@ -95,7 +95,7 @@ function UserManagement() {
       setIsSubmitting(true);
 
       await axiosInstance.post(
-        `/api/admin/users/${selectedUser.userId}/action`,
+        `/admin/users/${selectedUser.userId}/action`,
         {
           type: selectedType,
           reason,
@@ -104,7 +104,7 @@ function UserManagement() {
       );
 
       // 목록 갱신
-      const usersRes = await axiosInstance.get('/api/admin/users/search');
+      const usersRes = await axiosInstance.get('/admin/users/search');
       setUsers(usersRes.data);
 
       handleCloseModal();
@@ -122,10 +122,10 @@ function UserManagement() {
 
     try {
       await axiosInstance.patch(
-        `/api/admin/users/${user.userId}/release?adminId=${ADMIN_ID}`
+        `/admin/users/${user.userId}/release?adminId=${ADMIN_ID}`
       );
 
-      const usersRes = await axiosInstance.get('/api/admin/users/search');
+      const usersRes = await axiosInstance.get('/admin/users/search');
       setUsers(usersRes.data);
     } catch (error) {
       console.error('제재 해제 실패:', error);

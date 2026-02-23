@@ -9,7 +9,7 @@ export const getDashboardData = async () => {
     const token = localStorage.getItem('accessToken');
 
     try {
-        const response = await axiosInstance.get('/api/mypage/dashboard', {
+        const response = await axiosInstance.get('/mypage/dashboard', {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         return response.data;
@@ -26,7 +26,7 @@ export const getDashboardData = async () => {
 // 닉네임 수정
 export const updateNickname = async (nickname) => {
     const token = localStorage.getItem('accessToken');
-    const response = await axiosInstance.patch('/api/mypage/nickname',
+    const response = await axiosInstance.patch('/mypage/nickname',
         { nickname }, // 전송할 데이터
         {
             headers: token ? { Authorization: `Bearer ${token}` } : {} // 신분증!
@@ -38,7 +38,7 @@ export const updateNickname = async (nickname) => {
 // 비밀번호 수정
 export const updatePassword = async (currentPassword, newPassword) => {
     const token = localStorage.getItem('accessToken');
-    const response = await axiosInstance.patch('/api/mypage/password',
+    const response = await axiosInstance.patch('/mypage/password',
         { currentPassword, newPassword }, // 전송할 데이터
         {
             headers: token ? { Authorization: `Bearer ${token}` } : {} // 신분증!
@@ -50,7 +50,7 @@ export const updatePassword = async (currentPassword, newPassword) => {
 // 회원 탈퇴
 export const withdrawAccount = async () => {
     const token = localStorage.getItem('accessToken');
-    const response = await axiosInstance.delete('/api/mypage/withdraw', {
+    const response = await axiosInstance.delete('/mypage/withdraw', {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
     return response.data;

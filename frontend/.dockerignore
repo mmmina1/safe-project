@@ -1,7 +1,15 @@
 node_modules
+<<<<<<< HEAD
 dist-ssr
 *.log
 .vscode
 .idea
 .DS_Store
 .git
+=======
+dist
+.vscode
+.git
+.gitignore
+*.log
+>>>>>>> feature/docker-aws-cleanup

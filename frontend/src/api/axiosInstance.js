@@ -17,7 +17,7 @@ function parseJwt(token) {
 }
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_URL || "/api",
   withCredentials: true,
 });
 
@@ -29,7 +29,7 @@ axiosInstance.interceptors.request.use((config) => {
 
     const payload = parseJwt(token);
     const uid = payload?.sub;
-    if (uid) localStorage.setItem("userId", String(uid)); 
+    if (uid) localStorage.setItem("userId", String(uid));
   }
 
   return config;

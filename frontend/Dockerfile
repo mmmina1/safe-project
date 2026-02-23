@@ -1,11 +1,16 @@
-# 실행 스테이지: Nginx를 사용하여 정적 파일 서빙 (로컬 빌드 결과물 사용)
+# Build stage
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Production stage
 FROM nginx:stable-alpine
-
-# 로컬에서 이미 빌드된 dist 폴더를 복사
-COPY dist /usr/share/nginx/html
-
-# Nginx 기본 설정 덮어쓰기 (SPA 라우팅 지원용)
+COPY --from=build /app/dist /usr/share/nginx/html
+# SPA 라우팅 대응 및 API 프록시를 위한 설정 복사
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
+COPY --from=build /app/public /usr/share/nginx/html/public
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

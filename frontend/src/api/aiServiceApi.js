@@ -8,7 +8,7 @@ export const phishService = {
     chat: async (message) => {
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await axiosInstance.post('/api/ai/chat',
+            const response = await axiosInstance.post('/ai/chat',
                 {
                     message,
                     // session_id: 'react_user', // 2. 가짜 이름표 삭제
@@ -33,7 +33,7 @@ export const phishService = {
             if (!token) {
                 return [];
             }
-            const response = await axiosInstance.get('/api/ai/history', {
+            const response = await axiosInstance.get('/ai/history', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
@@ -46,7 +46,7 @@ export const phishService = {
     submitDiagnosis: async (score, answers, recommendations) => { // [변경] 인자 추가
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await axiosInstance.post('/api/ai/diagnosis/submit',
+            const response = await axiosInstance.post('/ai/diagnosis/submit',
                 {
                     score,
                     answers,
@@ -65,7 +65,7 @@ export const phishService = {
     getDiagnosisHistory: async () => {
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await axiosInstance.get('/api/ai/diagnosis/history', {
+            const response = await axiosInstance.get('/ai/diagnosis/history', {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
             return response.data;

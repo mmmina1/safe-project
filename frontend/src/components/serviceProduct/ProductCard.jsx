@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getReviewSummary } from '../../api/reviewApi';
 import "../../assets/css/ServiceProduct/ProductCard.css";
 
-function ProductCard({item}) {
+function ProductCard({ item }) {
 
     const navigate = useNavigate()
 
     //db 스키마를 최우선으로 참조
     const id = item.productId ?? item.product_id ?? item.id;
-    
+
     //name 참조
     const title = item.name ?? "상품명 없음";
 
@@ -17,35 +17,35 @@ function ProductCard({item}) {
     const priceType = item.priceType ?? item.price_type;
     const price = item.price ?? item.monthlyPrice ?? 0;
 
-    const API_BASE = "http://localhost:8080";
+    const API_BASE = "";
     const imageFullUrl = (url) => (url && url.trim() ? (url.startsWith("http") ? url : `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`) : null);
 
     const mainImage = item.mainImage ?? item.main_image ?? null;
-    const [ summary, setSummary ] = useState(null);
+    const [summary, setSummary] = useState(null);
 
     useEffect(() => {
         if (!id) return;
         getReviewSummary(id)
             .then(setSummary)
-            .catch(() => {});
-        }, [id]);
+            .catch(() => { });
+    }, [id]);
 
     const rating = summary?.avgRating ?? 0;
     const reviewCount = summary?.reviewCount ?? 0;
 
     const imageStyle = mainImage
-        ? { 
+        ? {
             backgroundImage: `url(${imageFullUrl(mainImage)})`,
-            backgroundSize: 'cover', 
-            backgroundPosition: 'center' 
-          }
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+        }
         : { backgroundColor: '#2a2f3a' };
 
-  return (
-    <div className='sp-card sp-glass' onClick={() => navigate(`/product/${id}`)} role='button' tabIndex={0}>
-        <div className="sp-thumb" style={imageStyle}>
-            {!mainImage && <div className="sp-thumbFallback">이미지 없음</div>}
-            <div className="sp-likeFab" onClick={(e)=>{e.stopPropagation()}}>♡</div>
+    return (
+        <div className='sp-card sp-glass' onClick={() => navigate(`/product/${id}`)} role='button' tabIndex={0}>
+            <div className="sp-thumb" style={imageStyle}>
+                {!mainImage && <div className="sp-thumbFallback">이미지 없음</div>}
+                <div className="sp-likeFab" onClick={(e) => { e.stopPropagation() }}>♡</div>
             </div>
 
             {/* 상품명 */}
@@ -63,7 +63,7 @@ function ProductCard({item}) {
                 <div className='sp-cardPrice'>
                     {priceType === 'FREE' ? (
                         <span className='sp-free'>무료</span>
-                    ):(
+                    ) : (
                         <>
                             <span className='sp-priceLabel'>월</span>
                             <span className='sp-priceValue'>{Number(price).toLocaleString()}</span>
@@ -74,5 +74,5 @@ function ProductCard({item}) {
             </div>
         </div>
     );
-    }
+}
 export default ProductCard

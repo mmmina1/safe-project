@@ -63,5 +63,9 @@ public class DiagnosisController {
             int score,
             List<Map<String, Object>> answers,
             List<String> recommendations) {
+
+        // JSON 역직렬화 시 값이 없어도 오류가 나지 않도록 생성자 추가 가능하지만
+        // 여기서는 그냥 프론트에서 보내는 필드만 있어도 동작하도록 설계됨.
+        // 하지만 score와 answers만 보내고 있으므로 나머지가 null로 들어오면 OK.
     }
 }

@@ -9,3 +9,8 @@ __pycache__/
 backend/chroma_db/
 data/
 *.log
+<<<<<<< HEAD
+=======
+tests/
+.env
+>>>>>>> feature/docker-aws-cleanup

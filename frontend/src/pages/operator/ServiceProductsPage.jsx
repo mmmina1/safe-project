@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "../../api/axios";
+import api from "../../api/axiosInstance"
 import { ToastContext } from "../../contexts/ToastContext";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { TableSkeleton } from "../../components/Skeleton";
 
-const API_BASE = "http://localhost:8080";
+const API_BASE = "";
 const imageFullUrl = (url) => {
   if (!url || !url.trim()) return null;
   const trimmedUrl = url.trim();
@@ -224,7 +224,7 @@ export default function ServiceProductsPage() {
     filteredAndSortedProducts.sort((a, b) => {
       let aVal = a[sortField];
       let bVal = b[sortField];
-      
+
       if (sortField === 'productId') {
         aVal = Number(a.productId) ?? 0;
         bVal = Number(b.productId) ?? 0;
@@ -238,7 +238,7 @@ export default function ServiceProductsPage() {
         aVal = a.isActive ?? false;
         bVal = b.isActive ?? false;
       }
-      
+
       if (sortDirection === 'asc') {
         return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
       } else {
@@ -264,9 +264,9 @@ export default function ServiceProductsPage() {
 
   if (isError) {
     return (
-      <div style={{ 
-        padding: "48px 24px", 
-        textAlign: "center", 
+      <div style={{
+        padding: "48px 24px",
+        textAlign: "center",
         color: DANGER,
         background: CARD_BG,
         borderRadius: "12px",
@@ -288,7 +288,7 @@ export default function ServiceProductsPage() {
       </div>
 
       {/* 검색 영역 */}
-      <div style={{ 
+      <div style={{
         marginBottom: "20px",
         background: CARD_BG,
         padding: "16px 20px",
@@ -336,13 +336,13 @@ export default function ServiceProductsPage() {
             <label style={{ display: "block", marginBottom: "6px", color: TEXT_MUTED, fontSize: "0.875rem", fontWeight: 600 }}>
               상품명 <span style={{ color: DANGER }}>*</span>
             </label>
-            <input 
-              placeholder="상품명을 입력하세요" 
+            <input
+              placeholder="상품명을 입력하세요"
               style={{
                 ...inputStyle,
                 width: "100%",
-              }} 
-              {...register("name", { required: "상품명을 입력하세요." })} 
+              }}
+              {...register("name", { required: "상품명을 입력하세요." })}
             />
             {errors.name && (
               <div style={{ marginTop: "6px", color: DANGER, fontSize: "0.8125rem" }}>
@@ -354,15 +354,15 @@ export default function ServiceProductsPage() {
             <label style={{ display: "block", marginBottom: "6px", color: TEXT_MUTED, fontSize: "0.875rem", fontWeight: 600 }}>
               설명 (선택)
             </label>
-            <textarea 
-              placeholder="상품 설명을 입력하세요" 
-              rows={4} 
+            <textarea
+              placeholder="상품 설명을 입력하세요"
+              rows={4}
               style={{
                 ...inputStyle,
                 width: "100%",
                 resize: "vertical",
-              }} 
-              {...register("description")} 
+              }}
+              {...register("description")}
             />
           </div>
           <div>
@@ -373,8 +373,8 @@ export default function ServiceProductsPage() {
             <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
               <button
                 type="button"
-                onClick={() => fileInputRef.current?.click()} 
-                disabled={uploadImageMutation.isPending} 
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadImageMutation.isPending}
                 style={{
                   padding: "12px 18px",
                   borderRadius: "10px",
@@ -401,14 +401,14 @@ export default function ServiceProductsPage() {
               >
                 {uploadImageMutation.isPending ? "업로드 중…" : "파일 선택"}
               </button>
-              <input 
+              <input
                 type="text"
-                placeholder="이미지 URL을 직접 입력하거나 파일을 선택하세요" 
+                placeholder="이미지 URL을 직접 입력하거나 파일을 선택하세요"
                 style={{
                   ...inputStyle,
                   flex: 1,
-                }} 
-                {...register("mainImage")} 
+                }}
+                {...register("mainImage")}
               />
             </div>
             {currentImageUrl?.trim() && (
@@ -416,7 +416,7 @@ export default function ServiceProductsPage() {
                 <div style={{ marginBottom: "8px", fontSize: "0.8125rem", color: TEXT_MUTED }}>미리보기</div>
                 <img
                   alt="상품 이미지 미리보기"
-                  src={imageFullUrl(currentImageUrl)} 
+                  src={imageFullUrl(currentImageUrl)}
                   style={{
                     maxWidth: "100%",
                     maxHeight: "200px",
@@ -450,23 +450,23 @@ export default function ServiceProductsPage() {
             <label style={{ display: "block", marginBottom: "6px", color: TEXT_MUTED, fontSize: "0.875rem", fontWeight: 600 }}>
               가격 (선택)
             </label>
-            <input 
-              type="number" 
-              placeholder="가격을 입력하세요" 
-              step="0.01" 
+            <input
+              type="number"
+              placeholder="가격을 입력하세요"
+              step="0.01"
               style={{
                 ...inputStyle,
                 width: "100%",
-              }} 
-              {...register("price")} 
+              }}
+              {...register("price")}
             />
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: "8px" }}>
-            <button 
-              type="submit" 
-              disabled={createMutation.isPending || updateMutation.isPending} 
-              style={{ 
-                ...btnStyle, 
+            <button
+              type="submit"
+              disabled={createMutation.isPending || updateMutation.isPending}
+              style={{
+                ...btnStyle,
                 opacity: createMutation.isPending || updateMutation.isPending ? 0.6 : 1,
                 cursor: createMutation.isPending || updateMutation.isPending ? "not-allowed" : "pointer",
                 transition: "all 0.2s",
@@ -485,9 +485,9 @@ export default function ServiceProductsPage() {
               {editingId ? (updateMutation.isPending ? "수정중..." : "수정 저장") : (createMutation.isPending ? "추가중..." : "추가")}
             </button>
             {editingId && (
-              <button 
-                type="button" 
-                onClick={onCancelEdit} 
+              <button
+                type="button"
+                onClick={onCancelEdit}
                 style={{
                   padding: "12px 18px",
                   borderRadius: "10px",
@@ -516,12 +516,12 @@ export default function ServiceProductsPage() {
       </div>
 
       {/* 상품 목록 */}
-        <div style={{
-          background: CARD_BG,
-          borderRadius: "12px",
-          border: `1px solid ${BORDER}`,
-          overflow: "hidden",
-        }}>
+      <div style={{
+        background: CARD_BG,
+        borderRadius: "12px",
+        border: `1px solid ${BORDER}`,
+        overflow: "hidden",
+      }}>
         <div style={{
           padding: "16px 20px",
           borderBottom: `1px solid ${BORDER}`,
@@ -536,11 +536,11 @@ export default function ServiceProductsPage() {
           </div>
         </div>
 
-          <div style={{ overflowX: "auto", width: "100%" }}>
+        <div style={{ overflowX: "auto", width: "100%" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1160px" }}>
             <thead>
               <tr style={{ background: "rgba(0,0,0,0.2)" }}>
-                <th 
+                <th
                   style={{ ...thStyle, padding: "14px 16px", width: "80px", cursor: "pointer", userSelect: "none" }}
                   onClick={() => handleSort('productId')}
                   onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
@@ -549,7 +549,7 @@ export default function ServiceProductsPage() {
                   ID {sortField === 'productId' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
                 <th style={{ ...thStyle, padding: "14px 16px", width: "100px" }}>이미지</th>
-                <th 
+                <th
                   style={{ ...thStyle, padding: "14px 16px", width: "200px", cursor: "pointer", userSelect: "none" }}
                   onClick={() => handleSort('name')}
                   onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
@@ -557,7 +557,7 @@ export default function ServiceProductsPage() {
                 >
                   상품명 {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
-                <th 
+                <th
                   style={{ ...thStyle, padding: "14px 16px", width: "300px", cursor: "pointer", userSelect: "none" }}
                   onClick={() => handleSort('description')}
                   onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
@@ -565,7 +565,7 @@ export default function ServiceProductsPage() {
                 >
                   설명 {sortField === 'description' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
-                <th 
+                <th
                   style={{ ...thStyle, padding: "14px 16px", width: "120px", cursor: "pointer", userSelect: "none" }}
                   onClick={() => handleSort('price')}
                   onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
@@ -573,7 +573,7 @@ export default function ServiceProductsPage() {
                 >
                   가격 {sortField === 'price' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
-                <th 
+                <th
                   style={{ ...thStyle, padding: "14px 16px", width: "100px", cursor: "pointer", userSelect: "none" }}
                   onClick={() => handleSort('isActive')}
                   onMouseEnter={(e) => e.currentTarget.style.color = TEXT_WHITE}
@@ -584,9 +584,9 @@ export default function ServiceProductsPage() {
                 <th style={{ ...thStyle, padding: "14px 16px", width: "180px" }}>작업</th>
               </tr>
             </thead>
-          <tbody>
-            {filteredAndSortedProducts.map((product, index) => (
-                <tr 
+            <tbody>
+              {filteredAndSortedProducts.map((product, index) => (
+                <tr
                   key={product.productId}
                   style={{
                     backgroundColor: index % 2 === 0 ? "transparent" : "rgba(0,0,0,0.05)",
@@ -618,23 +618,23 @@ export default function ServiceProductsPage() {
                     }}>
                       {product.mainImage && imageFullUrl(product.mainImage) ? (
                         <>
-                          <img 
-                            src={imageFullUrl(product.mainImage)} 
-                            alt={product.name} 
-                            style={{ 
+                          <img
+                            src={imageFullUrl(product.mainImage)}
+                            alt={product.name}
+                            style={{
                               width: "100%",
-                              height: "100%", 
+                              height: "100%",
                               objectFit: "cover",
                               display: "block",
-                            }} 
-                            onError={(e) => { 
+                            }}
+                            onError={(e) => {
                               e.target.style.display = "none";
                               if (e.target.nextSibling) {
                                 e.target.nextSibling.style.display = "flex";
                               }
                             }}
                           />
-                          <div style={{ 
+                          <div style={{
                             display: "none",
                             position: "absolute",
                             top: 0,
@@ -652,7 +652,7 @@ export default function ServiceProductsPage() {
                           </div>
                         </>
                       ) : (
-                        <div style={{ 
+                        <div style={{
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -667,9 +667,9 @@ export default function ServiceProductsPage() {
                     </div>
                   </td>
                   <td style={{ ...tdStyle, padding: "14px 20px", fontWeight: 500 }}>
-                    <div style={{ 
-                      overflow: "hidden", 
-                      textOverflow: "ellipsis", 
+                    <div style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
                       title: product.name
                     }}>
@@ -695,9 +695,9 @@ export default function ServiceProductsPage() {
                     {product.price ? `${product.price.toLocaleString()}원` : <span style={{ color: TEXT_MUTED }}>-</span>}
                   </td>
                   <td style={{ ...tdStyle, padding: "14px 20px", textAlign: "center" }}>
-                    <button 
-                      onClick={() => toggleMutation.mutate(product.productId)} 
-                      disabled={toggleMutation.isPending} 
+                    <button
+                      onClick={() => toggleMutation.mutate(product.productId)}
+                      disabled={toggleMutation.isPending}
                       style={{
                         padding: "6px 14px",
                         borderRadius: "6px",
@@ -717,8 +717,8 @@ export default function ServiceProductsPage() {
                           e.currentTarget.style.background = product.isActive ? "#22c55e" : "#94a3b8";
                           e.currentTarget.style.color = "#ffffff";
                           e.currentTarget.style.transform = "translateY(-1px)";
-                          e.currentTarget.style.boxShadow = product.isActive 
-                            ? "0 2px 8px rgba(34, 197, 94, 0.3)" 
+                          e.currentTarget.style.boxShadow = product.isActive
+                            ? "0 2px 8px rgba(34, 197, 94, 0.3)"
                             : "0 2px 8px rgba(148, 163, 184, 0.3)";
                         }
                       }}
@@ -736,9 +736,9 @@ export default function ServiceProductsPage() {
                   </td>
                   <td style={{ ...tdStyle, padding: "14px 16px" }}>
                     <div style={{ display: "flex", gap: "4px", flexWrap: "nowrap", justifyContent: "flex-start", alignItems: "center" }}>
-                      <button 
-                        type="button" 
-                        onClick={() => onEdit(product)} 
+                      <button
+                        type="button"
+                        onClick={() => onEdit(product)}
                         style={{
                           padding: "6px 14px",
                           borderRadius: "6px",
@@ -767,9 +767,9 @@ export default function ServiceProductsPage() {
                       >
                         수정
                       </button>
-                      <button 
-                        onClick={() => setDeleteConfirmId(product.productId)} 
-                        disabled={deleteMutation.isPending} 
+                      <button
+                        onClick={() => setDeleteConfirmId(product.productId)}
+                        disabled={deleteMutation.isPending}
                         style={{
                           padding: "6px 14px",
                           borderRadius: "6px",
@@ -814,7 +814,7 @@ export default function ServiceProductsPage() {
                       {searchKeyword ? "검색 결과 없음" : "상품 없음"}
                     </div>
                     <div>
-                      {searchKeyword 
+                      {searchKeyword
                         ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
                         : "등록된 상품이 없습니다."}
                     </div>
@@ -828,8 +828,8 @@ export default function ServiceProductsPage() {
               )}
             </tbody>
           </table>
-          </div>
         </div>
+      </div>
 
       {/* 삭제 확인 다이얼로그 */}
       <ConfirmDialog

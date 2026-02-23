@@ -8,7 +8,7 @@ import axiosInstance from "./axiosInstance"; // axios 대신 공용 도구 사�
  */
 export const confirmPayment = async (paymentData) => {
     try {
-        const response = await axiosInstance.post("/api/v1/payments/confirm", paymentData);
+        const response = await axiosInstance.post("/v1/payments/confirm", paymentData);
         return response;
     } catch (error) {
         console.error("Payment Confirmation API Error:", error);
