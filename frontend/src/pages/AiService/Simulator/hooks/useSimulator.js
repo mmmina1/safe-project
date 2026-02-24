@@ -24,6 +24,9 @@ export const useSimulator = () => {
         dataUrl: "/unity-sim/uni/Build/02.data.br",
         frameworkUrl: "/unity-sim/uni/Build/02.framework.js.br",
         codeUrl: "/unity-sim/uni/Build/02.wasm.br",
+        companyName: "Safe",
+        productName: "Safe Project",
+        productVersion: "1.0",
         // 유니티가 키보드 입력을 독점하지 않도록 설정 (입력창 뻑뻑함 해결의 핵심!)
         // https://react-unity-webgl.dev/docs/usage/unity-config
         webglContextAttributes: {
