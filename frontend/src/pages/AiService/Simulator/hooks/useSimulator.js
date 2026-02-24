@@ -21,9 +21,9 @@ export const useSimulator = () => {
         removeEventListener
     } = useUnityContext({
         loaderUrl: "/unity-sim/uni/Build/02.loader.js",
-        dataUrl: "/unity-sim/uni/Build/02.data.br",
-        frameworkUrl: "/unity-sim/uni/Build/02.framework.js.br",
-        codeUrl: "/unity-sim/uni/Build/02.wasm.br",
+        dataUrl: "/unity-sim/uni/Build/02.data.gz",
+        frameworkUrl: "/unity-sim/uni/Build/02.framework.js.gz",
+        codeUrl: "/unity-sim/uni/Build/02.wasm.gz",
         companyName: "Safe",
         productName: "Safe Project",
         productVersion: "1.0",

@@ -1,19 +1,205 @@
-index-Pp9-VaJq.js:16 React Unity WebGL: Initializing Unity instance...
-VM29 02.loader.js:1 [UnityCache] Error when initializing cache: Error: Could not connect to cache: Cache API is not supported.
-VM29 02.loader.js:1 [UnityCache] Failed to load 'http://3.39.143.83/unity-sim/uni/Build/02.data.br' from browser cache due to the error: Error: Could not connect to cache: Cache API is not supported.
-02.framework.js.br:1  Failed to load resource: net::ERR_CONTENT_DECODING_FAILED
-VM29 02.loader.js:1 Unable to load file /unity-sim/uni/Build/02.framework.js.br! Check that the file exists on the remote server. (also check browser Console and Devtools Network tab to debug)
-c @ VM29 02.loader.js:1
-/unity-sim/uni/Build/02.data.br:1  Failed to load resource: net::ERR_CONTENT_DECODING_FAILED
-VM29 02.loader.js:1 Failed to download file /unity-sim/uni/Build/02.data.br
-(anonymous) @ VM29 02.loader.js:1
-index-Pp9-VaJq.js:16 [LOCAL LOGIN] response: Object
-index-Pp9-VaJq.js:16 React Unity WebGL: Initializing Unity instance...
+React Unity WebGL: Initializing Unity instance...
 02.loader.js:1 [UnityCache] Error when initializing cache: Error: Could not connect to cache: Cache API is not supported.
 02.loader.js:1 [UnityCache] Failed to load 'http://3.39.143.83/unity-sim/uni/Build/02.data.br' from browser cache due to the error: Error: Could not connect to cache: Cache API is not supported.
-02.framework.js.br:1  Failed to load resource: net::ERR_CONTENT_DECODING_FAILED
+02.loader.js:1  GET http://3.39.143.83/unity-sim/uni/Build/02.framework.js.br net::ERR_CONTENT_DECODING_FAILED
+(anonymous) @ 02.loader.js:1
+D @ 02.loader.js:1
+(anonymous) @ 02.loader.js:1
+Promise.then
+(anonymous) @ 02.loader.js:1
+createUnityInstance @ 02.loader.js:1
+(anonymous) @ index-Pp9-VaJq.js:16
+j @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+Xq.e @ index-Pp9-VaJq.js:16
+A @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+nh @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+G2 @ index-Pp9-VaJq.js:8
+(anonymous) @ index-Pp9-VaJq.js:8
+G @ index-Pp9-VaJq.js:1Understand this error
 02.loader.js:1 Unable to load file /unity-sim/uni/Build/02.framework.js.br! Check that the file exists on the remote server. (also check browser Console and Devtools Network tab to debug)
 c @ 02.loader.js:1
-/unity-sim/uni/Build/02.data.br:1  Failed to load resource: net::ERR_CONTENT_DECODING_FAILED
-02.loader.js:1 Failed to download file /unity-sim/uni/Build/02.data.br
 (anonymous) @ 02.loader.js:1
+script
+(anonymous) @ 02.loader.js:1
+D @ 02.loader.js:1
+(anonymous) @ 02.loader.js:1
+Promise.then
+(anonymous) @ 02.loader.js:1
+createUnityInstance @ 02.loader.js:1
+(anonymous) @ index-Pp9-VaJq.js:16
+j @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+Xq.e @ index-Pp9-VaJq.js:16
+A @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+nh @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+G2 @ index-Pp9-VaJq.js:8
+(anonymous) @ index-Pp9-VaJq.js:8
+G @ index-Pp9-VaJq.js:1Understand this error
+02.loader.js:1  GET http://3.39.143.83/unity-sim/uni/Build/02.data.br net::ERR_CONTENT_DECODING_FAILED
+(anonymous) @ 02.loader.js:1
+(anonymous) @ 02.loader.js:1
+Promise.catch
+(anonymous) @ 02.loader.js:1
+D @ 02.loader.js:1
+(anonymous) @ 02.loader.js:1
+Promise.then
+(anonymous) @ 02.loader.js:1
+createUnityInstance @ 02.loader.js:1
+(anonymous) @ index-Pp9-VaJq.js:16
+j @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+Xq.e @ index-Pp9-VaJq.js:16
+A @ index-Pp9-VaJq.js:16
+(anonymous) @ index-Pp9-VaJq.js:16
+nh @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+xa @ index-Pp9-VaJq.js:8
+T2 @ index-Pp9-VaJq.js:8
+G2 @ index-Pp9-VaJq.js:8
+(anonymous) @ index-Pp9-VaJq.js:8
+G @ index-Pp9-VaJq.js:1Understand this error
+02.loader.js:1 Failed to download file /unity-sim/uni/Build/02.data.br

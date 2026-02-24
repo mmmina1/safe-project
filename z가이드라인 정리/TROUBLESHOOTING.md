@@ -72,13 +72,19 @@
         docker restart safe-python-backend
         ```
 
-### CASE 7. Unity WebGL 파일 전송 중단 (Truncated Download)
-- **문제**: 유니티 로딩 중 `ERR_CONTENT_DECODING_FAILED` 에러 발생 및 로딩 중단.
-- **원인**: Docker/Cloud 환경에서 Nginx의 `sendfile` 기능이 활성화되어 있을 때, 대용량 압축 파일(.br)이 끝까지 전송되지 못하고 중간에 잘리는 현상 확인.
-- **행동**: `nginx.conf`에서 `sendfile off` 및 `tcp_nopush off` 설정을 적용하여 전송 안정성 확보.
-- **실행 환경 및 방법**:
-    - **[내 컴퓨터 VS Code]**: `frontend/nginx.conf` 수정 후 `git push`
-    - **[서버 SSH 터미널]**: `./deploy.sh` 실행하여 Nginx 설정 반영
+### CASE 7. Unity WebGL 로딩 실패 및 디코딩 에러 (Brotli vs Gzip)
+- **문제 (Problem)**: 
+    - 유니티 시뮬레이터 로딩 중 `ERR_CONTENT_DECODING_FAILED` 에러 발생.
+    - 브라우저 콘솔에서 `Cache API is not supported` 경고와 함께 로딩이 멈추는 현상.
+- **원인 (Action)**:
+    1. **전송 불안정**: Nginx의 `sendfile` 설정이 Docker/Cloud 환경에서 대용량 파일을 중간에 자르는 현상(Truncated download) 확인 ➔ `sendfile off`로 1차 조치.
+    2. **환경 제약**: 유니티의 기본 압축인 Brotli(`.br`)는 강력하지만 HTTPS 보안 환경에서만 원활히 작동함. 현재 HTTP 환경인 실서버에서는 브라우저가 디코딩을 거부하는 것이 근본 원인임을 파악.
+- **결과 (Result)**:
+    - 모든 브라우저와 HTTP 환경에서 안정적으로 지원되는 **Gzip(`.gz`)** 방식으로 압축 전략 수정.
+    - 서버 컨테이너 내에서 직접 `.br` 해제 후 `.gz` 재압축 및 Nginx 설정 업데이트를 통해 즉시 복구 완료.
+- **배운 점 (Lessons Learned)**:
+    - **환경의 중요성**: 로컬(HTTPS/Cache 지원)과 실서버(HTTP)의 브라우저 보안 정책 차이가 실행 결과에 결정적인 영향을 미칠 수 있음을 체감.
+    - **트레이드오프**: 최신 압축 기술(Brotli)이 항상 정답은 아니며, 현재 시스템의 인프라(HTTP vs HTTPS)와 대상 환경에 가장 호환성이 좋은 기술(Gzip)을 선택하는 '적정 기술'의 중요성을 배움.
 
 ---
 > **🏁 총평**: 배포는 코드의 완성이 아닌 새로운 '환경과의 조율'입니다. 발생한 에러들은 시스템의 구조를 더 깊이 이해하게 만든 최고의 스승이었습니다.
