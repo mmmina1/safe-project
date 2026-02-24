@@ -39,7 +39,7 @@ const LandingView = () => {
             {/* 히어로 섹션 */}
             <header className="ai-hero">
                 <div className="ai-hero-content">
-                    <h1>보이스피싱,<br />AI가 당신을 보호합니다.</h1>
+                    <h1>보이스피싱,<br />AI가 당신을 보호합니다!</h1>
                     <p>
                         Safe 프로젝트의 스마트 AI 솔루션으로 금융 사기로부터 소중한 자산을 안전하게 지키세요.<br />
                         진단부터 실전 훈련까지 종합적인 예방 솔루션을 제공합니다.
