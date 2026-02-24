@@ -72,5 +72,13 @@
         docker restart safe-python-backend
         ```
 
+### CASE 7. Unity WebGL 파일 전송 중단 (Truncated Download)
+- **문제**: 유니티 로딩 중 `ERR_CONTENT_DECODING_FAILED` 에러 발생 및 로딩 중단.
+- **원인**: Docker/Cloud 환경에서 Nginx의 `sendfile` 기능이 활성화되어 있을 때, 대용량 압축 파일(.br)이 끝까지 전송되지 못하고 중간에 잘리는 현상 확인.
+- **행동**: `nginx.conf`에서 `sendfile off` 및 `tcp_nopush off` 설정을 적용하여 전송 안정성 확보.
+- **실행 환경 및 방법**:
+    - **[내 컴퓨터 VS Code]**: `frontend/nginx.conf` 수정 후 `git push`
+    - **[서버 SSH 터미널]**: `./deploy.sh` 실행하여 Nginx 설정 반영
+
 ---
 > **🏁 총평**: 배포는 코드의 완성이 아닌 새로운 '환경과의 조율'입니다. 발생한 에러들은 시스템의 구조를 더 깊이 이해하게 만든 최고의 스승이었습니다.
