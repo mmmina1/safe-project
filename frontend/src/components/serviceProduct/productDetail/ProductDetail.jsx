@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProductDetail } from '../../../api/productApi'
-import { uploadMainImage } from '../../../api/productApi'
+import { addToCart, checkout } from '../../../api/cartApi' // [FIX] 장바구니 및 결제 API 임포트
 import '../../../assets/css/ServiceProduct/ProductDetail.css'
 import { getReviewSummary } from '../../../api/reviewApi'
 
@@ -32,16 +32,16 @@ function ProductDetail() {
 
     try {
       setLoading(true); // 로딩 시작
-      
+
       // 아까 만든 API 함수를 호출!
       const result = await uploadMainImage(productId, file);
-      
+
       //성공하면 화면의 상품 이미지 상태를 업데이트
       setProduct(prev => ({
         ...prev,
         mainImage: result.url // 백엔드에서 준 S3 URL로 교체
       }));
-      
+
       alert("이미지가 성공적으로 변경되었습니다!");
     } catch (error) {
       alert("업로드 실패: " + error.message);
@@ -79,12 +79,12 @@ function ProductDetail() {
         setProduct(normalized)
 
         try {
-            const summary = await getReviewSummary(productId)
-            setReviewAvg(Number(summary.avgRating ?? 0))
-            setReviewCountState(Number(summary.reviewCount ?? 0))
-          } catch (e) {
-            console.warn('summary fetch failed', e)
-          }
+          const summary = await getReviewSummary(productId)
+          setReviewAvg(Number(summary.avgRating ?? 0))
+          setReviewCountState(Number(summary.reviewCount ?? 0))
+        } catch (e) {
+          console.warn('summary fetch failed', e)
+        }
 
       } catch (e) {
         console.error(e)
@@ -103,29 +103,43 @@ function ProductDetail() {
     }
   }, [productId])
 
-    const handleSubscribe = () => {
-      if (!product) return
+  const handleSubscribe = async () => {
+    if (!product) return
 
-      // 무료면 plan 없어도 진행 가능하게 할지(선택)
-      const isFree = product.priceType === 'FREE'
+    // 무료면 plan 없어도 진행 가능하게 할지(선택)
+    const isFree = product.priceType === 'FREE'
 
-      if (!isFree && !product.plan) {
-        alert('이용기간/가격 정보가 없습니다. (플랜 등록 필요)')
-        return
-      }
-
-      if (!agreed) {
-        alert('이용약관에 동의해주세요.')
-        return
-      }
-
-      console.log('구독/결제 진행:', {
-        productId: product.id,
-        period: product.plan?.periodText,
-        price: product.plan?.finalPrice,
-        priceType: product.priceType,
-      })
+    if (!isFree && !product.plan) {
+      alert('이용기간/가격 정보가 없습니다. (플랜 등록 필요)')
+      return
     }
+
+    if (!agreed) {
+      alert('이용약관에 동의해주세요.')
+      return
+    }
+
+    try {
+      setLoading(true)
+      // 1. 장바구니에 먼저 담기 (Buy Now flow)
+      await addToCart({
+        productId: product.id,
+        planId: product.plan?.planId,
+        quantity: 1
+      })
+
+      // 2. 바로 주문(결제) 처리
+      await checkout()
+
+      alert('구독 신청(결제)이 완료되었습니다! 마이페이지에서 확인하세요.')
+      navigate('/mypage') // 마이페이지로 이동
+    } catch (err) {
+      console.error(err)
+      alert('구독 신청 실패: ' + (err.response?.data?.message || err.message))
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
   if (loading) {
@@ -247,17 +261,17 @@ function ProductDetail() {
                 </div>
 
                 <button className="sp-subscribe-button"
-                    onClick={() => setShowPlanModal(true)}
-                    disabled={isOutOfStock}
-                    aria-disabled={isOutOfStock}
-                  >
-                    <span className="sp-subscribe-icon" aria-hidden="true">
-                      {isOutOfStock ? '🔒' : '🛒'}
-                    </span>
-                    <span className="sp-subscribe-label">
-                      {isOutOfStock ? '재고 소진' : '구독 신청'}
-                    </span>
-                  </button>
+                  onClick={() => setShowPlanModal(true)}
+                  disabled={isOutOfStock}
+                  aria-disabled={isOutOfStock}
+                >
+                  <span className="sp-subscribe-icon" aria-hidden="true">
+                    {isOutOfStock ? '🔒' : '🛒'}
+                  </span>
+                  <span className="sp-subscribe-label">
+                    {isOutOfStock ? '재고 소진' : '구독 신청'}
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -278,7 +292,7 @@ function ProductDetail() {
                 <span className="sp-tab-icon">📋</span>
                 <span className='sp-tab-text'>서비스 소개</span>
               </button>
-              
+
               <button
                 className={`sp-tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
                 onClick={() => setActiveTab('reviews')} >
@@ -287,7 +301,7 @@ function ProductDetail() {
               </button>
 
               <button className={`sp-tab-button ${activeTab === 'qna' ? 'active' : ''}`}
-              onClick={() => setActiveTab('qna')}>
+                onClick={() => setActiveTab('qna')}>
                 <span className='sp-tab-icon'>❓</span>
                 <span className='sp-tab-text'>상품 문의</span>
               </button>
@@ -312,9 +326,9 @@ function ProductDetail() {
 
 
               {activeTab === 'qna' && (
-                <ProductQnaSection productId={productId}/>
+                <ProductQnaSection productId={productId} />
               )}
-              
+
             </div>
           </div>
         </div>

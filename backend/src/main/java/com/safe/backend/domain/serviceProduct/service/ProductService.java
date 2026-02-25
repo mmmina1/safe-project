@@ -20,35 +20,36 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)//읽기 전용
+@Transactional(readOnly = true) // 읽기 전용
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
     private final ProductPlanRepository productPlanRepository;
 
-    //1. 상품 목록 조회
+    // 1. 상품 목록 조회
     public Page<ProductListItem> getProducts(String q, String category, Pageable pageable) {
         ProductStatus status = ProductStatus.ON_SALE;
 
-        boolean hasQ = q!= null && !q.isBlank();
+        boolean hasQ = q != null && !q.isBlank();
         boolean hasCategory = category != null && !category.isBlank() && !category.equals("ALL");
 
         Page<Product> page;
 
-        //2. 검색 조건
-        if(hasCategory) {
+        // 2. 검색 조건
+        if (hasCategory) {
 
             Long catId = Long.valueOf(category);
-            if(hasQ) {
-                page = productRepository.findByStatusAndBaseCategory_CategoryIdAndNameContainingIgnoreCase(status, catId, q, pageable);
-            }else {
+            if (hasQ) {
+                page = productRepository.findByStatusAndBaseCategory_CategoryIdAndNameContainingIgnoreCase(status,
+                        catId, q, pageable);
+            } else {
                 page = productRepository.findByStatusAndBaseCategory_CategoryId(status, catId, pageable);
             }
-        }else{
-            if(hasQ){
+        } else {
+            if (hasQ) {
                 page = productRepository.findByStatusAndNameContainingIgnoreCase(status, q, pageable);
-            }else{
+            } else {
                 page = productRepository.findByStatus(status, pageable);
             }
         }
@@ -77,36 +78,35 @@ public class ProductService {
                 .orElse(null);
 
         // ProductDetail이 없으면 기본값으로 처리
-        if(d == null){
+        if (d == null) {
             // 기본값으로 ProductDetailResponse 생성
             Integer price = (p.getPriceType() != null && p.getPriceType().name().equals("FREE")) ? 0 : 0;
             ProductPlanDto planDto = buildPlanDtoWithDefaults(p, plan, price);
-            
-            Long categoryId = (p.getBaseCategory() != null) 
-                ? p.getBaseCategory().getCategoryId() 
-                : null;
-            
+
+            Long categoryId = (p.getBaseCategory() != null)
+                    ? p.getBaseCategory().getCategoryId()
+                    : null;
+
             return new ProductDetailResponse(
-                p.getProductId(),
-                p.getName(),
-                price,
-                0.0,
-                p.getSummary() != null ? p.getSummary() : "",
-                0,
-                0,
-                p.getMainImage(),
-                p.getDescription() != null ? p.getDescription() : "",
-                categoryId,
-                p.getStatus().name(),
-                p.getPriceType().name(),
-                planDto
-            );
+                    p.getProductId(),
+                    p.getName(),
+                    price,
+                    0.0,
+                    p.getSummary() != null ? p.getSummary() : "",
+                    0,
+                    0,
+                    p.getMainImage(),
+                    p.getDescription() != null ? p.getDescription() : "",
+                    categoryId,
+                    p.getStatus().name(),
+                    p.getPriceType().name(),
+                    planDto);
         }
 
         // 2. PlanDto 생성
         ProductPlanDto planDto = buildPlanDto(p, d, plan);
 
-        return ProductDetailResponse.of(p,d,planDto,0.0, 0);
+        return ProductDetailResponse.of(p, d, planDto, 0.0, 0);
     }
 
     private ProductPlanDto buildPlanDto(Product p, ProductDetail d, ProductPlan plan) {

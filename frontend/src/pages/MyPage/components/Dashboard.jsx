@@ -53,7 +53,7 @@ const Dashboard = () => {
     }, []); // <- 이 빈 배열 []이 '한 번만 실행하라'는 뜻입니다.
     // [차트 데이터] 그래프에 그려질 좌표와 라벨들을 정의합니다.
     const chartData = {
-        labels: ['5월', '6월', '7월', '8월', '9월', '10월'],
+        labels: dashboardData?.scoreHistory ? dashboardData.scoreHistory.map((_, i) => `${i + 1}회차`) : [],
         datasets: [
             {
                 label: '보안 점수',

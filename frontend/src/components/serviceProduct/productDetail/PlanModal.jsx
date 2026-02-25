@@ -20,8 +20,8 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
   const priceLabel = isFree
     ? '무료'
     : (typeof finalPrice === 'number'
-        ? `${finalPrice.toLocaleString()}원`
-        : '가격 미정(문의 필요)')
+      ? `${finalPrice.toLocaleString()}원`
+      : '가격 미정(문의 필요)')
 
   const canPay = isFree || typeof finalPrice === 'number'
   const canSubmit = agreed && canPay
@@ -31,14 +31,13 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
   // [신규] 장바구니 담기 버튼 핸들러
   const handleAddToCart = async () => {
     if (!product) return
-    if (!product.plans || product.plans.length === 0) {
+
+    // 유료 상품인데 플랜 정보가 없으면 불가
+    if (!isFree && !product.plan) {
       alert('준비된 플랜이 없습니다.')
       return
     }
-    if (!selectedPlan) {
-      alert('옵션(플랜)을 선택해주세요.')
-      return
-    }
+
     if (!agreed) {
       alert('약관에 동의해주세요.')
       return
@@ -46,15 +45,15 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
 
     try {
       await addToCart({
-        productId: product.productId,
-        planId: selectedPlan.planId,
+        productId: product.id,
+        planId: product.plan?.planId,
         quantity: 1
       })
       alert('장바구니에 쏙! 담겼습니다. 🛒')
       onClose()
     } catch (err) {
       console.error(err)
-      alert('장바구니 담기 실패: ' + (err.response?.data || err.message))
+      alert('장바구니 담기 실패: ' + (err.response?.data?.message || err.message))
     }
   }
 
