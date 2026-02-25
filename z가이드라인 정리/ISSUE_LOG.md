@@ -52,5 +52,17 @@
     - `onSubmit` 함수 내에서 `communityApi.createPost`를 호출할 때 `userId` 변수를 참조하지만, 해당 변수가 선언되거나 정의되지 않은 상태입니다. (예: `const { userId } = useAuth()`와 같은 선언 누락)
 - **예상 해결 방안**: 현재 로그인된 사용자의 ID를 `AuthContext` 또는 `localStorage`에서 가져와 변수로 선언해 주어야 합니다.
 
+### 📄 회원 삭제 시 500 에러 (Internal Server Error)
+- **내용**: `DELETE /api/admin/users/{userId} 500 (Internal Server Error)`
+- **발생 위치**: `UserSearchPage.jsx` 및 `UserManagement.jsx`
+- **원인 분석**:
+    - 프론트엔드에서는 삭제 요청을 보내지만, 백엔드(`AdminUserController.java`)에 해당 `DELETE` 엔드포인트가 정의되어 있지 않음.
+- **예상 해결 방안**: 백엔드 컨트롤러 및 서비스에 `deleteUser` 로직 구현 필요.
+
+### 📊 Chart 렌더링 경고 (Width/Height -1)
+- **내용**: `The width(-1) and height(-1) of chart should be greater than 0...`
+- **원인 분석**: Recharts의 `ResponsiveContainer`가 렌더링될 때 부모 요소의 크기를 즉시 계산하지 못해 발생.
+- **해결 방향**: 부모 디브(div)에 `min-height`를 설정하거나 차트에 최소 크기 부여.
+
 ---
 *마지막 업데이트: 2026-02-25*
