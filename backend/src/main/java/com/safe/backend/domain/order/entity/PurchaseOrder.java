@@ -75,4 +75,9 @@ public class PurchaseOrder {
         this.paymentKey = paymentKey;
         this.updatedDate = LocalDateTime.now();
     }
+
+    public void cancel() {
+        this.status = OrderStatus.CANCELLED;
+        this.updatedDate = LocalDateTime.now();
+    }
 }

@@ -22,6 +22,7 @@ function ProductDetail() {
   const [showPlanModal, setShowPlanModal] = useState(false)
   const [activeTab, setActiveTab] = useState('intro')
   const [agreed, setAgreed] = useState(false)
+  const [quantity, setQuantity] = useState(1)
 
   const [reviewAvg, setReviewAvg] = useState(null);
   const [reviewCountState, setReviewCountState] = useState(null);
@@ -125,7 +126,7 @@ function ProductDetail() {
       await addToCart({
         productId: product.id,
         planId: product.plan?.planId,
-        quantity: 1
+        quantity: quantity
       })
 
       // 2. 바로 주문(결제) 처리
@@ -260,6 +261,22 @@ function ProductDetail() {
                   )}
                 </div>
 
+                {/* 수량 조절 UI 추가 */}
+                {!isFree && (
+                  <div className="sp-quantity-selector">
+                    <button
+                      className="sp-qty-btn"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                    >-</button>
+                    <span className="sp-qty-value">{quantity}</span>
+                    <button
+                      className="sp-qty-btn"
+                      onClick={() => setQuantity(quantity + 1)}
+                    >+</button>
+                  </div>
+                )}
+
                 <button className="sp-subscribe-button"
                   onClick={() => setShowPlanModal(true)}
                   disabled={isOutOfStock}
@@ -335,8 +352,14 @@ function ProductDetail() {
       </div>
 
       <PlanModal
-        open={showPlanModal} product={product} onClose={() => setShowPlanModal(false)} agreed={agreed}
-        setAgreed={setAgreed} onSubscribe={handleSubscribe} />
+        open={showPlanModal}
+        product={product}
+        onClose={() => setShowPlanModal(false)}
+        agreed={agreed}
+        setAgreed={setAgreed}
+        onSubscribe={handleSubscribe}
+        quantity={quantity}
+      />
     </div>
   )
 }

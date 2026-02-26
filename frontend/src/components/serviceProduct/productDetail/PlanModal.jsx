@@ -1,7 +1,7 @@
 import { addToCart } from '../../../api/cartApi'
 import '../../../assets/css/ServiceProduct/Planmodal.css'
 
-function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
+function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe, quantity = 1 }) {
   if (!open) return null
 
   const title = product?.name ?? '상품'
@@ -47,7 +47,7 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
       await addToCart({
         productId: product.id,
         planId: product.plan?.planId,
-        quantity: 1
+        quantity: quantity
       })
       alert('장바구니에 쏙! 담겼습니다. 🛒')
       onClose()
@@ -112,6 +112,21 @@ function PlanModal({ open, onClose, product, agreed, setAgreed, onSubscribe }) {
                     {priceLabel}
                   </span>
                 </div>
+
+                {!isFree && quantity > 1 && (
+                  <>
+                    <div className='sp-summary-row'>
+                      <span className='sp-summary-label'>수량</span>
+                      <span className='sp-summary-value'>{quantity}개</span>
+                    </div>
+                    <div className='sp-summary-row' style={{ borderTop: '1px solid #eee', paddingTop: '8px', marginTop: '8px' }}>
+                      <span className='sp-summary-label' style={{ fontWeight: 'bold' }}>총 결제 금액</span>
+                      <span className='sp-summary-value' style={{ fontWeight: 'bold', color: '#f39c12', fontSize: '1.2rem' }}>
+                        {(finalPrice * quantity).toLocaleString()}원
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 {summary && (
                   <div className='sp-summary-desc'>

@@ -106,3 +106,35 @@ export const getMyOrders = async () => {
         throw error;
     }
 };
+
+/**
+ * 주문 취소
+ */
+export const cancelOrder = async (orderId) => {
+    const token = localStorage.getItem('accessToken');
+    try {
+        const response = await axiosInstance.post(`/orders/${orderId}/cancel`, {}, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        return response.data;
+    } catch (error) {
+        console.error('주문 취소 실패:', error);
+        throw error;
+    }
+};
+
+/**
+ * 주문 상세 정보 조회
+ */
+export const getOrderDetail = async (orderId) => {
+    const token = localStorage.getItem('accessToken');
+    try {
+        const response = await axiosInstance.get(`/orders/${orderId}`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        return response.data;
+    } catch (error) {
+        console.error('주문 상세 조회 실패:', error);
+        throw error;
+    }
+};

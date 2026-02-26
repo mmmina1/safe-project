@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.safe.backend.domain.order.entity.OrderStatus;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,5 +75,56 @@ public class OrderService {
                                         item.getOrderPrice()))
                                 .collect(Collectors.toList())))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 주문 취소
+     */
+    @Transactional
+    public void cancelOrder(Long orderId, User user) {
+        PurchaseOrder order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        // 본인 확인
+        if (!order.getUser().getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        // 상태 확인 (취소 가능 여부)
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new IllegalArgumentException("이미 취소된 주문입니다.");
+        }
+
+        // 추가 정책: SHIPPING 이상이면 취소 불가 등의 로직을 넣을 수 있음
+        // if (order.getStatus() == OrderStatus.SHIPPING || order.getStatus() ==
+        // OrderStatus.DELIVERED) { ... }
+
+        order.cancel();
+    }
+
+    /**
+     * 주문 상세 조회
+     */
+    public OrderResponse getOrder(Long orderId, User user) {
+        PurchaseOrder order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        // 본인 확인
+        if (!order.getUser().getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        return new OrderResponse(
+                order.getOrderId(),
+                order.getOrderDate(),
+                order.getTotalPrice(),
+                order.getStatus(),
+                order.getOrderItems().stream()
+                        .map(item -> new OrderResponse.OrderItemResponse(
+                                item.getProduct().getProductId(),
+                                item.getProduct().getName(),
+                                item.getQuantity(),
+                                item.getOrderPrice()))
+                        .collect(Collectors.toList()));
     }
 }

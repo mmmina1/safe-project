@@ -6,6 +6,10 @@ import { CreditCard, Lock, User, ExternalLink, ShieldCheck, MapPin } from 'lucid
 import { getDashboardData, updateNickname, updatePassword, withdrawAccount } from '../../../api/myPageApi';
 // 페이지 이동을 위해 useNavigate가 필요합니다.
 import { useNavigate } from 'react-router-dom';
+import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
+
+// 토스 샌드박스에서 제공하는 공식 테스트 키
+const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 // ============================================================
 // 2. 설정 및 관리 화면 부품
 // ============================================================
@@ -28,6 +32,14 @@ const Settings = ({ initialTab = 'payment' }) => {
     // [New] 토스 연동 상태 (Mock)
     const [isTossLinked, setIsTossLinked] = useState(false);
 
+    // [New] 토스 페이먼츠 위젯 상태
+    const [widgets, setWidgets] = useState(null);
+    const paymentMethodWidgetRef = React.useRef(null);
+    const [amount] = useState({
+        currency: "KRW",
+        value: 15000,
+    });
+
     // 부모로부터 내려오는 탭 설정이 바뀌면 화면도 즉시 변경해줍니다.
     useEffect(() => {
         setActiveTab(initialTab);
@@ -37,6 +49,48 @@ const Settings = ({ initialTab = 'payment' }) => {
             fetchUserProfile();
         }
     }, [initialTab]);
+
+    // --- Toss Payments 초기화 로직 ---
+    useEffect(() => {
+        if (activeTab !== 'payment') return;
+
+        async function fetchPaymentWidgets() {
+            try {
+                const tossPayments = await loadTossPayments(clientKey);
+                const widgets = tossPayments.widgets({ customerKey: ANONYMOUS });
+                setWidgets(widgets);
+            } catch (error) {
+                console.error("토스페이먼츠 로드 실패:", error);
+            }
+        }
+        fetchPaymentWidgets();
+    }, [activeTab]);
+
+    useEffect(() => {
+        if (widgets == null || activeTab !== 'payment') return;
+
+        async function renderPaymentWidgets() {
+            try {
+                await widgets.setAmount(amount);
+
+                const [paymentMethodWidget] = await Promise.all([
+                    widgets.renderPaymentMethods({
+                        selector: "#payment-method",
+                        variantKey: "DEFAULT",
+                    }),
+                    widgets.renderAgreement({
+                        selector: "#agreement",
+                        variantKey: "AGREEMENT",
+                    }),
+                ]);
+
+                paymentMethodWidgetRef.current = paymentMethodWidget;
+            } catch (error) {
+                console.error("패이먼츠 위젯 렌더링 실패:", error);
+            }
+        }
+        renderPaymentWidgets();
+    }, [widgets, activeTab]);
 
     const fetchUserProfile = async () => {
         try {
@@ -99,15 +153,23 @@ const Settings = ({ initialTab = 'payment' }) => {
         }
     };
 
-    // 토스 연동 핸들러 (Mock)
-    const handleLinkToss = () => {
-        // TODO: 토스 페이먼츠 위젯 연동 로직
-        const confirmLink = window.confirm('토스페이먼츠 연동 페이지로 이동합니다.\n(연동 시뮬레이션)');
-        if (confirmLink) {
-            setTimeout(() => {
-                setIsTossLinked(true);
-                alert('토스페이먼츠 연동이 완료되었습니다!');
-            }, 1000);
+    // 토스 페이먼츠 테스트 결제 요청
+    const handlePaymentRequest = async () => {
+        if (!widgets) {
+            alert('결제 위젯이 준비되지 않았습니다.');
+            return;
+        }
+        try {
+            await widgets.requestPayment({
+                orderId: window.btoa(Math.random()).slice(0, 20),
+                orderName: "토스페이 결제 연습",
+                customerName: "연습생",
+                customerEmail: "test@example.com",
+                successUrl: window.location.origin + "/payment/success",
+                failUrl: window.location.origin + "/payment/fail"
+            });
+        } catch (error) {
+            console.error("결제 중 오류 발생:", error);
         }
     };
 
@@ -156,27 +218,32 @@ const Settings = ({ initialTab = 'payment' }) => {
             {/* --- CASE A: 결제수단 관리 탭 --- */}
             {activeTab === 'payment' && (
                 <div className="animate-fade-in">
-                    {/* 토스페이먼츠 연동 유도 섹션 */}
-                    <div className="dashboard-card mb-4 border border-secondary p-5 text-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                        <h4 className="fw-bold mb-3">토스페이먼츠 연동</h4>
-                        <p className="text-secondary mb-4">쉽고 빠른 결제를 위해 토스페이를 연결하세요.<br />연동 시 첫 결제 1,000원 할인 혜택을 드립니다.</p>
-
-                        {isTossLinked ? (
-                            <div className="text-success fw-bold mb-4 d-flex justify-content-center align-items-center">
-                                <ShieldCheck size={24} className="me-2" />
-                                현재 상태: 연동 완료
+                    {/* 토스페이먼츠 결제 연습 섹션 (Sandbox) */}
+                    <div className="dashboard-card mb-4 border border-secondary p-4" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                        <div className="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h4 className="fw-bold mb-1">토스페이먼츠 결제 연습</h4>
+                                <p className="text-secondary mb-0">안전한 Sandbox 환경에서 실제 결제 흐름을 체험해볼 수 있습니다.</p>
                             </div>
-                        ) : (
-                            <div className="text-secondary small mb-4">현재 상태: <span className="text-danger fw-bold">미연동</span></div>
-                        )}
+                            <span className="badge bg-primary px-3 py-2">Simulation Mode</span>
+                        </div>
 
-                        <button
-                            className={`btn ${isTossLinked ? 'btn-outline-success' : 'btn-primary'} px-5 py-3 fw-bold d-inline-flex align-items-center`}
-                            onClick={handleLinkToss}
-                            disabled={isTossLinked}
-                        >
-                            {isTossLinked ? '연동 관리하기' : '토스페이 연동하기'} <ExternalLink size={18} className="ms-2" />
-                        </button>
+                        {/* 결제 위젯이 렌더링될 영역 */}
+                        <div className="bg-white rounded-3 mb-4 overflow-hidden" style={{ minHeight: '300px' }}>
+                            <div id="payment-method" className="w-100" />
+                            <div id="agreement" className="w-100" />
+                        </div>
+
+                        <div className="text-center">
+                            <button
+                                className="btn btn-primary px-5 py-3 fw-bold d-inline-flex align-items-center mb-2"
+                                onClick={handlePaymentRequest}
+                            >
+                                <CreditCard size={18} className="me-2" />
+                                {amount.value.toLocaleString()}원 테스트 결제하기
+                            </button>
+                            <p className="text-secondary small mb-0">연습용이므로 실제 비용이 청구되지 않습니다.</p>
+                        </div>
                     </div>
 
                     <h5 className="card-label mb-3">등록된 결제 수단</h5>

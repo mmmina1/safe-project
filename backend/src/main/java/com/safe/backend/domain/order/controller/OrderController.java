@@ -40,4 +40,28 @@ public class OrderController {
         List<OrderResponse> orders = orderService.getMyOrders(user);
         return ResponseEntity.ok(orders);
     }
+
+    /**
+     * 주문 취소
+     */
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        orderService.cancelOrder(orderId, user);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주문 상세 조회
+     */
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        OrderResponse order = orderService.getOrder(orderId, user);
+        return ResponseEntity.ok(order);
+    }
 }

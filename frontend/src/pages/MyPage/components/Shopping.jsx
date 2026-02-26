@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Package, ShoppingBag, Trash2, ChevronRight, CreditCard } from 'lucide-react';
-import { getMyCart, deleteCartItem, updateCartItem, checkout, getMyOrders } from '../../../api/cartApi';
+import { getMyCart, deleteCartItem, updateCartItem, checkout, getMyOrders, cancelOrder, getOrderDetail } from '../../../api/cartApi';
 
 const Shopping = ({ initialTab = 'orders' }) => {
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -83,14 +83,35 @@ const Shopping = ({ initialTab = 'orders' }) => {
         }
     };
 
-    // 주문 취소 핸들러 (준비중)
-    const handleCancelOrder = (orderId) => {
-        alert('주문 취소 기능은 준비 중입니다.');
+    // 주문 취소 핸들러
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm('정말 주문을 취소하시겠습니까?')) return;
+
+        try {
+            await cancelOrder(orderId);
+            alert('주문이 성공적으로 취소되었습니다.');
+            fetchData(); // 내역 새로고침
+        } catch (error) {
+            console.error('취소 오류:', error);
+            alert('주문 취소 중 오류가 발생했습니다.');
+        }
     };
 
     // 주문 상세 보기 핸들러
-    const handleViewOrderDetail = (orderId) => {
-        alert(`주문 번호 ${orderId} 상세 내역 (구현 예정)`);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const handleViewOrderDetail = async (orderId) => {
+        try {
+            setDetailLoading(true);
+            const data = await getOrderDetail(orderId);
+            setSelectedOrder(data);
+        } catch (error) {
+            console.error('주문 상세 조회 실패:', error);
+            alert('주문 상세 정보를 불러오는데 실패했습니다.');
+        } finally {
+            setDetailLoading(false);
+        }
     };
 
     const calculateTotal = () => {
@@ -256,6 +277,52 @@ const Shopping = ({ initialTab = 'orders' }) => {
                             >
                                 주문하기
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* --- 주문 상세 모달 --- */}
+            {selectedOrder && (
+                <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }} tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered modal-lg">
+                        <div className="modal-content bg-dark text-white border-secondary">
+                            <div className="modal-header border-secondary">
+                                <h5 className="modal-title">주문 상세 내역</h5>
+                                <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedOrder(null)}></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="mb-4">
+                                    <p className="mb-1 text-secondary">주문 번호: <span className="text-white">{selectedOrder.orderId}</span></p>
+                                    <p className="mb-1 text-secondary">주문 일시: <span className="text-white">{new Date(selectedOrder.orderDate).toLocaleString()}</span></p>
+                                    <p className="mb-1 text-secondary">주문 상태: <span className="status-badge badge-safe">{selectedOrder.status}</span></p>
+                                </div>
+
+                                <h6 className="mb-3 border-bottom border-secondary pb-2">주문 상품</h6>
+                                {selectedOrder.items.map((item, idx) => (
+                                    <div key={idx} className="d-flex justify-content-between align-items-center mb-3">
+                                        <div className="d-flex align-items-center">
+                                            <div className="bg-secondary rounded p-2 me-3">
+                                                <Package size={24} />
+                                            </div>
+                                            <div>
+                                                <p className="mb-0 fw-bold">{item.productName}</p>
+                                                <p className="mb-0 small text-secondary">{item.quantity}개 / 각 {item.orderPrice.toLocaleString()}원</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-end">
+                                            <p className="mb-0 fw-bold">{(item.orderPrice * item.quantity).toLocaleString()}원</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="modal-footer border-secondary justify-content-between">
+                                <div className="text-start">
+                                    <span className="text-secondary me-3">총 결제 금액</span>
+                                    <span className="fw-bold fs-5 text-primary">{selectedOrder.totalPrice.toLocaleString()}원</span>
+                                </div>
+                                <button type="button" className="btn btn-secondary" onClick={() => setSelectedOrder(null)}>닫기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
