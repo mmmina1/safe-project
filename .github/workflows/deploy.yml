@@ -2,7 +2,7 @@ name: Build and Push to AWS ECR
 
 on:
   push:
-    branches: [ "develop", "feature/unified-safe-ai", "feature/ai-service-page" ] # 여기에 추가
+    branches: [ "feature/unified-safe-ai" ]
   workflow_dispatch: # 수동 실행 기능 추가
 
 jobs:
