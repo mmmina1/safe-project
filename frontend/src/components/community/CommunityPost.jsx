@@ -7,24 +7,24 @@ function CommunityPost() {//글 작성
 
   const navigate = useNavigate()
 
-  const [category,setCategory] = useState("")
+  const [category, setCategory] = useState("")
   const [title, setTitle] = useState("")
-  const [content,setContent] = useState("")
+  const [content, setContent] = useState("")
 
-  const [loading,setLoading] = useState(false)
-  const [error,setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
   const [attachments, setAttachments] = useState([]);
 
 
   const categories = useMemo(
-    () => ["전체", "공문사칭", "결제사기", "지인사칭", "보안/케어", "기타", "피싱예방","피해복구","최신수법","기관공지","자유게시판","질문 답변"],
+    () => ["전체", "공문사칭", "결제사기", "지인사칭", "보안/케어", "기타", "피싱예방", "피해복구", "최신수법", "기관공지", "자유게시판", "질문 답변"],
     []
   )
 
   const validate = () => {
-    if(!category) return "카테고리를 선택해주세요."
-    if(!title.trim()) return "제목을 입력해주세요."
-    if(!content.trim()) return "내용을 입력해주세요."
+    if (!category) return "카테고리를 선택해주세요."
+    if (!title.trim()) return "제목을 입력해주세요."
+    if (!content.trim()) return "내용을 입력해주세요."
     return "";
   }
 
@@ -46,23 +46,23 @@ function CommunityPost() {//글 작성
       return;
     }
     setLoading(true);
-      try {
-        const res = await communityApi.createPost({
-          title: title.trim(),
-          content: content.trim(),
-          category,
-          userId, 
-        });
-    const createdId = res?.post_id ?? res?.postId;
-        if (createdId) navigate(`/community/${createdId}`);
-        else navigate("/community");
-      } catch (e) {
-        setError("작성에 실패했어요. 잠시 후 다시 시도해 주세요.");
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const res = await communityApi.createPost({
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        userId,
+      });
+      const createdId = res?.post_id ?? res?.postId;
+      if (createdId) navigate(`/community/${createdId}`);
+      else navigate("/community");
+    } catch (e) {
+      setError("작성에 실패했어요. 잠시 후 다시 시도해 주세요.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -83,7 +83,7 @@ function CommunityPost() {//글 작성
 
       <div className='write-card'>
         <label className='write-label'>제목</label>
-        <input className='write-input' value={title} onChange={(e) => setTitle(e.target.value)} placeholder='예) [지인사칭] 지인사칭을 통해서 거금을 요구받았는데 조심하세요! ' maxLength={200}/>
+        <input className='write-input' value={title} onChange={(e) => setTitle(e.target.value)} placeholder='예) [지인사칭] 지인사칭을 통해서 거금을 요구받았는데 조심하세요! ' maxLength={200} />
         <div className='write-hint'>{title.length}/200</div>
 
         <label className='write-label'>내용</label>

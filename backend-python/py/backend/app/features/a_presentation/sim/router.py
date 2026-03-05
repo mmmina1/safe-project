@@ -31,15 +31,23 @@ async def simulator_start(request: SimStartRequest):
 
 @router.post("/simulator/evaluate")
 async def simulator_evaluate(request: EvalRequest):
-    """사용자 대응 평가 및 JSON 결과 반환"""
-    result = sim_source.get_evaluation(request.situation, request.player_answer)
-    # result는 이미 JSON 문자열이므로 그대로 반환하거나 파싱하여 반환
+    """사용자 대응 평가 및 다음 채팅 응답 동시 반환"""
+    eval_result_str = sim_source.get_evaluation(request.situation, request.player_answer)
+    chat_result = sim_source.chat_in_simulation(request.situation, request.player_answer)
+    
     import json
     try:
-        data = json.loads(result)
-        return {"status": "success", "data": data}
+        eval_data = json.loads(eval_result_str)
     except:
-        return {"status": "error", "message": "Evaluation result is not valid JSON", "raw_data": result}
+        eval_data = {"score": 50, "expert_comment": "평가 파싱 오류", "improvement_tip": "점수 산정에 실패했습니다."}
+
+    return {
+        "status": "success", 
+        "data": {
+            "evaluation": eval_data,
+            "next_chat": chat_result.answer
+        }
+    }
 
 
 

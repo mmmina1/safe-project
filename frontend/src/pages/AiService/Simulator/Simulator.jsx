@@ -100,32 +100,32 @@ const Simulator = () => {
                                             <span>{simulationMessage}</span>
                                         </div>
 
-                                        {!evaluationResult && (
-                                            <div className="input-area mt-4">
-                                                <input
-                                                    type="text"
-                                                    placeholder="당신의 대응을 입력하세요..."
-                                                    className="terminal-input"
-                                                    value={localInput}
-                                                    onChange={(e) => setLocalInput(e.target.value)}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            evaluateAnswer(localInput);
-                                                            setLocalInput(""); // 제출 후 비우기
-                                                        }
-                                                    }}
-                                                />
-                                                <p className="text-xs text-slate-500 mt-2">Enter를 눌러 평가 요청</p>
-                                            </div>
-                                        )}
+                                        <div className="input-area mt-4">
+                                            <input
+                                                type="text"
+                                                placeholder="당신의 대응을 입력하세요..."
+                                                className="terminal-input"
+                                                value={localInput}
+                                                onChange={(e) => setLocalInput(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        evaluateAnswer(localInput);
+                                                        setLocalInput(""); // 제출 후 비우기
+                                                    }
+                                                }}
+                                            />
+                                            <p className="text-xs text-slate-500 mt-2">Enter를 눌러 메세지 전송 및 평가 요청 (한/영 전환 지원)</p>
+                                        </div>
 
                                         {evaluationResult && (
-                                            <div className="result-area animate-fade-in mt-2">
-                                                <div className="score-badge">SCORE: {evaluationResult.score}</div>
+                                            <div className="result-area animate-fade-in mt-4 border-t border-cyan-500/30 pt-4">
+                                                <div className="score-badge">마지막 대응 점수 (SCORE): {evaluationResult.score}</div>
                                                 <p className="expert-comment mt-2">"{evaluationResult.expert_comment}"</p>
                                                 <div className="improvement-tip mt-2">💡 {evaluationResult.improvement_tip}</div>
                                                 <button onClick={startSimulation} className="btn-terminal-action mt-4">
-                                                    다음 시나리오 (NEXT)
+                                                    강제 초기화 / 새 시나리오 시작
                                                 </button>
                                             </div>
                                         )}

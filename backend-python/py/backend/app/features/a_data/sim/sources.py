@@ -27,15 +27,15 @@ class SimSource:
         engine = AIEngine(cfg["feature"], collection_name=cfg["db"])
         
         # 첫 상황극 대사 요청
-        query = "당신은 은행 창구에 방문한 [손님]입니다. 사용자는 [은행원]입니다. 상황에 몰입하여 첫 대사를 해주세요."
+        query = "당신은 교묘한 [보이스피싱/스미싱 사기꾼]입니다. 사용자는 당신의 [타겟(잠재적 피해자)]입니다. 주어진 사기 시나리오를 바탕으로, 사용자에게 전화를 걸거나 메시지를 보낸 것처럼 첫 대사를 시작해주세요. 절대 사기꾼이라는 것을 들키지 않게 연기하세요. 대사만 짧게 출력하세요."
         answer = engine.get_answer(query, use_rag=True)
         return SimResult(answer=answer, mode=f"Start-{scenario_type}")
 
     def chat_in_simulation(self, situation: str, message: str) -> SimResult:
         # 시뮬레이션 도중 일반 대화 (평가 없음)
         # situation은 현재까지의 문맥으로 활용
-        query = f"현재 상황: {situation}\n은행원의 말: {message}\n당신은 손님으로서 대답하세요. 짧고 간결하게 대사만 하세요."
-        answer = self.engine.get_answer(query, use_rag=True)
+        query = f"현재 통화 상황: {situation}\n타겟(사용자)의 대답: {message}\n당신은 사기꾼으로서 대답하세요. 타겟을 속여 개인정보를 얻거나 송금을 유도하세요. 극에 몰입하여 짧고 간결하게 대사만 하세요."
+        answer = self.default_engine.get_answer(query, use_rag=True)
         return SimResult(answer=answer, mode="Simulation-Chat")
 
     def get_evaluation(self, situation: str, player_answer: str) -> str:

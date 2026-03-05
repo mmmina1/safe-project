@@ -84,9 +84,14 @@ export const useSimulator = () => {
         }
     };
 
-    // 17~22번 흐름: 사용자 답변 평가
+    // 17~22번 흐름: 사용자 답변 평가 및 다음 대사 수신 (멀티턴)
     const evaluateAnswer = async (playerAnswer) => {
-        if (!simulationMessage) return;
+        if (!simulationMessage || !playerAnswer.trim()) return;
+
+        // 1. 통신 딜레이 전에 사용자의 말을 유니티 폰 화면에 즉시 띄웁니다.
+        if (isLoaded) {
+            sendMessage("ReactReceiver", "ShowPlayerDialogue", playerAnswer);
+        }
 
         try {
             const response = await fetch(`/api/ai/simulator/evaluate`, {
@@ -98,11 +103,18 @@ export const useSimulator = () => {
                 })
             });
             const result = await response.json();
-            setEvaluationResult(result.data);
+
+            // 새로운 API 규격에 맞춰 평가 결과와 다음 대사를 분리 저장
+            setEvaluationResult(result.data.evaluation);
+            setSimulationMessage(result.data.next_chat);
 
             // 결과에 따른 유니티 연출 유도 (점수 전달 등)
             if (isLoaded) {
-                sendMessage("ReactReceiver", "SetScore", result.data.score);
+                // 2. AI 평가 점수를 넘겨줘서 긴장도를 올립니다.
+                sendMessage("ReactReceiver", "SetScore", result.data.evaluation.score);
+
+                // 3. AI의 다음 대답을 유니티 폰 화면에 띄워서 대화가 끊기지 않게 합니다.
+                sendMessage("ReactReceiver", "ShowDialogue", result.data.next_chat);
             }
         } catch (error) {
             console.error("평가 실패:", error);
